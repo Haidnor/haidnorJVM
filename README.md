@@ -15,3 +15,6 @@ cd \java_project\haidnorVM
 mvn clean package
 ```
 
+字节码规范文档
+https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html
+

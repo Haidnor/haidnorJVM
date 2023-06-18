@@ -29,7 +29,7 @@ public class ConstantInterfaceMethodRefInfo extends ConstantInfo {
     public final int nameAndTypeIndex;
 
     public ConstantInterfaceMethodRefInfo(int classIndex, int nameAndTypeIndex) {
-        super(ConstantInfoEnum.CONSTANT_InterfaceMethodref.tag);
+        super(ConstantInfoConstants.CONSTANT_InterfaceMethodref);
         this.classIndex = classIndex;
         this.nameAndTypeIndex = nameAndTypeIndex;
     }

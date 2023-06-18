@@ -22,7 +22,7 @@ public class ConstantClassInfo extends ConstantInfo {
     public final int nameIndex;
 
     public ConstantClassInfo(int nameIndex) {
-        super(ConstantInfoEnum.CONSTANT_Class.tag);
+        super(ConstantInfoConstants.CONSTANT_Class);
         this.nameIndex = nameIndex;
     }
 

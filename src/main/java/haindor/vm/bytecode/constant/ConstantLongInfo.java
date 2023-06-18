@@ -18,7 +18,7 @@ public class ConstantLongInfo extends ConstantInfo {
     public final long val;
 
     public ConstantLongInfo(long val) {
-        super(ConstantInfoEnum.CONSTANT_Long.tag);
+        super(ConstantInfoConstants.CONSTANT_Long);
         this.val = val;
     }
 

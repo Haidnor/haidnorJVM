@@ -1,9 +1,14 @@
 package haindor.vm.bytecode;
 
-public class Fields {
-    public final FieldInfo[] fieldInfos;
+import java.util.ArrayList;
+import java.util.List;
 
-    public Fields(FieldInfo[] fieldInfos) {
-        this.fieldInfos = fieldInfos;
+public class Fields {
+
+    public final List<FieldInfo> fieldInfos;
+
+    public Fields() {
+        this.fieldInfos = new ArrayList<>();
     }
+
 }

@@ -1,13 +1,14 @@
 package haindor.vm.bytecode;
 
 public class Interface {
-    public final String name;
 
-    public Interface(String name) {
-        this.name = name;
+    /**
+     * 常量池索引
+     */
+    public final int constantPoolIndex;
+
+    public Interface(int constantPoolIndex) {
+        this.constantPoolIndex = constantPoolIndex;
     }
 
-    public String getName() {
-        return name;
-    }
 }

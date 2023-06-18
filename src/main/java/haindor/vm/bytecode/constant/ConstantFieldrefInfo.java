@@ -32,7 +32,7 @@ public class ConstantFieldrefInfo extends ConstantInfo {
     public final int nameAndTypeIndex;
 
     public ConstantFieldrefInfo(int classIndex, int nameAndTypeIndex) {
-        super(ConstantInfoEnum.CONSTANT_Fieldref.tag);
+        super(ConstantInfoConstants.CONSTANT_Fieldref);
         this.classIndex = classIndex;
         this.nameAndTypeIndex = nameAndTypeIndex;
     }

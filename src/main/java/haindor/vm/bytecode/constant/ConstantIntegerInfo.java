@@ -21,7 +21,7 @@ public class ConstantIntegerInfo extends ConstantInfo {
     public final int val;
 
     public ConstantIntegerInfo(int val) {
-        super(ConstantInfoEnum.CONSTANT_Integer.tag);
+        super(ConstantInfoConstants.CONSTANT_Integer);
         this.val = val;
     }
 

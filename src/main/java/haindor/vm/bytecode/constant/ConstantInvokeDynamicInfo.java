@@ -27,7 +27,7 @@ public class ConstantInvokeDynamicInfo extends ConstantInfo {
     public final int nameAndTypeIndex;
 
     public ConstantInvokeDynamicInfo(int bootstrapMethodAttrIndex, int nameAndTypeIndex) {
-        super(ConstantInfoEnum.CONSTANT_InvokeDynamic.tag);
+        super(ConstantInfoConstants.CONSTANT_InvokeDynamic);
         this.bootstrapMethodAttrIndex = bootstrapMethodAttrIndex;
         this.nameAndTypeIndex = nameAndTypeIndex;
     }

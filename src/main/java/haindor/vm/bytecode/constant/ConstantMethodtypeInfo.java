@@ -23,7 +23,7 @@ public class ConstantMethodtypeInfo extends ConstantInfo {
     public final int descriptorIndex;
 
     public ConstantMethodtypeInfo(int descriptorIndex) {
-        super(ConstantInfoEnum.CONSTANT_MethodType.tag);
+        super(ConstantInfoConstants.CONSTANT_MethodType);
         this.descriptorIndex = descriptorIndex;
     }
 }

@@ -22,7 +22,7 @@ public class ConstantStringInfo extends ConstantInfo {
     public final int stringIndex;
 
     public ConstantStringInfo(int stringIndex) {
-        super(ConstantInfoEnum.CONSTANT_String.tag);
+        super(ConstantInfoConstants.CONSTANT_String);
         this.stringIndex = stringIndex;
     }
 

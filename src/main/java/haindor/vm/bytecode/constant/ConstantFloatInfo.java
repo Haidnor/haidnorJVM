@@ -32,7 +32,7 @@ public class ConstantFloatInfo extends ConstantInfo {
     public final float val;
 
     public ConstantFloatInfo(float val) {
-        super(ConstantInfoEnum.CONSTANT_Float.tag);
+        super(ConstantInfoConstants.CONSTANT_Float);
         this.val = val;
     }
 }

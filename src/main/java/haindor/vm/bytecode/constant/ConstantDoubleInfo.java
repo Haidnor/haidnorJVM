@@ -15,10 +15,10 @@ CONSTANT_Double_info 结构的 tag 项的值为 CONSTANT_Double (6)。
  */
 public class ConstantDoubleInfo extends ConstantInfo {
 
-    public final long val;
+    public final double val;
 
-    public ConstantDoubleInfo(long val) {
-        super(ConstantInfoEnum.CONSTANT_Double.tag);
+    public ConstantDoubleInfo(double val) {
+        super(ConstantInfoConstants.CONSTANT_Double);
         this.val = val;
     }
 

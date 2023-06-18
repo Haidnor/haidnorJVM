@@ -43,7 +43,7 @@ public class ConstantMethodHandleInfo extends ConstantInfo {
     public final int referenceIndex;
 
     public ConstantMethodHandleInfo(int referenceKind, int referenceIndex) {
-        super(ConstantInfoEnum.CONSTANT_MethodHandle.tag);
+        super(ConstantInfoConstants.CONSTANT_MethodHandle);
         this.referenceKind = referenceKind;
         this.referenceIndex = referenceIndex;
     }

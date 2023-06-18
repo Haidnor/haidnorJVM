@@ -1,5 +1,7 @@
 package haindor.vm.bytecode;
 
+import lombok.Data;
+
 /*
    https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.1
 
@@ -23,6 +25,7 @@ package haindor.vm.bytecode;
         attribute_info attributes[attributes_count];
     }
  */
+@Data
 public class ClassFile {
 
     /**

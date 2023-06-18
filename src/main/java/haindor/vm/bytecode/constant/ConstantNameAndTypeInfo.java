@@ -29,7 +29,7 @@ public class ConstantNameAndTypeInfo extends ConstantInfo {
     public final int descriptionIndex;
 
     public ConstantNameAndTypeInfo(int nameIndex, int descriptionIndex) {
-        super(ConstantInfoEnum.CONSTANT_NameAndType.tag);
+        super(ConstantInfoConstants.CONSTANT_NameAndType);
         this.nameIndex = nameIndex;
         this.descriptionIndex = descriptionIndex;
     }

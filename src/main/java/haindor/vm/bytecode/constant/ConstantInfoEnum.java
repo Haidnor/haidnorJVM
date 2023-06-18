@@ -1,5 +1,13 @@
 package haindor.vm.bytecode.constant;
 
+import lombok.AllArgsConstructor;
+
+import java.util.Arrays;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+@AllArgsConstructor
 public enum ConstantInfoEnum {
 
     CONSTANT_Utf8(1),
@@ -17,11 +25,13 @@ public enum ConstantInfoEnum {
     CONSTANT_MethodType(16),
     CONSTANT_InvokeDynamic(18);
 
-
     public final int tag;
 
-    ConstantInfoEnum(int code) {
-        this.tag = code;
+    public static final Map<Integer, ConstantInfoEnum> enumMap;
+
+    static {
+        enumMap = Arrays.stream(ConstantInfoEnum.values())
+                .collect(Collectors.toMap(constantInfoEnum -> constantInfoEnum.tag, Function.identity()));
     }
 
 }

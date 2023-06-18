@@ -2,6 +2,8 @@ package haindor.vm.bytecode;
 
 import haindor.vm.bytecode.constant.ConstantInfo;
 
+import java.util.*;
+
 /*
 常量池表
 
@@ -38,10 +40,18 @@ info 数组的内容随着 tag 的值而变化。下表中列出了有效标签�
 */
 public class ConstantPool {
 
-    public final ConstantInfo[] infos;
+    public final List<ConstantInfo> infos;
 
-    public ConstantPool(int size) {
-        this.infos = new ConstantInfo[size];
+    public final Map<Integer, ConstantInfo> constantInfoMap;
+
+    public ConstantPool(int count) {
+        this.infos = new ArrayList<>(count);
+        this.constantInfoMap = new LinkedHashMap<>(count);
+    }
+
+    public void addConstantInfo(ConstantInfo constantInfo) {
+        this.infos.add(constantInfo);
+        this.constantInfoMap.put(infos.size(), constantInfo);
     }
 
 }

@@ -32,7 +32,7 @@ public class ConstantMethodrefInfo extends ConstantInfo {
     public final int nameAndTypeIndex;
 
     public ConstantMethodrefInfo(int classIndex, int nameAndTypeIndex) {
-        super(ConstantInfoEnum.CONSTANT_Methodref.tag);
+        super(ConstantInfoConstants.CONSTANT_Methodref);
         this.classIndex = classIndex;
         this.nameAndTypeIndex = nameAndTypeIndex;
     }

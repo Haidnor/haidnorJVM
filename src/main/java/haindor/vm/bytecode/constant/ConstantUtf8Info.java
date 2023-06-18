@@ -29,7 +29,7 @@ public class ConstantUtf8Info extends ConstantInfo {
     public final byte[] bytes;
 
     public ConstantUtf8Info(int length, byte[] bytes) {
-        super(ConstantInfoEnum.CONSTANT_Utf8.tag);
+        super(ConstantInfoConstants.CONSTANT_Utf8);
         this.length = length;
         this.bytes = bytes;
     }

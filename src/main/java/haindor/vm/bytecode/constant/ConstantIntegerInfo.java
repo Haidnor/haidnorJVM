@@ -15,6 +15,8 @@ CONSTANT_Integer_info 结构的 tag 项的值为 CONSTANT_Integer (3)。
  */
 public class ConstantIntegerInfo extends ConstantInfo {
 
+    public final String constantInfoName = ConstantInfoEnum.CONSTANT_Integer.name();
+
     /**
      * CONSTANT_Integer_info 结构的 bytes 项表示 int 常量的值。值的字节以大端（高字节在前）顺序存储。
      */

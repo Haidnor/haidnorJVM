@@ -15,6 +15,8 @@ CONSTANT_InvokeDynamic_info 结构的 tag 项的值为 CONSTANT_InvokeDynamic (1
  */
 public class ConstantInvokeDynamicInfo extends ConstantInfo {
 
+    public final String constantInfoName = ConstantInfoEnum.CONSTANT_InvokeDynamic.name();
+
     /**
      * bootstrap_method_attr_index 项的值必须是此 class 文件的引导方法表（§4.7.23）的 bootstrap_methods 数组的有效索引。
      */

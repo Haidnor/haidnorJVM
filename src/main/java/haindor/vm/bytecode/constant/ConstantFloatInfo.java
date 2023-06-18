@@ -14,6 +14,8 @@ CONSTANT_Float_info 结构的 tag 项的值为 CONSTANT_Float (4)。
  */
 public class ConstantFloatInfo extends ConstantInfo {
 
+    public final String constantInfoName = ConstantInfoEnum.CONSTANT_Float.name();
+
     /**
      * CONSTANT_Float_info 结构的 bytes 项表示 IEEE 754 浮点单一格式（§2.3.2）中的 float 常量的值。单一格式表示的字节以大端（高字节在前）顺序存储。
      * <p>

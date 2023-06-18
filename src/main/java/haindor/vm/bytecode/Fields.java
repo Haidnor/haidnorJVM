@@ -7,8 +7,11 @@ public class Fields {
 
     public final List<FieldInfo> fieldInfos;
 
-    public Fields() {
+    public Fields(int fieldInfoCount) {
         this.fieldInfos = new ArrayList<>();
     }
 
+    public void addFieldInfo(FieldInfo fieldInfo) {
+        this.fieldInfos.add(fieldInfo);
+    }
 }

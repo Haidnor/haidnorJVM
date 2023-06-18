@@ -2,6 +2,7 @@ package haidnor.vm;
 
 import haindor.vm.bytecode.*;
 import haindor.vm.bytecode.constant.*;
+import haindor.vm.bytecode.method.MethodInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
@@ -17,9 +18,7 @@ public class ClassLoaderTest {
         String path = "D:\\java_project\\JavaClassTest\\out\\production\\JavaClassTest\\Main.class";
 
         ClassFile classFile = new ClassFile();
-
-        FileInputStream fileInputStream = new FileInputStream(path);
-        DataInputStream stream = new DataInputStream(fileInputStream);
+        DataInputStream stream = new DataInputStream(new FileInputStream(path));
 
         readMagic(classFile, stream);
         readMinorVersion(classFile, stream);
@@ -33,26 +32,66 @@ public class ClassLoaderTest {
         readInterfaces(classFile, stream);
         readFieldCount(classFile, stream);
         readFields(classFile, stream);
+        readMethodsCount(classFile, stream);
+//        readMethods(classFile, stream);
+//        readAttributesCount(classFile, stream);
+//        readAttributes(classFile, stream);
+    }
 
+    private static void readAttributes(ClassFile classFile, DataInputStream stream) {
+        Attributes attributes = new Attributes(classFile.attributesCount);
+        classFile.setAttributes(attributes);
+        for (int i = 0; i < classFile.attributesCount; i++) {
 
-//        // u2 methodsCount
-//        int methodsCount = stream.readUnsignedShort();
-//        classFile.setMethodsCount(methodsCount);
-//
-//        for (int m = 0; m < methodsCount; m++) {
-//
-//        }
+        }
+    }
 
+    private static void readAttributesCount(ClassFile classFile, DataInputStream stream) throws IOException {
+        int attributesCount = stream.readUnsignedShort();
+        classFile.setAttributesCount(attributesCount);
+    }
+
+    private static void readMethods(ClassFile classFile, DataInputStream stream) throws IOException {
+        Methods methods = new Methods();
+        classFile.setMethods(methods);
+        for (int i = 0; i < classFile.methodsCount; i++) {
+            int accessFlags = stream.readUnsignedShort();
+            int nameIndex = stream.readUnsignedShort();
+            int descriptorIndex = stream.readUnsignedShort();
+            int attributesCount = stream.readUnsignedShort();
+            MethodInfo methodInfo = new MethodInfo(accessFlags, nameIndex, descriptorIndex, attributesCount);
+            methods.addMethodInfo(methodInfo);
+
+            for (int m = 0; m < attributesCount; m++) {
+                int attributeNameIndex = stream.readUnsignedShort();
+//                String attributeName = Utils.getString(constantPool, attributeNameIndex);
+            }
+        }
+    }
+
+    private static void readMethodsCount(ClassFile classFile, DataInputStream stream) throws IOException {
+        // u2 methodsCount
+        int methodsCount = stream.readUnsignedShort();
+        classFile.setMethodsCount(methodsCount);
     }
 
     private static void readFields(ClassFile classFile, DataInputStream stream) throws IOException {
-        for (int f = 0; f < classFile.fieldCount; f++) {
+        Fields fields = new Fields(classFile.fieldCount);
+        classFile.setFields(fields);
+
+        for (int i = 0; i < classFile.fieldCount; i++) {
             int accessFlags = stream.readUnsignedShort();
             int nameIndex = stream.readUnsignedShort();
             int descriptorIndex = stream.readUnsignedShort();
             int attributesCount = stream.readUnsignedShort();
 
-            FieldInfo fieldInfo = new FieldInfo(accessFlags, nameIndex, descriptorIndex, attributesCount, null);
+            if (attributesCount != 0) {
+                throw new Error("Field Attribute Count != 0"); // TODO 暂时不实现解析字段属性
+            }
+            Attributes attributes = new Attributes(0);
+
+            FieldInfo fieldInfo = new FieldInfo(accessFlags, nameIndex, descriptorIndex, attributesCount, attributes);
+            fields.addFieldInfo(fieldInfo);
         }
     }
 
@@ -67,7 +106,7 @@ public class ClassLoaderTest {
         Interfaces interfaces = new Interfaces(classFile.interfacesCount);
         classFile.setInterfaces(interfaces);
 
-        for (int y = 0; y < classFile.interfacesCount; y++) {
+        for (int i = 0; i < classFile.interfacesCount; i++) {
             int constantPoolIndex = stream.readUnsignedShort();
             Interface anInterface = new Interface(constantPoolIndex);
             interfaces.addInterface(anInterface);
@@ -122,7 +161,43 @@ public class ClassLoaderTest {
                 case ConstantInfoConstants.CONSTANT_MethodType -> readConstantMethodtypeInfo(stream, constantPool);
                 case ConstantInfoConstants.CONSTANT_InvokeDynamic ->
                         readConstantInvokeDynamicInfo(stream, constantPool);
-                default -> throw new UnsupportedOperationException("un parse cp " + tag);
+                default -> throw new UnsupportedOperationException("Unsupported Constant Tag " + tag);
+            }
+        }
+
+        for (ConstantInfo constantInfo : constantPool.constantInfoMap.values()) {
+            if (constantInfo instanceof ConstantClassInfo constantClassInfo) {
+                ConstantUtf8Info nameConstantUtf8Info = (ConstantUtf8Info) constantPool.constantInfoMap.get(constantClassInfo.nameIndex);
+                constantClassInfo.setNameConstantUtf8Info(nameConstantUtf8Info);
+            }
+            if (constantInfo instanceof ConstantStringInfo constantStringInfo) {
+                ConstantUtf8Info nameConstantUtf8Info = (ConstantUtf8Info) constantPool.constantInfoMap.get(constantStringInfo.stringIndex);
+                constantStringInfo.setStringConstantUtf8Info(nameConstantUtf8Info);
+            }
+            if (constantInfo instanceof ConstantNameAndTypeInfo constantNameAndTypeInfo) {
+                ConstantUtf8Info nameConstantUtf8Info = (ConstantUtf8Info) constantPool.constantInfoMap.get(constantNameAndTypeInfo.nameIndex);
+                constantNameAndTypeInfo.setNameConstantUtf8Info(nameConstantUtf8Info);
+
+                ConstantUtf8Info descriptionConstantUtf8Info = (ConstantUtf8Info) constantPool.constantInfoMap.get(constantNameAndTypeInfo.descriptionIndex);
+                constantNameAndTypeInfo.setDescriptionConstantUtf8Info(descriptionConstantUtf8Info);
+            }
+            if (constantInfo instanceof ConstantFieldrefInfo constantFieldrefInfo) {
+                ConstantClassInfo constantClassInfo = (ConstantClassInfo) constantPool.constantInfoMap.get(constantFieldrefInfo.classIndex);
+                constantFieldrefInfo.setConstantClassInfo(constantClassInfo);
+
+                ConstantNameAndTypeInfo constantNameAndTypeInfo = (ConstantNameAndTypeInfo) constantPool.constantInfoMap.get(constantFieldrefInfo.nameAndTypeIndex);
+                constantFieldrefInfo.setConstantNameAndTypeInfo(constantNameAndTypeInfo);
+            }
+            if (constantInfo instanceof ConstantMethodrefInfo constantMethodrefInfo) {
+                ConstantClassInfo constantClassInfo = (ConstantClassInfo) constantPool.constantInfoMap.get(constantMethodrefInfo.classIndex);
+                constantMethodrefInfo.setConstantClassInfo(constantClassInfo);
+
+                ConstantNameAndTypeInfo constantNameAndTypeInfo = (ConstantNameAndTypeInfo) constantPool.constantInfoMap.get(constantMethodrefInfo.nameAndTypeIndex);
+                constantMethodrefInfo.setConstantNameAndTypeInfo(constantNameAndTypeInfo);
+            }
+            if (constantInfo instanceof ConstantMethodtypeInfo constantMethodtypeInfo) {
+                ConstantUtf8Info descriptorConstantUtf8Info = (ConstantUtf8Info) constantPool.constantInfoMap.get(constantMethodtypeInfo.descriptorIndex);
+                constantMethodtypeInfo.setDescriptorConstantUtf8Info(descriptorConstantUtf8Info);
             }
         }
     }

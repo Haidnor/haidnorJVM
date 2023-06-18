@@ -14,6 +14,8 @@ CONSTANT_Fieldref_info 结构的 tag 项的值为 CONSTANT_Fieldref (9)。
 */
 public class ConstantFieldrefInfo extends ConstantInfo {
 
+    public final String constantInfoName = ConstantInfoEnum.CONSTANT_Fieldref.name();
+
     /**
      * class_index 项的值必须是 constant_pool 表中的有效索引。该索引处的 constant_pool 条目必须是一个 CONSTANT_Class_info 结构（§4.4.1），
      * 表示具有字段或方法作为成员的类或接口类型。
@@ -21,6 +23,9 @@ public class ConstantFieldrefInfo extends ConstantInfo {
      * CONSTANT_Fieldref_info 结构的 class_index 项可以是类类型或接口类型。
      */
     public final int classIndex;
+
+    public ConstantClassInfo constantClassInfo;
+
 
     /**
      * name_and_type_index 项的值必须是 constant_pool 表中的有效索引。
@@ -31,10 +36,19 @@ public class ConstantFieldrefInfo extends ConstantInfo {
      */
     public final int nameAndTypeIndex;
 
+    public ConstantNameAndTypeInfo constantNameAndTypeInfo;
+
     public ConstantFieldrefInfo(int classIndex, int nameAndTypeIndex) {
         super(ConstantInfoConstants.CONSTANT_Fieldref);
         this.classIndex = classIndex;
         this.nameAndTypeIndex = nameAndTypeIndex;
     }
 
+    public void setConstantClassInfo(ConstantClassInfo constantClassInfo) {
+        this.constantClassInfo = constantClassInfo;
+    }
+
+    public void setConstantNameAndTypeInfo(ConstantNameAndTypeInfo constantNameAndTypeInfo) {
+        this.constantNameAndTypeInfo = constantNameAndTypeInfo;
+    }
 }

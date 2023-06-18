@@ -160,7 +160,7 @@ public class ClassFile {
      * methods 表中的每个值都必须是一个 method_info 结构（§4.6），给出此类或接口中方法的完整描述。
      * 如果 method_info 结构的 access_flags 项中没有设置 ACC_NATIVE 和 ACC_ABSTRACT 标志，则还提供实现该方法的Java 虚拟机指令。
      */
-//    public Methods methods;
+    public Methods methods;
 
     /**
      * 属性数

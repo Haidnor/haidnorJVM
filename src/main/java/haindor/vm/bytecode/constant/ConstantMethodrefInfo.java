@@ -14,6 +14,8 @@ CONSTANT_Methodref_info 结构的 tag 项的值为 CONSTANT_Methodref (10)。
 */
 public class ConstantMethodrefInfo extends ConstantInfo {
 
+    public final String constantInfoName = ConstantInfoEnum.CONSTANT_Methodref.name();
+
     /**
      * class_index 项的值必须是 constant_pool 表中的有效索引。该索引处的 constant_pool 条目必须是一个 CONSTANT_Class_info 结构（§4.4.1），
      * 表示具有字段或方法作为成员的类或接口类型。
@@ -21,6 +23,8 @@ public class ConstantMethodrefInfo extends ConstantInfo {
      * CONSTANT_Methodref_info 结构的 class_index 项必须是类类型，而不是接口类型。
      */
     public final int classIndex;
+
+    public ConstantClassInfo constantClassInfo;
 
     /**
      * name_and_type_index 项的值必须是 constant_pool 表中的有效索引。
@@ -31,10 +35,19 @@ public class ConstantMethodrefInfo extends ConstantInfo {
      */
     public final int nameAndTypeIndex;
 
+    public ConstantNameAndTypeInfo constantNameAndTypeInfo;
+
     public ConstantMethodrefInfo(int classIndex, int nameAndTypeIndex) {
         super(ConstantInfoConstants.CONSTANT_Methodref);
         this.classIndex = classIndex;
         this.nameAndTypeIndex = nameAndTypeIndex;
     }
 
+    public void setConstantClassInfo(ConstantClassInfo constantClassInfo) {
+        this.constantClassInfo = constantClassInfo;
+    }
+
+    public void setConstantNameAndTypeInfo(ConstantNameAndTypeInfo constantNameAndTypeInfo) {
+        this.constantNameAndTypeInfo = constantNameAndTypeInfo;
+    }
 }

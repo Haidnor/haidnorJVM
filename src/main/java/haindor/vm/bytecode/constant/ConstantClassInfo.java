@@ -14,6 +14,8 @@ The tag item has the value CONSTANT_Class (7).
 */
 public class ConstantClassInfo extends ConstantInfo {
 
+    public final String constantInfoName = ConstantInfoEnum.CONSTANT_Class.name();
+
     /**
      * 名称索引
      * name_index 项的值必须是 constant_pool 表中的有效索引。
@@ -21,9 +23,15 @@ public class ConstantClassInfo extends ConstantInfo {
      */
     public final int nameIndex;
 
+    public ConstantUtf8Info nameConstantUtf8Info;
+
     public ConstantClassInfo(int nameIndex) {
         super(ConstantInfoConstants.CONSTANT_Class);
         this.nameIndex = nameIndex;
+    }
+
+    public void setNameConstantUtf8Info(ConstantUtf8Info nameConstantUtf8Info) {
+        this.nameConstantUtf8Info = nameConstantUtf8Info;
     }
 
 }

@@ -1,8 +1,12 @@
 package haindor.vm.bytecode;
 
 import haindor.vm.bytecode.constant.ConstantInfo;
+import haindor.vm.bytecode.constant.ConstantUtf8Info;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /*
 常量池表
@@ -52,6 +56,14 @@ public class ConstantPool {
     public void addConstantInfo(ConstantInfo constantInfo) {
         this.infos.add(constantInfo);
         this.constantInfoMap.put(infos.size(), constantInfo);
+    }
+
+    public String getConstantUtf8InfoStr(int constantPoolIndex) {
+        ConstantInfo constantInfo = constantInfoMap.get(constantPoolIndex);
+        if (constantInfo instanceof ConstantUtf8Info constantUtf8Info) {
+            return constantUtf8Info.utf8Str;
+        }
+        throw new Error("getConstantUtf8InfoStr error");
     }
 
 }

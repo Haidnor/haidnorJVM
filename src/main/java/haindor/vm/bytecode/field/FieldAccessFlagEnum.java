@@ -3,6 +3,7 @@ package haindor.vm.bytecode.field;
 /*
  https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.5
 */
+
 /**
  * JVM 字段访问权限标识常量
  *

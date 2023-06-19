@@ -1,6 +1,10 @@
 package haindor.vm.bytecode;
 
-import lombok.Data;
+import haindor.vm.bytecode.constant.*;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.Map;
 
 /*
    https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.1
@@ -25,7 +29,8 @@ import lombok.Data;
         attribute_info attributes[attributes_count];
     }
  */
-@Data
+@Getter
+@Setter
 public class ClassFile {
 
     /**
@@ -185,4 +190,97 @@ public class ClassFile {
      */
     public Attributes attributes;
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("minor version: ").append(minorVersion).append("\n");
+        sb.append("major version: ").append(majorVersion).append("\n");
+        sb.append("flags: ").append(Integer.toHexString(accessFlags)).append("\n");
+        sb.append("this_class: #").append(thisClass).append("        // ").append(constantPool.getConstantUtf8Info(constantPool.getConstantClassInfo(thisClass).nameIndex).utf8Str).append("\n");
+        sb.append("super_class: #").append(superClass).append("        // ").append(constantPool.getConstantUtf8Info(constantPool.getConstantClassInfo(superClass).nameIndex).utf8Str).append("\n");
+        sb.append("interfaces: ").append(interfacesCount).append(", fields: ").append(fieldCount).append(", methods: ").append(methodsCount).append(", attributes: ").append(attributesCount).append("\n");
+        sb.append("Constant pool: \n");
+        for (Map.Entry<Integer, ConstantInfo> entry : constantPool.constantInfoMap.entrySet()) {
+            Integer index = entry.getKey();
+            if (index < 10) {
+                sb.append(" ");
+            }
+            ConstantInfo constantInfo = entry.getValue();
+            sb.append("  ").append(index).append(" = ").append(constantInfo.getConstantInfoEnum().name());
+
+            switch (constantInfo.tag) {
+                case ConstantInfoConstants.CONSTANT_Utf8:
+                    sb.append("             ");
+                    ConstantUtf8Info utf8Info = (ConstantUtf8Info) constantInfo;
+                    sb.append(utf8Info.utf8Str);
+                    break;
+                case ConstantInfoConstants.CONSTANT_Integer:
+                    break;
+                case ConstantInfoConstants.CONSTANT_Float:
+                    break;
+                case ConstantInfoConstants.CONSTANT_Long:
+                    break;
+                case ConstantInfoConstants.CONSTANT_Double:
+                    break;
+                case ConstantInfoConstants.CONSTANT_Class:
+                    sb.append("            ");
+                    ConstantClassInfo classInfo = (ConstantClassInfo) constantInfo;
+                    sb.append("#").append(classInfo.nameIndex).append("        // ");
+                    sb.append(constantPool.getConstantUtf8Info(classInfo.nameIndex).utf8Str);
+                    break;
+                case ConstantInfoConstants.CONSTANT_String:
+                    sb.append("           ");
+                    ConstantStringInfo stringInfo = (ConstantStringInfo) constantInfo;
+                    sb.append("#").append(stringInfo.stringIndex);
+                    sb.append("        // ");
+                    sb.append(constantPool.getConstantUtf8Info(stringInfo.stringIndex).utf8Str);
+                    break;
+                case ConstantInfoConstants.CONSTANT_Fieldref:
+                    sb.append("         ");
+                    ConstantFieldrefInfo fieldrefInfo = (ConstantFieldrefInfo) constantInfo;
+                    sb.append("#").append(fieldrefInfo.classIndex).append(".#").append(fieldrefInfo.nameAndTypeIndex);
+                    sb.append("        // ");
+                    sb.append(constantPool.getConstantUtf8Info(constantPool.getConstantClassInfo(fieldrefInfo.classIndex).nameIndex).utf8Str);
+                    sb.append(".");
+                    sb.append(constantPool.getConstantUtf8Info(constantPool.getConstantNameAndTypeInfo(fieldrefInfo.nameAndTypeIndex).nameIndex).utf8Str);
+                    sb.append(":");
+                    sb.append(constantPool.getConstantUtf8Info(constantPool.getConstantNameAndTypeInfo(fieldrefInfo.nameAndTypeIndex).descriptionIndex).utf8Str);
+                    break;
+                case ConstantInfoConstants.CONSTANT_Methodref:
+                    sb.append("        ");
+                    ConstantMethodrefInfo methodrefInfo = (ConstantMethodrefInfo) constantInfo;
+                    sb.append("#").append(methodrefInfo.classIndex);
+                    sb.append(".#").append(methodrefInfo.nameAndTypeIndex).append("        // ");
+                    sb.append(constantPool.getConstantUtf8Info(constantPool.getConstantClassInfo(methodrefInfo.classIndex).nameIndex).utf8Str);
+                    sb.append(".");
+                    sb.append(constantPool.getConstantUtf8Info(constantPool.getConstantNameAndTypeInfo(methodrefInfo.nameAndTypeIndex).nameIndex).utf8Str);
+                    sb.append(":");
+                    sb.append(constantPool.getConstantUtf8Info(constantPool.getConstantNameAndTypeInfo(methodrefInfo.nameAndTypeIndex).descriptionIndex).utf8Str);
+                    break;
+                case ConstantInfoConstants.CONSTANT_InterfaceMethodref:
+                    break;
+                case ConstantInfoConstants.CONSTANT_NameAndType:
+                    sb.append("      ");
+                    ConstantNameAndTypeInfo nameAndTypeInfo = (ConstantNameAndTypeInfo) constantInfo;
+                    sb.append("#").append(nameAndTypeInfo.nameIndex).append(":#").append(nameAndTypeInfo.descriptionIndex).append("        // ");
+                    sb.append(constantPool.getConstantUtf8Info(nameAndTypeInfo.nameIndex).utf8Str).append(":");
+                    sb.append(constantPool.getConstantUtf8Info(nameAndTypeInfo.descriptionIndex).utf8Str);
+                    break;
+                case ConstantInfoConstants.CONSTANT_MethodHandle:
+                    break;
+                case ConstantInfoConstants.CONSTANT_MethodType:
+                    break;
+                case ConstantInfoConstants.CONSTANT_InvokeDynamic:
+                    break;
+            }
+
+            sb.append("\n");
+        }
+
+        sb.append("{\n");
+
+        sb.append("}\n");
+        return sb.toString();
+    }
 }

@@ -15,7 +15,7 @@ CONSTANT_NameAndType_info 结构的 tag 项的值为 CONSTANT_NameAndType (12)�
  */
 public class ConstantLongInfo extends ConstantInfo {
 
-    public final String constantInfoName = ConstantInfoEnum.CONSTANT_Long.name();
+    public final ConstantInfoEnum constantInfoEnum = ConstantInfoEnum.CONSTANT_Long;
 
     public final long val;
 
@@ -24,4 +24,8 @@ public class ConstantLongInfo extends ConstantInfo {
         this.val = val;
     }
 
+    @Override
+    public ConstantInfoEnum getConstantInfoEnum() {
+        return constantInfoEnum;
+    }
 }

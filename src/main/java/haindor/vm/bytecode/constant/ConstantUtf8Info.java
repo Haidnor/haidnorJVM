@@ -20,7 +20,7 @@ CONSTANT_Utf8_info 结构的 tag 项的值为 CONSTANT_Utf8 (1)。
  */
 public class ConstantUtf8Info extends ConstantInfo {
 
-    public final String constantInfoName = ConstantInfoEnum.CONSTANT_Utf8.name();
+    public final ConstantInfoEnum constantInfoEnum = ConstantInfoEnum.CONSTANT_Utf8;
 
     /**
      * length 项的值给出了 bytes 数组中的字节数（不是结果字符串的长度）。
@@ -47,4 +47,8 @@ public class ConstantUtf8Info extends ConstantInfo {
         this.utf8Str = HexUtil.decodeHexStr(HexUtil.encodeHex(bytes), StandardCharsets.UTF_8);
     }
 
+    @Override
+    public ConstantInfoEnum getConstantInfoEnum() {
+        return constantInfoEnum;
+    }
 }

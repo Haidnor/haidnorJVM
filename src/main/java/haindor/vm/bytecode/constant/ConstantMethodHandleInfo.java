@@ -15,7 +15,7 @@ CONSTANT_MethodHandle_info 结构的 tag 项的值为 CONSTANT_MethodHandle (15)
  */
 public class ConstantMethodHandleInfo extends ConstantInfo {
 
-    public final String constantInfoName = ConstantInfoEnum.CONSTANT_MethodHandle.name();
+    public final ConstantInfoEnum constantInfoEnum = ConstantInfoEnum.CONSTANT_MethodHandle;
 
     /**
      * reference_kind 项的值必须在 1 到 9 的范围内。该值表示此方法句柄的种类，它表征其字节码行为（§5.4.3.5）。
@@ -50,4 +50,8 @@ public class ConstantMethodHandleInfo extends ConstantInfo {
         this.referenceIndex = referenceIndex;
     }
 
+    @Override
+    public  ConstantInfoEnum getConstantInfoEnum() {
+        return constantInfoEnum;
+    }
 }

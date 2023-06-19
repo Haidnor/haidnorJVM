@@ -15,7 +15,7 @@ CONSTANT_NameAndType_info 结构的 tag 项的值为 CONSTANT_NameAndType (12)�
  */
 public class ConstantNameAndTypeInfo extends ConstantInfo {
 
-    public final String constantInfoName = ConstantInfoEnum.CONSTANT_NameAndType.name();
+    public final ConstantInfoEnum constantInfoEnum = ConstantInfoEnum.CONSTANT_NameAndType;
 
     /**
      * name_index 项的值必须是 constant_pool 表中的有效索引。
@@ -46,6 +46,11 @@ public class ConstantNameAndTypeInfo extends ConstantInfo {
 
     public void setDescriptionConstantUtf8Info(ConstantUtf8Info descriptionConstantUtf8Info) {
         this.descriptionConstantUtf8Info = descriptionConstantUtf8Info;
+    }
+
+    @Override
+    public   ConstantInfoEnum getConstantInfoEnum() {
+        return constantInfoEnum;
     }
 }
 

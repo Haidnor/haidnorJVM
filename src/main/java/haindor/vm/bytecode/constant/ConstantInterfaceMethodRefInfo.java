@@ -13,7 +13,7 @@ CONSTANT_InterfaceMethodref_info 结构的 tag 项的值为 CONSTANT_InterfaceMe
  */
 public class ConstantInterfaceMethodRefInfo extends ConstantInfo {
 
-    public final String constantInfoName = ConstantInfoEnum.CONSTANT_InterfaceMethodref.name();
+    public final ConstantInfoEnum constantInfoEnum = ConstantInfoEnum.CONSTANT_InterfaceMethodref;
 
     /**
      * class_index 项的值必须是 constant_pool 表中的有效索引。该索引处的 constant_pool 条目必须是一个 CONSTANT_Class_info 结构（§4.4.1），
@@ -36,4 +36,8 @@ public class ConstantInterfaceMethodRefInfo extends ConstantInfo {
         this.nameAndTypeIndex = nameAndTypeIndex;
     }
 
+    @Override
+    public  ConstantInfoEnum getConstantInfoEnum() {
+        return constantInfoEnum;
+    }
 }

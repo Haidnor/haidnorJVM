@@ -14,7 +14,7 @@ The tag item has the value CONSTANT_Class (7).
 */
 public class ConstantClassInfo extends ConstantInfo {
 
-    public final String constantInfoName = ConstantInfoEnum.CONSTANT_Class.name();
+    public final ConstantInfoEnum constantInfoEnum = ConstantInfoEnum.CONSTANT_Class;
 
     /**
      * 名称索引
@@ -34,4 +34,8 @@ public class ConstantClassInfo extends ConstantInfo {
         this.nameConstantUtf8Info = nameConstantUtf8Info;
     }
 
+    @Override
+    public  ConstantInfoEnum getConstantInfoEnum() {
+        return constantInfoEnum;
+    }
 }

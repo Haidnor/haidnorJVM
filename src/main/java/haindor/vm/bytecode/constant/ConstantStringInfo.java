@@ -15,7 +15,7 @@ CONSTANT_String_info 结构的 tag 项的值为 CONSTANT_String (8)。
  */
 public class ConstantStringInfo extends ConstantInfo {
 
-    public final String constantInfoName = ConstantInfoEnum.CONSTANT_String.name();
+    public final ConstantInfoEnum constantInfoEnum = ConstantInfoEnum.CONSTANT_String;
 
     /**
      * string_index 项的值必须是 constant_pool 表中的有效索引。
@@ -34,4 +34,8 @@ public class ConstantStringInfo extends ConstantInfo {
         this.stringConstantUtf8Info = stringConstantUtf8Info;
     }
 
+    @Override
+    public  ConstantInfoEnum getConstantInfoEnum() {
+        return constantInfoEnum;
+    }
 }

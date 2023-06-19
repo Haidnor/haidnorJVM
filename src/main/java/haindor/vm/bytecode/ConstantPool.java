@@ -1,6 +1,8 @@
 package haindor.vm.bytecode;
 
+import haindor.vm.bytecode.constant.ConstantClassInfo;
 import haindor.vm.bytecode.constant.ConstantInfo;
+import haindor.vm.bytecode.constant.ConstantNameAndTypeInfo;
 import haindor.vm.bytecode.constant.ConstantUtf8Info;
 
 import java.util.ArrayList;
@@ -66,4 +68,19 @@ public class ConstantPool {
         throw new Error("getConstantUtf8InfoStr error");
     }
 
+    public ConstantInfo getConstantInfo(int constantPoolIndex) {
+        return this.constantInfoMap.get(constantPoolIndex);
+    }
+
+    public ConstantClassInfo getConstantClassInfo(int constantPoolIndex) {
+        return (ConstantClassInfo) this.constantInfoMap.get(constantPoolIndex);
+    }
+
+    public ConstantUtf8Info getConstantUtf8Info(int constantPoolIndex) {
+        return (ConstantUtf8Info) this.constantInfoMap.get(constantPoolIndex);
+    }
+
+    public ConstantNameAndTypeInfo getConstantNameAndTypeInfo(int constantPoolIndex) {
+        return (ConstantNameAndTypeInfo) this.constantInfoMap.get(constantPoolIndex);
+    }
 }

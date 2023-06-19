@@ -8,4 +8,5 @@ public abstract class ConstantInfo {
         this.tag = tag;
     }
 
+    public abstract ConstantInfoEnum getConstantInfoEnum();
 }

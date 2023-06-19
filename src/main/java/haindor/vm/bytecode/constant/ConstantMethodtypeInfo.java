@@ -15,7 +15,7 @@ CONSTANT_MethodType_info 结构的 tag 项的值为 CONSTANT_MethodType (16)。
  */
 public class ConstantMethodtypeInfo extends ConstantInfo {
 
-    public final String constantInfoName = ConstantInfoEnum.CONSTANT_MethodType.name();
+    public final ConstantInfoEnum constantInfoEnum = ConstantInfoEnum.CONSTANT_MethodType;
 
     /**
      * descriptor_index 描述符索引
@@ -35,5 +35,9 @@ public class ConstantMethodtypeInfo extends ConstantInfo {
         this.descriptorConstantUtf8Info = descriptorConstantUtf8Info;
     }
 
+    @Override
+    public  ConstantInfoEnum getConstantInfoEnum() {
+        return constantInfoEnum;
+    }
 }
 

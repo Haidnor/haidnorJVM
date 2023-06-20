@@ -35,34 +35,6 @@ import java.util.Iterator;
  */
 public class ConstantPool implements Cloneable, Node, Iterable<Constant> {
 
-    private static String escape(final String str) {
-        final int len = str.length();
-        final StringBuilder buf = new StringBuilder(len + 5);
-        final char[] ch = str.toCharArray();
-        for (int i = 0; i < len; i++) {
-            switch (ch[i]) {
-                case '\n':
-                    buf.append("\\n");
-                    break;
-                case '\r':
-                    buf.append("\\r");
-                    break;
-                case '\t':
-                    buf.append("\\t");
-                    break;
-                case '\b':
-                    buf.append("\\b");
-                    break;
-                case '"':
-                    buf.append("\\\"");
-                    break;
-                default:
-                    buf.append(ch[i]);
-            }
-        }
-        return buf.toString();
-    }
-
     private Constant[] constantPool;
 
     /**
@@ -98,6 +70,34 @@ public class ConstantPool implements Cloneable, Node, Iterable<Constant> {
                 i++;
             }
         }
+    }
+
+    private static String escape(final String str) {
+        final int len = str.length();
+        final StringBuilder buf = new StringBuilder(len + 5);
+        final char[] ch = str.toCharArray();
+        for (int i = 0; i < len; i++) {
+            switch (ch[i]) {
+                case '\n':
+                    buf.append("\\n");
+                    break;
+                case '\r':
+                    buf.append("\\r");
+                    break;
+                case '\t':
+                    buf.append("\\t");
+                    break;
+                case '\b':
+                    buf.append("\\b");
+                    break;
+                case '"':
+                    buf.append("\\\"");
+                    break;
+                default:
+                    buf.append(ch[i]);
+            }
+        }
+        return buf.toString();
     }
 
     /**
@@ -342,6 +342,13 @@ public class ConstantPool implements Cloneable, Node, Iterable<Constant> {
     }
 
     /**
+     * @param constantPool
+     */
+    public void setConstantPool(final Constant[] constantPool) {
+        this.constantPool = constantPool;
+    }
+
+    /**
      * Gets string from constant pool and bypass the indirection of 'ConstantClass' and 'ConstantString' objects. I.e. these classes have an index field that
      * points to another entry of the constant pool of type 'ConstantUtf8' which contains the real data.
      *
@@ -413,20 +420,13 @@ public class ConstantPool implements Cloneable, Node, Iterable<Constant> {
     }
 
     /**
-     * @param constantPool
-     */
-    public void setConstantPool(final Constant[] constantPool) {
-        this.constantPool = constantPool;
-    }
-
-    /**
      * @return String representation.
      */
     @Override
     public String toString() {
         final StringBuilder buf = new StringBuilder();
         for (int i = 1; i < constantPool.length; i++) {
-            buf.append(i).append(")").append(constantPool[i]).append("\n");
+            buf.append("    #").append(i).append(" ").append(constantPool[i]).append("\n");
         }
         return buf.toString();
     }

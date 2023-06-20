@@ -61,6 +61,21 @@ public abstract class Type {
     };
 
     private static final ThreadLocal<Integer> CONSUMED_CHARS = ThreadLocal.withInitial(() -> Integer.valueOf(0));
+    /**
+     * @deprecated (since 6.0) will be made private; do not access directly, use getter/setter
+     */
+    @Deprecated
+    protected byte type; // TODO should be final (and private)
+    /**
+     * @deprecated (since 6.0) will be made private; do not access directly, use getter/setter
+     */
+    @Deprecated
+    protected String signature; // signature for the type TODO should be private
+
+    protected Type(final byte type, final String signature) {
+        this.type = type;
+        this.signature = signature;
+    }
 
     // int consumed_chars=0; // Remember position in string, see getArgumentTypes
     static int consumed(final int coded) {
@@ -295,23 +310,6 @@ public abstract class Type {
     }
 
     /**
-     * @deprecated (since 6.0) will be made private; do not access directly, use getter/setter
-     */
-    @Deprecated
-    protected byte type; // TODO should be final (and private)
-
-    /**
-     * @deprecated (since 6.0) will be made private; do not access directly, use getter/setter
-     */
-    @Deprecated
-    protected String signature; // signature for the type TODO should be private
-
-    protected Type(final byte type, final String signature) {
-        this.type = type;
-        this.signature = signature;
-    }
-
-    /**
      * @return whether the Types are equal
      */
     @Override
@@ -332,6 +330,14 @@ public abstract class Type {
      */
     public String getSignature() {
         return signature;
+    }
+
+    /*
+     * Currently only used by the ArrayType constructor. The signature has a complicated dependency on other parameter so
+     * it's tricky to do it in a call to the super ctor.
+     */
+    void setSignature(final String signature) {
+        this.signature = signature;
     }
 
     /**
@@ -375,14 +381,6 @@ public abstract class Type {
             return Type.INT;
         }
         return this;
-    }
-
-    /*
-     * Currently only used by the ArrayType constructor. The signature has a complicated dependency on other parameter so
-     * it's tricky to do it in a call to the super ctor.
-     */
-    void setSignature(final String signature) {
-        this.signature = signature;
     }
 
     /**

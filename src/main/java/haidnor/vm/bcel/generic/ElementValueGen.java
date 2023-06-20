@@ -52,6 +52,21 @@ public abstract class ElementValueGen {
     public static final int PRIMITIVE_SHORT = 'S';
 
     public static final int PRIMITIVE_BOOLEAN = 'Z';
+    /**
+     * @deprecated (since 6.0) will be made private and final; do not access directly, use getter
+     */
+    @Deprecated
+    protected int type;
+    /**
+     * @deprecated (since 6.0) will be made private and final; do not access directly, use getter
+     */
+    @Deprecated
+    protected ConstantPoolGen cpGen;
+
+    protected ElementValueGen(final int type, final ConstantPoolGen cpGen) {
+        this.type = type;
+        this.cpGen = cpGen;
+    }
 
     /**
      * Creates an (modifiable) ElementValueGen copy of an (immutable) ElementValue - constant pool is assumed correct.
@@ -121,23 +136,6 @@ public abstract class ElementValueGen {
             default:
                 throw new IllegalArgumentException("Unexpected element value kind in annotation: " + type);
         }
-    }
-
-    /**
-     * @deprecated (since 6.0) will be made private and final; do not access directly, use getter
-     */
-    @Deprecated
-    protected int type;
-
-    /**
-     * @deprecated (since 6.0) will be made private and final; do not access directly, use getter
-     */
-    @Deprecated
-    protected ConstantPoolGen cpGen;
-
-    protected ElementValueGen(final int type, final ConstantPoolGen cpGen) {
-        this.type = type;
-        this.cpGen = cpGen;
     }
 
     public abstract void dump(DataOutputStream dos) throws IOException;

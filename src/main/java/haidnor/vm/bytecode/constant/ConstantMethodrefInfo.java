@@ -23,9 +23,6 @@ public class ConstantMethodrefInfo extends ConstantInfo {
      * CONSTANT_Methodref_info 结构的 class_index 项必须是类类型，而不是接口类型。
      */
     public final int classIndex;
-
-    public ConstantClassInfo constantClassInfo;
-
     /**
      * name_and_type_index 项的值必须是 constant_pool 表中的有效索引。
      * 该索引处的 constant_pool 条目必须是 CONSTANT_NameAndType_info 结构（§4.4.6）。
@@ -34,7 +31,7 @@ public class ConstantMethodrefInfo extends ConstantInfo {
      * 如果 CONSTANT_Methodref_info 结构的方法名称以“ < ”（“ \u003c ”）开头，则该名称必须是特殊名称 <init> ，表示实例初始化方法（§2.9）。这种方法的返回类型必须是 void 。
      */
     public final int nameAndTypeIndex;
-
+    public ConstantClassInfo constantClassInfo;
     public ConstantNameAndTypeInfo constantNameAndTypeInfo;
 
     public ConstantMethodrefInfo(int classIndex, int nameAndTypeIndex) {
@@ -52,7 +49,7 @@ public class ConstantMethodrefInfo extends ConstantInfo {
     }
 
     @Override
-    public  ConstantInfoEnum getConstantInfoEnum() {
+    public ConstantInfoEnum getConstantInfoEnum() {
         return constantInfoEnum;
     }
 }

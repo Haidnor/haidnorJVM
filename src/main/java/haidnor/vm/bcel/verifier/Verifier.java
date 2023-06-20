@@ -48,6 +48,36 @@ public class Verifier {
     static final String BANNER = NAME + "\nhttps://commons.apache.org/bcel\n";
 
     static final Verifier[] EMPTY_ARRAY = {};
+    /**
+     * The name of the class this verifier operates on.
+     */
+    private final String className;
+    /**
+     * The Pass3aVerifiers for this Verifier instance. Key: Interned string specifying the method number.
+     */
+    private final Map<String, Pass3aVerifier> p3avs = new HashMap<>();
+    /**
+     * The Pass3bVerifiers for this Verifier instance. Key: Interned string specifying the method number.
+     */
+    private final Map<String, Pass3bVerifier> p3bvs = new HashMap<>();
+    /**
+     * A Pass1Verifier for this Verifier instance.
+     */
+    private Pass1Verifier p1v;
+
+    /**
+     * A Pass2Verifier for this Verifier instance.
+     */
+    private Pass2Verifier p2v;
+
+    /**
+     * Instantiation is done by the VerifierFactory.
+     *
+     * @see VerifierFactory
+     */
+    Verifier(final String fullyQualifiedClassName) {
+        className = fullyQualifiedClassName;
+    }
 
     /**
      * Verifies class files. This is a simple demonstration of how the API of BCEL's class file verifier "JustIce" may be
@@ -103,40 +133,6 @@ public class Verifier {
         System.out.println("\n");
         // avoid swapping.
         verifier.flush();
-    }
-
-    /**
-     * The name of the class this verifier operates on.
-     */
-    private final String className;
-
-    /**
-     * A Pass1Verifier for this Verifier instance.
-     */
-    private Pass1Verifier p1v;
-
-    /**
-     * A Pass2Verifier for this Verifier instance.
-     */
-    private Pass2Verifier p2v;
-
-    /**
-     * The Pass3aVerifiers for this Verifier instance. Key: Interned string specifying the method number.
-     */
-    private final Map<String, Pass3aVerifier> p3avs = new HashMap<>();
-
-    /**
-     * The Pass3bVerifiers for this Verifier instance. Key: Interned string specifying the method number.
-     */
-    private final Map<String, Pass3bVerifier> p3bvs = new HashMap<>();
-
-    /**
-     * Instantiation is done by the VerifierFactory.
-     *
-     * @see VerifierFactory
-     */
-    Verifier(final String fullyQualifiedClassName) {
-        className = fullyQualifiedClassName;
     }
 
     /**

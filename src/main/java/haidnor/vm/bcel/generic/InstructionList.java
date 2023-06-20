@@ -41,42 +41,10 @@ import java.util.*;
  */
 public class InstructionList implements Iterable<InstructionHandle> {
 
-    /**
-     * Find the target instruction (handle) that corresponds to the given target position (byte code offset).
-     *
-     * @param ihs    array of instruction handles, i.e. il.getInstructionHandles()
-     * @param pos    array of positions corresponding to ihs, i.e. il.getInstructionPositions()
-     * @param count  length of arrays
-     * @param target target position to search for
-     * @return target position's instruction handle if available
-     */
-    public static InstructionHandle findHandle(final InstructionHandle[] ihs, final int[] pos, final int count, final int target) {
-        int l = 0;
-        int r = count - 1;
-        /*
-         * Do a binary search since the pos array is orderd.
-         */
-        do {
-            final int i = l + r >>> 1;
-            final int j = pos[i];
-            if (j == target) {
-                return ihs[i];
-            }
-            if (target < j) {
-                r = i - 1;
-            } else {
-                l = i + 1;
-            }
-        } while (l <= r);
-        return null;
-    }
-
     private InstructionHandle start;
     private InstructionHandle end;
     private int length; // number of elements in list
-
     private int[] bytePositions; // byte code offsets corresponding to instructions
-
     private List<InstructionListObserver> observers;
 
     /**
@@ -179,6 +147,36 @@ public class InstructionList implements Iterable<InstructionHandle> {
      */
     public InstructionList(final Instruction i) {
         append(i);
+    }
+
+    /**
+     * Find the target instruction (handle) that corresponds to the given target position (byte code offset).
+     *
+     * @param ihs    array of instruction handles, i.e. il.getInstructionHandles()
+     * @param pos    array of positions corresponding to ihs, i.e. il.getInstructionPositions()
+     * @param count  length of arrays
+     * @param target target position to search for
+     * @return target position's instruction handle if available
+     */
+    public static InstructionHandle findHandle(final InstructionHandle[] ihs, final int[] pos, final int count, final int target) {
+        int l = 0;
+        int r = count - 1;
+        /*
+         * Do a binary search since the pos array is orderd.
+         */
+        do {
+            final int i = l + r >>> 1;
+            final int j = pos[i];
+            if (j == target) {
+                return ihs[i];
+            }
+            if (target < j) {
+                r = i - 1;
+            } else {
+                l = i + 1;
+            }
+        } while (l <= r);
+        return null;
     }
 
     /**

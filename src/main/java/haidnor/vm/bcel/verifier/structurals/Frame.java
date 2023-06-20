@@ -30,28 +30,10 @@ public class Frame {
      */
     @Deprecated
     protected static UninitializedObjectType _this;
-
-    /**
-     * @return the _this
-     * @since 6.0
-     */
-    public static UninitializedObjectType getThis() {
-        return _this;
-    }
-
-    /**
-     * @param _this the _this to set
-     * @since 6.0
-     */
-    public static void setThis(final UninitializedObjectType _this) {
-        Frame._this = _this;
-    }
-
     /**
      *
      */
     private final LocalVariables locals;
-
     /**
      *
      */
@@ -71,6 +53,22 @@ public class Frame {
     public Frame(final LocalVariables locals, final OperandStack stack) {
         this.locals = locals;
         this.stack = stack;
+    }
+
+    /**
+     * @return the _this
+     * @since 6.0
+     */
+    public static UninitializedObjectType getThis() {
+        return _this;
+    }
+
+    /**
+     * @param _this the _this to set
+     * @since 6.0
+     */
+    public static void setThis(final UninitializedObjectType _this) {
+        Frame._this = _this;
     }
 
     /**

@@ -23,10 +23,6 @@ public class ConstantFieldrefInfo extends ConstantInfo {
      * CONSTANT_Fieldref_info 结构的 class_index 项可以是类类型或接口类型。
      */
     public final int classIndex;
-
-    public ConstantClassInfo constantClassInfo;
-
-
     /**
      * name_and_type_index 项的值必须是 constant_pool 表中的有效索引。
      * 该索引处的 constant_pool 条目必须是 CONSTANT_NameAndType_info 结构（§4.4.6）。
@@ -35,7 +31,7 @@ public class ConstantFieldrefInfo extends ConstantInfo {
      * 在 CONSTANT_Fieldref_info 中，指示的描述符必须是字段描述符（§4.3.2）。否则，指示的描述符必须是方法描述符（§4.3.3）。
      */
     public final int nameAndTypeIndex;
-
+    public ConstantClassInfo constantClassInfo;
     public ConstantNameAndTypeInfo constantNameAndTypeInfo;
 
     public ConstantFieldrefInfo(int classIndex, int nameAndTypeIndex) {
@@ -53,7 +49,7 @@ public class ConstantFieldrefInfo extends ConstantInfo {
     }
 
     @Override
-    public  ConstantInfoEnum getConstantInfoEnum() {
+    public ConstantInfoEnum getConstantInfoEnum() {
         return constantInfoEnum;
     }
 }

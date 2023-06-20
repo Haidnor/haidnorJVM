@@ -156,6 +156,10 @@ public class LocalVariableTable extends Attribute implements Iterable<LocalVaria
         return localVariableTable;
     }
 
+    public final void setLocalVariableTable(final LocalVariable[] localVariableTable) {
+        this.localVariableTable = localVariableTable;
+    }
+
     public final int getTableLength() {
         return localVariableTable == null ? 0 : localVariableTable.length;
     }
@@ -163,10 +167,6 @@ public class LocalVariableTable extends Attribute implements Iterable<LocalVaria
     @Override
     public Iterator<LocalVariable> iterator() {
         return Stream.of(localVariableTable).iterator();
-    }
-
-    public final void setLocalVariableTable(final LocalVariable[] localVariableTable) {
-        this.localVariableTable = localVariableTable;
     }
 
     /**

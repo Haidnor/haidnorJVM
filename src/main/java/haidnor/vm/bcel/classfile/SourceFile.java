@@ -110,17 +110,17 @@ public final class SourceFile extends Attribute {
     }
 
     /**
-     * @return Source file name.
-     */
-    public String getSourceFileName() {
-        return super.getConstantPool().getConstantUtf8(sourceFileIndex).getBytes();
-    }
-
-    /**
      * @param sourceFileIndex
      */
     public void setSourceFileIndex(final int sourceFileIndex) {
         this.sourceFileIndex = sourceFileIndex;
+    }
+
+    /**
+     * @return Source file name.
+     */
+    public String getSourceFileName() {
+        return super.getConstantPool().getConstantUtf8(sourceFileIndex).getBytes();
     }
 
     /**

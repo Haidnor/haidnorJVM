@@ -130,19 +130,19 @@ public final class ModulePackages extends Attribute {
     }
 
     /**
+     * @param packageIndexTable the list of package indexes Also redefines number_of_packages according to table length.
+     */
+    public void setPackageIndexTable(final int[] packageIndexTable) {
+        this.packageIndexTable = packageIndexTable != null ? packageIndexTable : ArrayUtils.EMPTY_INT_ARRAY;
+    }
+
+    /**
      * @return string array of package names
      */
     public String[] getPackageNames() {
         final String[] names = new String[packageIndexTable.length];
         Arrays.setAll(names, i -> Utility.pathToPackage(super.getConstantPool().getConstantString(packageIndexTable[i], Const.CONSTANT_Package)));
         return names;
-    }
-
-    /**
-     * @param packageIndexTable the list of package indexes Also redefines number_of_packages according to table length.
-     */
-    public void setPackageIndexTable(final int[] packageIndexTable) {
-        this.packageIndexTable = packageIndexTable != null ? packageIndexTable : ArrayUtils.EMPTY_INT_ARRAY;
     }
 
     /**

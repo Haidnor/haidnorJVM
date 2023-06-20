@@ -127,6 +127,13 @@ public final class LineNumberTable extends Attribute implements Iterable<LineNum
     }
 
     /**
+     * @param lineNumberTable the line number entries for this table
+     */
+    public void setLineNumberTable(final LineNumber[] lineNumberTable) {
+        this.lineNumberTable = lineNumberTable;
+    }
+
+    /**
      * Map byte code positions to source code lines.
      *
      * @param pos byte code offset
@@ -179,13 +186,6 @@ public final class LineNumberTable extends Attribute implements Iterable<LineNum
     @Override
     public Iterator<LineNumber> iterator() {
         return Stream.of(lineNumberTable).iterator();
-    }
-
-    /**
-     * @param lineNumberTable the line number entries for this table
-     */
-    public void setLineNumberTable(final LineNumber[] lineNumberTable) {
-        this.lineNumberTable = lineNumberTable;
     }
 
     /**

@@ -28,6 +28,38 @@ import java.util.List;
 public class AnnotationEntryGen {
 
     static final AnnotationEntryGen[] EMPTY_ARRAY = {};
+    private final ConstantPoolGen cpool;
+    private int typeIndex;
+    private List<ElementValuePairGen> evs;
+    private boolean isRuntimeVisible;
+
+    /**
+     * Here we are taking a fixed annotation of type Annotation and building a modifiable AnnotationGen object. If the pool
+     * passed in is for a different class file, then copyPoolEntries should have been passed as true as that will force us
+     * to do a deep copy of the annotation and move the cpool entries across. We need to copy the type and the element name
+     * value pairs and the visibility.
+     */
+    public AnnotationEntryGen(final AnnotationEntry a, final ConstantPoolGen cpool, final boolean copyPoolEntries) {
+        this.cpool = cpool;
+        if (copyPoolEntries) {
+            typeIndex = cpool.addUtf8(a.getAnnotationType());
+        } else {
+            typeIndex = a.getAnnotationTypeIndex();
+        }
+        isRuntimeVisible = a.isRuntimeVisible();
+        evs = copyValues(a.getElementValuePairs(), cpool, copyPoolEntries);
+    }
+
+    private AnnotationEntryGen(final ConstantPoolGen cpool) {
+        this.cpool = cpool;
+    }
+
+    public AnnotationEntryGen(final ObjectType type, final List<ElementValuePairGen> elements, final boolean vis, final ConstantPoolGen cpool) {
+        this.cpool = cpool;
+        this.typeIndex = cpool.addUtf8(type.getSignature());
+        evs = elements;
+        isRuntimeVisible = vis;
+    }
 
     /**
      * Converts a list of AnnotationGen objects into a set of attributes that can be attached to the class file.
@@ -192,42 +224,6 @@ public class AnnotationEntryGen {
         }
         a.isRuntimeVisible(b);
         return a;
-    }
-
-    private int typeIndex;
-
-    private List<ElementValuePairGen> evs;
-
-    private final ConstantPoolGen cpool;
-
-    private boolean isRuntimeVisible;
-
-    /**
-     * Here we are taking a fixed annotation of type Annotation and building a modifiable AnnotationGen object. If the pool
-     * passed in is for a different class file, then copyPoolEntries should have been passed as true as that will force us
-     * to do a deep copy of the annotation and move the cpool entries across. We need to copy the type and the element name
-     * value pairs and the visibility.
-     */
-    public AnnotationEntryGen(final AnnotationEntry a, final ConstantPoolGen cpool, final boolean copyPoolEntries) {
-        this.cpool = cpool;
-        if (copyPoolEntries) {
-            typeIndex = cpool.addUtf8(a.getAnnotationType());
-        } else {
-            typeIndex = a.getAnnotationTypeIndex();
-        }
-        isRuntimeVisible = a.isRuntimeVisible();
-        evs = copyValues(a.getElementValuePairs(), cpool, copyPoolEntries);
-    }
-
-    private AnnotationEntryGen(final ConstantPoolGen cpool) {
-        this.cpool = cpool;
-    }
-
-    public AnnotationEntryGen(final ObjectType type, final List<ElementValuePairGen> elements, final boolean vis, final ConstantPoolGen cpool) {
-        this.cpool = cpool;
-        this.typeIndex = cpool.addUtf8(type.getSignature());
-        evs = elements;
-        isRuntimeVisible = vis;
     }
 
     public void addElementNameValuePair(final ElementValuePairGen evp) {

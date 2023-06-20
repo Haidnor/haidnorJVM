@@ -127,16 +127,16 @@ public final class InnerClasses extends Attribute implements Iterable<InnerClass
         return innerClasses;
     }
 
-    @Override
-    public Iterator<InnerClass> iterator() {
-        return Stream.of(innerClasses).iterator();
-    }
-
     /**
      * @param innerClasses the array of inner classes
      */
     public void setInnerClasses(final InnerClass[] innerClasses) {
         this.innerClasses = innerClasses != null ? innerClasses : EMPTY_INNER_CLASSE_ARRAY;
+    }
+
+    @Override
+    public Iterator<InnerClass> iterator() {
+        return Stream.of(innerClasses).iterator();
     }
 
     /**

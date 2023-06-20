@@ -50,10 +50,8 @@ import java.util.Hashtable;
 @Deprecated
 public class ClassLoader extends java.lang.ClassLoader {
 
-    private static final String BCEL_TOKEN = "$$BCEL$$";
-
     public static final String[] DEFAULT_IGNORED_PACKAGES = {"java.", "javax.", "sun."};
-
+    private static final String BCEL_TOKEN = "$$BCEL$$";
     private final Hashtable<String, Class<?>> classes = new Hashtable<>();
     // Hashtable is synchronized thus thread-safe
     private final String[] ignoredPackages;

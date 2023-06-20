@@ -115,20 +115,6 @@ public class BootstrapMethod implements Cloneable {
     }
 
     /**
-     * @return index into constant_pool of bootstrap_method
-     */
-    public int getBootstrapMethodRef() {
-        return bootstrapMethodRef;
-    }
-
-    /**
-     * @return count of number of boostrap arguments
-     */
-    public int getNumBootstrapArguments() {
-        return bootstrapArguments.length;
-    }
-
-    /**
      * @param bootstrapArguments int[] indices into constant_pool of CONSTANT_[type]_info
      */
     public void setBootstrapArguments(final int[] bootstrapArguments) {
@@ -136,10 +122,24 @@ public class BootstrapMethod implements Cloneable {
     }
 
     /**
+     * @return index into constant_pool of bootstrap_method
+     */
+    public int getBootstrapMethodRef() {
+        return bootstrapMethodRef;
+    }
+
+    /**
      * @param bootstrapMethodRef int index into constant_pool of CONSTANT_MethodHandle
      */
     public void setBootstrapMethodRef(final int bootstrapMethodRef) {
         this.bootstrapMethodRef = bootstrapMethodRef;
+    }
+
+    /**
+     * @return count of number of boostrap arguments
+     */
+    public int getNumBootstrapArguments() {
+        return bootstrapArguments.length;
     }
 
     /**

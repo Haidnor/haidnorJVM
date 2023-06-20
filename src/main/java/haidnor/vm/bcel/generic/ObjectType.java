@@ -26,17 +26,6 @@ import haidnor.vm.bcel.classfile.Utility;
  */
 public class ObjectType extends ReferenceType {
 
-    /**
-     * Constructs a new instance.
-     *
-     * @param className fully qualified class name, e.g. java.lang.String
-     * @return a new instance.
-     * @since 6.0
-     */
-    public static ObjectType getInstance(final String className) {
-        return new ObjectType(className);
-    }
-
     private final String className; // Class name of type
 
     /**
@@ -47,6 +36,17 @@ public class ObjectType extends ReferenceType {
     public ObjectType(final String className) {
         super(Const.T_REFERENCE, "L" + Utility.packageToPath(className) + ";");
         this.className = Utility.pathToPackage(className);
+    }
+
+    /**
+     * Constructs a new instance.
+     *
+     * @param className fully qualified class name, e.g. java.lang.String
+     * @return a new instance.
+     * @since 6.0
+     */
+    public static ObjectType getInstance(final String className) {
+        return new ObjectType(className);
     }
 
     /**

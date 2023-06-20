@@ -32,9 +32,9 @@ final class AttributeHTML implements Closeable {
 
     private final String className; // name of current class
     private final PrintWriter printWriter; // file to write to
-    private int attrCount;
     private final ConstantHTML constantHtml;
     private final ConstantPool constantPool;
+    private int attrCount;
 
     AttributeHTML(final String dir, final String className, final ConstantPool constantPool, final ConstantHTML constantHtml, final Charset charset)
             throws FileNotFoundException, UnsupportedEncodingException {

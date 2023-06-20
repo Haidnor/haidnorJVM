@@ -36,7 +36,10 @@ public final class Field extends FieldOrMethod {
      * @since 6.6.0
      */
     public static final Field[] EMPTY_ARRAY = {};
-
+    /**
+     * Empty array.
+     */
+    static final Field[] EMPTY_FIELD_ARRAY = {};
     private static BCELComparator bcelComparator = new BCELComparator() {
 
         @Override
@@ -52,25 +55,6 @@ public final class Field extends FieldOrMethod {
             return THIS.getSignature().hashCode() ^ THIS.getName().hashCode();
         }
     };
-
-    /**
-     * Empty array.
-     */
-    static final Field[] EMPTY_FIELD_ARRAY = {};
-
-    /**
-     * @return Comparison strategy object
-     */
-    public static BCELComparator getComparator() {
-        return bcelComparator;
-    }
-
-    /**
-     * @param comparator Comparison strategy object
-     */
-    public static void setComparator(final BCELComparator comparator) {
-        bcelComparator = comparator;
-    }
 
     /**
      * Construct object from file stream.
@@ -100,6 +84,20 @@ public final class Field extends FieldOrMethod {
      */
     public Field(final int accessFlags, final int nameIndex, final int signatureIndex, final Attribute[] attributes, final ConstantPool constantPool) {
         super(accessFlags, nameIndex, signatureIndex, attributes, constantPool);
+    }
+
+    /**
+     * @return Comparison strategy object
+     */
+    public static BCELComparator getComparator() {
+        return bcelComparator;
+    }
+
+    /**
+     * @param comparator Comparison strategy object
+     */
+    public static void setComparator(final BCELComparator comparator) {
+        bcelComparator = comparator;
     }
 
     /**

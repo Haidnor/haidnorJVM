@@ -52,17 +52,17 @@ public enum FieldAccessFlagEnum {
      */
     ACC_ENUM(0x4000);
 
-    public final int value;
-
-    FieldAccessFlagEnum(int value) {
-        this.value = value;
-    }
-
     public static final Map<Integer, FieldAccessFlagEnum> enumMap;
 
     static {
         enumMap = Arrays.stream(FieldAccessFlagEnum.values())
                 .collect(Collectors.toMap(FieldAccessFlagEnum -> FieldAccessFlagEnum.value, Function.identity()));
+    }
+
+    public final int value;
+
+    FieldAccessFlagEnum(int value) {
+        this.value = value;
     }
 
 }

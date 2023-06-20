@@ -99,6 +99,31 @@ public abstract class LocalVariableInstruction extends Instruction implements Ty
     }
 
     /**
+     * Set the local variable index. also updates opcode and length TODO Why?
+     *
+     * @see #setIndexOnly(int)
+     */
+    @Override
+    public void setIndex(final int n) { // TODO could be package-protected?
+        if (n < 0 || n > Const.MAX_SHORT) {
+            throw new ClassGenException("Illegal value: " + n);
+        }
+        this.n = n;
+        // Cannot be < 0 as this is checked above
+        if (n <= 3) { // Use more compact instruction xLOAD_n
+            super.setOpcode((short) (cTag + n));
+            super.setLength(1);
+        } else {
+            super.setOpcode(canonTag);
+            if (wide()) {
+                super.setLength(4);
+            } else {
+                super.setLength(2);
+            }
+        }
+    }
+
+    /**
      * Returns the type associated with the instruction - in case of ALOAD or ASTORE Type.OBJECT is returned. This is just a
      * bit incorrect, because ALOAD and ASTORE may work on every ReferenceType (including Type.NULL) and ASTORE may even
      * work on a ReturnaddressType .
@@ -152,31 +177,6 @@ public abstract class LocalVariableInstruction extends Instruction implements Ty
                     n = (opcode - Const.ISTORE_0) % 4;
                 }
                 super.setLength(1);
-            }
-        }
-    }
-
-    /**
-     * Set the local variable index. also updates opcode and length TODO Why?
-     *
-     * @see #setIndexOnly(int)
-     */
-    @Override
-    public void setIndex(final int n) { // TODO could be package-protected?
-        if (n < 0 || n > Const.MAX_SHORT) {
-            throw new ClassGenException("Illegal value: " + n);
-        }
-        this.n = n;
-        // Cannot be < 0 as this is checked above
-        if (n <= 3) { // Use more compact instruction xLOAD_n
-            super.setOpcode((short) (cTag + n));
-            super.setLength(1);
-        } else {
-            super.setOpcode(canonTag);
-            if (wide()) {
-                super.setLength(4);
-            } else {
-                super.setLength(2);
             }
         }
     }

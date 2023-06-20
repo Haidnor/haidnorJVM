@@ -34,16 +34,15 @@ import org.apache.commons.lang3.ArrayUtils;
  */
 public final class Pass1Verifier extends PassVerifier {
     /**
+     * The Verifier that created this.
+     */
+    private final Verifier verifier;
+    /**
      * DON'T USE THIS EVEN PRIVATELY! USE getJavaClass() INSTEAD.
      *
      * @see #getJavaClass()
      */
     private JavaClass javaClass;
-
-    /**
-     * The Verifier that created this.
-     */
-    private final Verifier verifier;
 
     /**
      * Should only be instantiated by a Verifier.

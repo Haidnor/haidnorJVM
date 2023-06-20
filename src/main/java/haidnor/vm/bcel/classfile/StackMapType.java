@@ -101,6 +101,13 @@ public final class StackMapType implements Cloneable {
     }
 
     /**
+     * @param constantPool Constant pool to be used for this object.
+     */
+    public void setConstantPool(final ConstantPool constantPool) {
+        this.constantPool = constantPool;
+    }
+
+    /**
      * @return index to constant pool if type == ITEM_Object, or offset in byte code, if type == ITEM_NewObject, and -1
      * otherwise
      */
@@ -108,8 +115,16 @@ public final class StackMapType implements Cloneable {
         return index;
     }
 
+    public void setIndex(final int index) {
+        this.index = index;
+    }
+
     public byte getType() {
         return type;
+    }
+
+    public void setType(final byte type) {
+        this.type = checkType(type);
     }
 
     /**
@@ -130,21 +145,6 @@ public final class StackMapType implements Cloneable {
             return ", offset=" + index;
         }
         return "";
-    }
-
-    /**
-     * @param constantPool Constant pool to be used for this object.
-     */
-    public void setConstantPool(final ConstantPool constantPool) {
-        this.constantPool = constantPool;
-    }
-
-    public void setIndex(final int index) {
-        this.index = index;
-    }
-
-    public void setType(final byte type) {
-        this.type = checkType(type);
     }
 
     /**

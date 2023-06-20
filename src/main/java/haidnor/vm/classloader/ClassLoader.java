@@ -14,6 +14,65 @@ import java.util.ArrayList;
 @Slf4j
 public class ClassLoader {
 
+    private static void parseLineNumberTable(DataInputStream stream) throws IOException {
+        // attr name index
+        int attrNameIndex = stream.readUnsignedShort();      // u2
+        // attr len
+        int attrLen = stream.readUnsignedShort();            // u2
+        // table length
+        int tableLength = stream.readUnsignedShort();        // u2
+
+        log.info("\t\t\t lineNumberTable: " + ", name index: " + attrNameIndex + ", attr len: " + attrLen + ", table len: " + tableLength);
+
+        // table
+        for (int l = 0; l < tableLength; l++) {
+            // start pc
+            int startPc = stream.readUnsignedShort();
+            // line number
+            int lineNumber = stream.readUnsignedShort();
+            log.info("\t\t\t\t第 " + l + " 个属性: " + ", start pc: " + startPc + ", line number: " + lineNumber);
+        }
+    }
+
+    private static void parseLocalVariableTable(DataInputStream stream) throws IOException {
+        // attr name index
+        int attrNameIndex = stream.readUnsignedShort(); // u2
+
+        // attr len
+        int attrLength = stream.readUnsignedShort(); // u2
+
+        // table length
+        int tableLength = stream.readUnsignedShort(); // u2
+
+        log.info("\t\t\t localVariableTable: " + ", name index: " + attrNameIndex + ", attr len: " + attrLength + ", table len: " + tableLength);
+
+        // table
+        for (int i = 0; i < tableLength; i++) {
+            // start pc
+            int startPc = stream.readUnsignedShort();
+
+            // length
+            int length = stream.readUnsignedShort();
+
+            // name index
+            int nameIndex = stream.readUnsignedShort();
+
+            // descriptorIndex
+            int descriptorIndex = stream.readUnsignedShort();
+
+            //index
+            int index = stream.readUnsignedShort();
+
+            log.info("\t\t\t\t第 " + i + " 个属性: "
+                    + ", start pc: " + startPc
+                    + ", length: " + length
+                    + ", name index: " + nameIndex
+                    + ", descriptor index: " + descriptorIndex
+                    + ", index: " + index
+            );
+        }
+    }
+
     public ClassFile readClassFile(String path) throws IOException {
         ClassFile classFile = new ClassFile();
         DataInputStream stream = InputStreamUtil.getDataInputStream(path);
@@ -107,65 +166,6 @@ public class ClassLoader {
                     }
                 }
             }
-        }
-    }
-
-    private static void parseLineNumberTable(DataInputStream stream) throws IOException {
-        // attr name index
-        int attrNameIndex = stream.readUnsignedShort();      // u2
-        // attr len
-        int attrLen = stream.readUnsignedShort();            // u2
-        // table length
-        int tableLength = stream.readUnsignedShort();        // u2
-
-        log.info("\t\t\t lineNumberTable: " + ", name index: " + attrNameIndex + ", attr len: " + attrLen + ", table len: " + tableLength);
-
-        // table
-        for (int l = 0; l < tableLength; l++) {
-            // start pc
-            int startPc = stream.readUnsignedShort();
-            // line number
-            int lineNumber = stream.readUnsignedShort();
-            log.info("\t\t\t\t第 " + l + " 个属性: " + ", start pc: " + startPc + ", line number: " + lineNumber);
-        }
-    }
-
-    private static void parseLocalVariableTable(DataInputStream stream) throws IOException {
-        // attr name index
-        int attrNameIndex = stream.readUnsignedShort(); // u2
-
-        // attr len
-        int attrLength = stream.readUnsignedShort(); // u2
-
-        // table length
-        int tableLength = stream.readUnsignedShort(); // u2
-
-        log.info("\t\t\t localVariableTable: " + ", name index: " + attrNameIndex + ", attr len: " + attrLength + ", table len: " + tableLength);
-
-        // table
-        for (int i = 0; i < tableLength; i++) {
-            // start pc
-            int startPc = stream.readUnsignedShort();
-
-            // length
-            int length = stream.readUnsignedShort();
-
-            // name index
-            int nameIndex = stream.readUnsignedShort();
-
-            // descriptorIndex
-            int descriptorIndex = stream.readUnsignedShort();
-
-            //index
-            int index = stream.readUnsignedShort();
-
-            log.info("\t\t\t\t第 " + i + " 个属性: "
-                    + ", start pc: " + startPc
-                    + ", length: " + length
-                    + ", name index: " + nameIndex
-                    + ", descriptor index: " + descriptorIndex
-                    + ", index: " + index
-            );
         }
     }
 

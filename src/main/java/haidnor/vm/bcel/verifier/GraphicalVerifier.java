@@ -29,18 +29,6 @@ public class GraphicalVerifier {
     private static final boolean packFrame = false;
 
     /**
-     * Main method.
-     */
-    public static void main(final String[] args) {
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (final Exception e) {
-            e.printStackTrace();
-        }
-        new GraphicalVerifier();
-    }
-
-    /**
      * Constructor.
      */
     public GraphicalVerifier() {
@@ -66,5 +54,17 @@ public class GraphicalVerifier {
         frame.getClassNamesJList().setModel(new VerifierFactoryListModel());
         VerifierFactory.getVerifier(Type.OBJECT.getClassName()); // Fill list with java.lang.Object
         frame.getClassNamesJList().setSelectedIndex(0); // default, will verify java.lang.Object
+    }
+
+    /**
+     * Main method.
+     */
+    public static void main(final String[] args) {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (final Exception e) {
+            e.printStackTrace();
+        }
+        new GraphicalVerifier();
     }
 }

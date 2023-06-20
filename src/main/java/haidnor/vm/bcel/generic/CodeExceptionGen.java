@@ -79,6 +79,13 @@ public final class CodeExceptionGen implements InstructionTargeter, Cloneable {
     }
 
     /**
+     * Sets the type of the Exception to catch. Set 'null' for ANY.
+     */
+    public void setCatchType(final ObjectType catchType) {
+        this.catchType = catchType;
+    }
+
+    /**
      * Get CodeException object.<BR>
      * <p>
      * This relies on that the instruction list has already been dumped to byte code or that the 'setPositions' methods
@@ -98,27 +105,6 @@ public final class CodeExceptionGen implements InstructionTargeter, Cloneable {
         return endPc;
     }
 
-    /**
-     * @return start of handler
-     */
-    public InstructionHandle getHandlerPC() {
-        return handlerPc;
-    }
-
-    /**
-     * @return start of handled region (inclusive)
-     */
-    public InstructionHandle getStartPC() {
-        return startPc;
-    }
-
-    /**
-     * Sets the type of the Exception to catch. Set 'null' for ANY.
-     */
-    public void setCatchType(final ObjectType catchType) {
-        this.catchType = catchType;
-    }
-
     /*
      * Set end of handler
      *
@@ -129,6 +115,13 @@ public final class CodeExceptionGen implements InstructionTargeter, Cloneable {
         this.endPc = endPc;
     }
 
+    /**
+     * @return start of handler
+     */
+    public InstructionHandle getHandlerPC() {
+        return handlerPc;
+    }
+
     /*
      * Set handler code
      *
@@ -137,6 +130,13 @@ public final class CodeExceptionGen implements InstructionTargeter, Cloneable {
     public void setHandlerPC(final InstructionHandle handlerPc) { // TODO could be package-protected?
         BranchInstruction.notifyTarget(this.handlerPc, handlerPc, this);
         this.handlerPc = handlerPc;
+    }
+
+    /**
+     * @return start of handled region (inclusive)
+     */
+    public InstructionHandle getStartPC() {
+        return startPc;
     }
 
     /*

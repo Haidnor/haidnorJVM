@@ -52,94 +52,13 @@ public final class Pass3bVerifier extends PassVerifier {
      */
 
     /**
-     * An InstructionContextQueue is a utility class that holds (InstructionContext, ArrayList) pairs in a Queue data
-     * structure. This is used to hold information about InstructionContext objects externally --- i.e. that information is
-     * not saved inside the InstructionContext object itself. This is useful to save the execution path of the symbolic
-     * execution of the Pass3bVerifier - this is not information that belongs into the InstructionContext object itself.
-     * Only at "execute()"ing time, an InstructionContext object will get the current information we have about its symbolic
-     * execution predecessors.
-     */
-    private static final class InstructionContextQueue {
-        // The following two fields together represent the queue.
-        /**
-         * The first elements from pairs in the queue.
-         */
-        private final List<InstructionContext> ics = new Vector<>();
-        /**
-         * The second elements from pairs in the queue.
-         */
-        private final List<ArrayList<InstructionContext>> ecs = new Vector<>();
-
-        /**
-         * Adds an (InstructionContext, ExecutionChain) pair to this queue.
-         *
-         * @param ic             the InstructionContext
-         * @param executionChain the ExecutionChain
-         */
-        public void add(final InstructionContext ic, final ArrayList<InstructionContext> executionChain) {
-            ics.add(ic);
-            ecs.add(executionChain);
-        }
-
-        /**
-         * Gets a specific ExecutionChain from the queue.
-         *
-         * @param i the index of the item to be fetched
-         * @return the indicated ExecutionChain
-         */
-        public ArrayList<InstructionContext> getEC(final int i) {
-            return ecs.get(i);
-        }
-
-        /**
-         * Gets a specific InstructionContext from the queue.
-         *
-         * @param i the index of the item to be fetched
-         * @return the indicated InstructionContext
-         */
-        public InstructionContext getIC(final int i) {
-            return ics.get(i);
-        }
-
-        /**
-         * Tests if InstructionContext queue is empty.
-         *
-         * @return true if the InstructionContext queue is empty.
-         */
-        public boolean isEmpty() {
-            return ics.isEmpty();
-        }
-
-        /**
-         * Removes a specific (InstructionContext, ExecutionChain) pair from their respective queues.
-         *
-         * @param i the index of the items to be removed
-         */
-        public void remove(final int i) {
-            ics.remove(i);
-            ecs.remove(i);
-        }
-
-        /**
-         * Gets the size of the InstructionContext queue.
-         *
-         * @return the size of the InstructionQueue
-         */
-        public int size() {
-            return ics.size();
-        }
-    } // end Inner Class InstructionContextQueue
-
-    /**
      * In DEBUG mode, the verification algorithm is not randomized.
      */
     private static final boolean DEBUG = true;
-
     /**
      * The Verifier that created this.
      */
     private final Verifier myOwner;
-
     /**
      * The method number to verify.
      */
@@ -422,4 +341,83 @@ public final class Pass3bVerifier extends PassVerifier {
     public void invalidReturnTypeError(final Type returnedType, final MethodGen m) {
         throw new StructuralCodeConstraintException("Returned type " + returnedType + " does not match Method's return type " + m.getReturnType());
     }
+
+    /**
+     * An InstructionContextQueue is a utility class that holds (InstructionContext, ArrayList) pairs in a Queue data
+     * structure. This is used to hold information about InstructionContext objects externally --- i.e. that information is
+     * not saved inside the InstructionContext object itself. This is useful to save the execution path of the symbolic
+     * execution of the Pass3bVerifier - this is not information that belongs into the InstructionContext object itself.
+     * Only at "execute()"ing time, an InstructionContext object will get the current information we have about its symbolic
+     * execution predecessors.
+     */
+    private static final class InstructionContextQueue {
+        // The following two fields together represent the queue.
+        /**
+         * The first elements from pairs in the queue.
+         */
+        private final List<InstructionContext> ics = new Vector<>();
+        /**
+         * The second elements from pairs in the queue.
+         */
+        private final List<ArrayList<InstructionContext>> ecs = new Vector<>();
+
+        /**
+         * Adds an (InstructionContext, ExecutionChain) pair to this queue.
+         *
+         * @param ic             the InstructionContext
+         * @param executionChain the ExecutionChain
+         */
+        public void add(final InstructionContext ic, final ArrayList<InstructionContext> executionChain) {
+            ics.add(ic);
+            ecs.add(executionChain);
+        }
+
+        /**
+         * Gets a specific ExecutionChain from the queue.
+         *
+         * @param i the index of the item to be fetched
+         * @return the indicated ExecutionChain
+         */
+        public ArrayList<InstructionContext> getEC(final int i) {
+            return ecs.get(i);
+        }
+
+        /**
+         * Gets a specific InstructionContext from the queue.
+         *
+         * @param i the index of the item to be fetched
+         * @return the indicated InstructionContext
+         */
+        public InstructionContext getIC(final int i) {
+            return ics.get(i);
+        }
+
+        /**
+         * Tests if InstructionContext queue is empty.
+         *
+         * @return true if the InstructionContext queue is empty.
+         */
+        public boolean isEmpty() {
+            return ics.isEmpty();
+        }
+
+        /**
+         * Removes a specific (InstructionContext, ExecutionChain) pair from their respective queues.
+         *
+         * @param i the index of the items to be removed
+         */
+        public void remove(final int i) {
+            ics.remove(i);
+            ecs.remove(i);
+        }
+
+        /**
+         * Gets the size of the InstructionContext queue.
+         *
+         * @return the size of the InstructionQueue
+         */
+        public int size() {
+            return ics.size();
+        }
+    } // end Inner Class InstructionContextQueue
 }

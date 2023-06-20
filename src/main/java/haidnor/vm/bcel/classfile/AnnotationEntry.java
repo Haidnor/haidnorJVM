@@ -31,6 +31,16 @@ import java.util.stream.Stream;
 public class AnnotationEntry implements Node {
 
     public static final AnnotationEntry[] EMPTY_ARRAY = {};
+    private final int typeIndex;
+    private final ConstantPool constantPool;
+    private final boolean isRuntimeVisible;
+    private List<ElementValuePair> elementValuePairs;
+
+    public AnnotationEntry(final int typeIndex, final ConstantPool constantPool, final boolean isRuntimeVisible) {
+        this.typeIndex = typeIndex;
+        this.constantPool = constantPool;
+        this.isRuntimeVisible = isRuntimeVisible;
+    }
 
     public static AnnotationEntry[] createAnnotationEntries(final Attribute[] attrs) {
         // Find attributes that contain annotation data
@@ -56,20 +66,6 @@ public class AnnotationEntry implements Node {
                     .add(new ElementValuePair(input.readUnsignedShort(), ElementValue.readElementValue(input, constantPool), constantPool));
         }
         return annotationEntry;
-    }
-
-    private final int typeIndex;
-
-    private final ConstantPool constantPool;
-
-    private final boolean isRuntimeVisible;
-
-    private List<ElementValuePair> elementValuePairs;
-
-    public AnnotationEntry(final int typeIndex, final ConstantPool constantPool, final boolean isRuntimeVisible) {
-        this.typeIndex = typeIndex;
-        this.constantPool = constantPool;
-        this.isRuntimeVisible = isRuntimeVisible;
     }
 
     /**

@@ -108,17 +108,17 @@ public abstract class ConstantCP extends Constant {
     }
 
     /**
-     * @return Reference (index) to signature of the field.
-     */
-    public final int getNameAndTypeIndex() {
-        return name_and_type_index;
-    }
-
-    /**
      * @param classIndex points to Constant_class
      */
     public final void setClassIndex(final int classIndex) {
         this.class_index = classIndex;
+    }
+
+    /**
+     * @return Reference (index) to signature of the field.
+     */
+    public final int getNameAndTypeIndex() {
+        return name_and_type_index;
     }
 
     /**

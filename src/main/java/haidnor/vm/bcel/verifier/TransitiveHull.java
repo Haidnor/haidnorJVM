@@ -27,6 +27,17 @@ import haidnor.vm.bcel.classfile.Utility;
 public class TransitiveHull implements VerifierFactoryObserver {
 
     /**
+     * Used for indentation.
+     */
+    private int indent;
+
+    /**
+     * Not publicly instantiable.
+     */
+    private TransitiveHull() {
+    }
+
+    /**
      * This method implements a demonstration program of how to use the VerifierFactoryObserver. It transitively verifies
      * all class files encountered; this may take up a lot of time and, more notably, memory.
      */
@@ -44,17 +55,6 @@ public class TransitiveHull implements VerifierFactoryObserver {
         VerifierFactory.attach(th);
         VerifierFactory.getVerifier(args[0]); // the observer is called back and does the actual trick.
         VerifierFactory.detach(th);
-    }
-
-    /**
-     * Used for indentation.
-     */
-    private int indent;
-
-    /**
-     * Not publicly instantiable.
-     */
-    private TransitiveHull() {
     }
 
     /* Implementing VerifierFactoryObserver. */

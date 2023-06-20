@@ -34,9 +34,10 @@ import java.util.zip.ZipFile;
 public final class ClassParser {
 
     private static final int BUFSIZE = 8192;
-    private DataInputStream dataInputStream;
     private final boolean fileOwned;
     private final String fileName;
+    private final boolean isZip; // Loaded from zip file
+    private DataInputStream dataInputStream;
     private String zipFile;
     private int classNameIndex;
     private int superclassNameIndex;
@@ -48,7 +49,6 @@ public final class ClassParser {
     private Field[] fields; // class fields, i.e., its variables
     private Method[] methods; // methods defined in the class
     private Attribute[] attributes; // attributes defined in the class
-    private final boolean isZip; // Loaded from zip file
 
     /**
      * Parses class from the given stream.

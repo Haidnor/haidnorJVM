@@ -64,6 +64,21 @@ public abstract class ElementValue {
     public static final byte PRIMITIVE_LONG = 'J';
     public static final byte PRIMITIVE_SHORT = 'S';
     public static final byte PRIMITIVE_BOOLEAN = 'Z';
+    /**
+     * @deprecated (since 6.0) will be made private and final; do not access directly, use getter
+     */
+    @java.lang.Deprecated
+    protected int type; // TODO should be final
+    /**
+     * @deprecated (since 6.0) will be made private and final; do not access directly, use getter
+     */
+    @java.lang.Deprecated
+    protected ConstantPool cpool; // TODO should be final
+
+    protected ElementValue(final int type, final ConstantPool cpool) {
+        this.type = type;
+        this.cpool = cpool;
+    }
 
     /**
      * Reads an {@code element_value} as an {@code ElementValue}.
@@ -128,22 +143,6 @@ public abstract class ElementValue {
             default:
                 throw new ClassFormatException("Unexpected element value tag in annotation: " + tag);
         }
-    }
-
-    /**
-     * @deprecated (since 6.0) will be made private and final; do not access directly, use getter
-     */
-    @java.lang.Deprecated
-    protected int type; // TODO should be final
-    /**
-     * @deprecated (since 6.0) will be made private and final; do not access directly, use getter
-     */
-    @java.lang.Deprecated
-    protected ConstantPool cpool; // TODO should be final
-
-    protected ElementValue(final int type, final ConstantPool cpool) {
-        this.type = type;
-        this.cpool = cpool;
     }
 
     public abstract void dump(DataOutputStream dos) throws IOException;

@@ -43,12 +43,11 @@ public final class Module extends Attribute {
     private final int moduleNameIndex;
     private final int moduleFlags;
     private final int moduleVersionIndex;
-
+    private final int usesCount;
+    private final int[] usesIndex;
     private ModuleRequires[] requiresTable;
     private ModuleExports[] exportsTable;
     private ModuleOpens[] opensTable;
-    private final int usesCount;
-    private final int[] usesIndex;
     private ModuleProvides[] providesTable;
 
     /**

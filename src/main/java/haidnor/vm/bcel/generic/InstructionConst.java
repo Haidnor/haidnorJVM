@@ -279,6 +279,9 @@ public final class InstructionConst {
         INSTRUCTIONS[Const.MONITOREXIT] = MONITOREXIT;
     }
 
+    private InstructionConst() {
+    } // non-instantiable
+
     /**
      * Gets the Instruction.
      *
@@ -288,7 +291,4 @@ public final class InstructionConst {
     public static Instruction getInstruction(final int index) {
         return INSTRUCTIONS[index];
     }
-
-    private InstructionConst() {
-    } // non-instantiable
 }

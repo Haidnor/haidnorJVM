@@ -42,18 +42,15 @@ public class VerificationResult {
      * verification pass did not return {@link #VERIFIED_OK}.
      */
     private static final String VERIFIED_NOTYET_MSG = "Not yet verified.";
-
-    /**
-     * This string is the canonical message for passed verification passes.
-     */
-    private static final String VERIFIED_OK_MSG = "Passed verification.";
-
     /**
      * Canonical VerificationResult for not-yet-tried verifications. This happens if some earlier verification pass did not
      * return {@link #VERIFIED_OK}.
      */
     public static final VerificationResult VR_NOTYET = new VerificationResult(VERIFIED_NOTYET, VERIFIED_NOTYET_MSG);
-
+    /**
+     * This string is the canonical message for passed verification passes.
+     */
+    private static final String VERIFIED_OK_MSG = "Passed verification.";
     /**
      * Canonical VerificationResult for passed verifications.
      */

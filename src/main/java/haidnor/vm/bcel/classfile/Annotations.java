@@ -31,8 +31,8 @@ import java.util.stream.Stream;
  */
 public abstract class Annotations extends Attribute implements Iterable<AnnotationEntry> {
 
-    private AnnotationEntry[] annotationTable;
     private final boolean isRuntimeVisible;
+    private AnnotationEntry[] annotationTable;
 
     /**
      * Constructs an instance.

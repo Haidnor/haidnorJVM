@@ -35,7 +35,10 @@ public final class Method extends FieldOrMethod {
      * @since 6.6.0
      */
     public static final Method[] EMPTY_ARRAY = {};
-
+    /**
+     * Empty array.
+     */
+    static final Method[] EMPTY_METHOD_ARRAY = {};
     private static BCELComparator bcelComparator = new BCELComparator() {
 
         @Override
@@ -51,26 +54,6 @@ public final class Method extends FieldOrMethod {
             return THIS.getSignature().hashCode() ^ THIS.getName().hashCode();
         }
     };
-
-    /**
-     * Empty array.
-     */
-    static final Method[] EMPTY_METHOD_ARRAY = {};
-
-    /**
-     * @return Comparison strategy object
-     */
-    public static BCELComparator getComparator() {
-        return bcelComparator;
-    }
-
-    /**
-     * @param comparator Comparison strategy object
-     */
-    public static void setComparator(final BCELComparator comparator) {
-        bcelComparator = comparator;
-    }
-
     // annotations defined on the parameters of a method
     private ParameterAnnotationEntry[] parameterAnnotationEntries;
 
@@ -110,6 +93,20 @@ public final class Method extends FieldOrMethod {
      */
     public Method(final Method c) {
         super(c);
+    }
+
+    /**
+     * @return Comparison strategy object
+     */
+    public static BCELComparator getComparator() {
+        return bcelComparator;
+    }
+
+    /**
+     * @param comparator Comparison strategy object
+     */
+    public static void setComparator(final BCELComparator comparator) {
+        bcelComparator = comparator;
     }
 
     /**

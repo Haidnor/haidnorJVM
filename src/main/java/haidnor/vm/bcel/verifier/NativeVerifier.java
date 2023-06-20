@@ -27,6 +27,12 @@ import haidnor.vm.bcel.classfile.Utility;
 public abstract class NativeVerifier {
 
     /**
+     * This class must not be instantiated.
+     */
+    private NativeVerifier() {
+    }
+
+    /**
      * Works only on the first argument.
      */
     public static void main(final String[] args) {
@@ -59,11 +65,5 @@ public abstract class NativeVerifier {
         }
         System.out.println("NativeVerifier: Class file '" + args[0] + "' seems to be okay.");
         System.exit(0);
-    }
-
-    /**
-     * This class must not be instantiated.
-     */
-    private NativeVerifier() {
     }
 }

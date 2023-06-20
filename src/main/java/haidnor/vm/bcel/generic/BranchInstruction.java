@@ -30,29 +30,15 @@ import java.io.IOException;
 public abstract class BranchInstruction extends Instruction implements InstructionTargeter {
 
     /**
-     * Used by BranchInstruction, LocalVariableGen, CodeExceptionGen, LineNumberGen
-     */
-    static void notifyTarget(final InstructionHandle oldIh, final InstructionHandle newIh, final InstructionTargeter t) {
-        if (oldIh != null) {
-            oldIh.removeTargeter(t);
-        }
-        if (newIh != null) {
-            newIh.addTargeter(t);
-        }
-    }
-
-    /**
      * @deprecated (since 6.0) will be made private; do not access directly, use getter/setter
      */
     @Deprecated
     protected int index; // Branch target relative to this instruction
-
     /**
      * @deprecated (since 6.0) will be made private; do not access directly, use getter/setter
      */
     @Deprecated
     protected InstructionHandle target; // Target object in instruction list
-
     /**
      * @deprecated (since 6.0) will be made private; do not access directly, use getter/setter
      */
@@ -74,6 +60,18 @@ public abstract class BranchInstruction extends Instruction implements Instructi
     protected BranchInstruction(final short opcode, final InstructionHandle target) {
         super(opcode, (short) 3);
         setTarget(target);
+    }
+
+    /**
+     * Used by BranchInstruction, LocalVariableGen, CodeExceptionGen, LineNumberGen
+     */
+    static void notifyTarget(final InstructionHandle oldIh, final InstructionHandle newIh, final InstructionTargeter t) {
+        if (oldIh != null) {
+            oldIh.removeTargeter(t);
+        }
+        if (newIh != null) {
+            newIh.addTargeter(t);
+        }
     }
 
     /**
@@ -117,6 +115,14 @@ public abstract class BranchInstruction extends Instruction implements Instructi
     }
 
     /**
+     * @param index the index to set
+     * @since 6.0
+     */
+    protected void setIndex(final int index) {
+        this.index = index;
+    }
+
+    /**
      * @return the position
      * @since 6.0
      */
@@ -125,10 +131,28 @@ public abstract class BranchInstruction extends Instruction implements Instructi
     }
 
     /**
+     * @param position the position to set
+     * @since 6.0
+     */
+    protected void setPosition(final int position) {
+        this.position = position;
+    }
+
+    /**
      * @return target of branch instruction
      */
     public InstructionHandle getTarget() {
         return target;
+    }
+
+    /**
+     * Set branch target
+     *
+     * @param target branch target
+     */
+    public void setTarget(final InstructionHandle target) {
+        notifyTarget(this.target, target, this);
+        this.target = target;
     }
 
     /**
@@ -164,32 +188,6 @@ public abstract class BranchInstruction extends Instruction implements Instructi
     protected void initFromFile(final ByteSequence bytes, final boolean wide) throws IOException {
         super.setLength(3);
         index = bytes.readShort();
-    }
-
-    /**
-     * @param index the index to set
-     * @since 6.0
-     */
-    protected void setIndex(final int index) {
-        this.index = index;
-    }
-
-    /**
-     * @param position the position to set
-     * @since 6.0
-     */
-    protected void setPosition(final int position) {
-        this.position = position;
-    }
-
-    /**
-     * Set branch target
-     *
-     * @param target branch target
-     */
-    public void setTarget(final InstructionHandle target) {
-        notifyTarget(this.target, target, this);
-        this.target = target;
     }
 
     /**

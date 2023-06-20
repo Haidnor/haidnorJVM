@@ -35,111 +35,22 @@ import java.util.zip.GZIPOutputStream;
 // @since 6.0 methods are no longer final
 public abstract class Utility {
 
-    /**
-     * Decode characters into bytes. Used by <a href="Utility.html#decode(java.lang.String, boolean)">decode()</a>
-     */
-    private static class JavaReader extends FilterReader {
-
-        public JavaReader(final Reader in) {
-            super(in);
-        }
-
-        @Override
-        public int read() throws IOException {
-            final int b = in.read();
-            if (b != ESCAPE_CHAR) {
-                return b;
-            }
-            final int i = in.read();
-            if (i < 0) {
-                return -1;
-            }
-            if (i >= '0' && i <= '9' || i >= 'a' && i <= 'f') { // Normal escape
-                final int j = in.read();
-                if (j < 0) {
-                    return -1;
-                }
-                final char[] tmp = {(char) i, (char) j};
-                return Integer.parseInt(new String(tmp), 16);
-            }
-            return MAP_CHAR[i];
-        }
-
-        @Override
-        public int read(final char[] cbuf, final int off, final int len) throws IOException {
-            for (int i = 0; i < len; i++) {
-                cbuf[off + i] = (char) read();
-            }
-            return len;
-        }
-    }
-
-    /**
-     * Encode bytes into valid java identifier characters. Used by
-     * <a href="Utility.html#encode(byte[], boolean)">encode()</a>
-     */
-    private static class JavaWriter extends FilterWriter {
-
-        public JavaWriter(final Writer out) {
-            super(out);
-        }
-
-        @Override
-        public void write(final char[] cbuf, final int off, final int len) throws IOException {
-            for (int i = 0; i < len; i++) {
-                write(cbuf[off + i]);
-            }
-        }
-
-        @Override
-        public void write(final int b) throws IOException {
-            if (isJavaIdentifierPart((char) b) && b != ESCAPE_CHAR) {
-                out.write(b);
-            } else {
-                out.write(ESCAPE_CHAR); // Escape character
-                // Special escape
-                if (b >= 0 && b < FREE_CHARS) {
-                    out.write(CHAR_MAP[b]);
-                } else { // Normal escape
-                    final char[] tmp = Integer.toHexString(b).toCharArray();
-                    if (tmp.length == 1) {
-                        out.write('0');
-                        out.write(tmp[0]);
-                    } else {
-                        out.write(tmp[0]);
-                        out.write(tmp[1]);
-                    }
-                }
-            }
-        }
-
-        @Override
-        public void write(final String str, final int off, final int len) throws IOException {
-            write(str.toCharArray(), off, len);
-        }
-    }
-
     /*
      * How many chars have been consumed during parsing in typeSignatureToString(). Read by methodSignatureToString(). Set
      * by side effect, but only internally.
      */
     private static final ThreadLocal<Integer> CONSUMER_CHARS = ThreadLocal.withInitial(() -> Integer.valueOf(0));
-
+    // A-Z, g-z, _, $
+    private static final int FREE_CHARS = 48;
+    private static final int[] CHAR_MAP = new int[FREE_CHARS];
+    private static final int[] MAP_CHAR = new int[256]; // Reverse map
+    private static final char ESCAPE_CHAR = '$';
     /*
      * The 'WIDE' instruction is used in the byte code to allow 16-bit wide indices for local variables. This opcode
      * precedes an 'ILOAD', e.g.. The opcode immediately following takes an extra byte which is combined with the following
      * byte to form a 16-bit value.
      */
     private static boolean wide;
-
-    // A-Z, g-z, _, $
-    private static final int FREE_CHARS = 48;
-
-    private static final int[] CHAR_MAP = new int[FREE_CHARS];
-
-    private static final int[] MAP_CHAR = new int[256]; // Reverse map
-
-    private static final char ESCAPE_CHAR = '$';
 
     static {
         int j = 0;
@@ -721,30 +632,6 @@ public abstract class Utility {
     }
 
     /**
-     * WARNING:
-     *
-     * There is some nomenclature confusion through much of the BCEL code base with respect to the terms Descriptor and
-     * Signature. For the offical definitions see:
-     *
-     * @see <a href="https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.3"> Descriptors in The Java
-     *      Virtual Machine Specification</a>
-     *
-     * @see <a href="https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.9.1"> Signatures in The Java
-     *      Virtual Machine Specification</a>
-     *
-     *      In brief, a descriptor is a string representing the type of a field or method. Signatures are similar, but more
-     *      complex. Signatures are used to encode declarations written in the Java programming language that use types
-     *      outside the type system of the Java Virtual Machine. They are used to describe the type of any class, interface,
-     *      constructor, method or field whose declaration uses type variables or parameterized types.
-     *
-     *      To parse a descriptor, call typeSignatureToString. To parse a signature, call signatureToString.
-     *
-     *      Note that if the signature string is a single, non-generic item, the call to signatureToString reduces to a call
-     *      to typeSignatureToString. Also note, that if you only wish to parse the first item in a longer signature string,
-     *      you should call typeSignatureToString directly.
-     */
-
-    /**
      * Parse Java type such as "char", or "java.lang.String[]" and return the signature in byte code format, e.g. "C" or
      * "[Ljava/lang/String;" respectively.
      *
@@ -811,6 +698,30 @@ public abstract class Utility {
     public static boolean isJavaIdentifierPart(final char ch) {
         return ch >= 'a' && ch <= 'z' || ch >= 'A' && ch <= 'Z' || ch >= '0' && ch <= '9' || ch == '_';
     }
+
+    /**
+     * WARNING:
+     *
+     * There is some nomenclature confusion through much of the BCEL code base with respect to the terms Descriptor and
+     * Signature. For the offical definitions see:
+     *
+     * @see <a href="https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.3"> Descriptors in The Java
+     *      Virtual Machine Specification</a>
+     *
+     * @see <a href="https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.9.1"> Signatures in The Java
+     *      Virtual Machine Specification</a>
+     *
+     *      In brief, a descriptor is a string representing the type of a field or method. Signatures are similar, but more
+     *      complex. Signatures are used to encode declarations written in the Java programming language that use types
+     *      outside the type system of the Java Virtual Machine. They are used to describe the type of any class, interface,
+     *      constructor, method or field whose declaration uses type variables or parameterized types.
+     *
+     *      To parse a descriptor, call typeSignatureToString. To parse a signature, call signatureToString.
+     *
+     *      Note that if the signature string is a single, non-generic item, the call to signatureToString reduces to a call
+     *      to typeSignatureToString. Also note, that if you only wish to parse the first item in a longer signature string,
+     *      you should call typeSignatureToString directly.
+     */
 
     /**
      * @return true, if bit 'i' in 'flag' is set
@@ -1533,6 +1444,90 @@ public abstract class Utility {
 
     private static void wrap(final ThreadLocal<Integer> tl, final int value) {
         tl.set(Integer.valueOf(value));
+    }
+
+    /**
+     * Decode characters into bytes. Used by <a href="Utility.html#decode(java.lang.String, boolean)">decode()</a>
+     */
+    private static class JavaReader extends FilterReader {
+
+        public JavaReader(final Reader in) {
+            super(in);
+        }
+
+        @Override
+        public int read() throws IOException {
+            final int b = in.read();
+            if (b != ESCAPE_CHAR) {
+                return b;
+            }
+            final int i = in.read();
+            if (i < 0) {
+                return -1;
+            }
+            if (i >= '0' && i <= '9' || i >= 'a' && i <= 'f') { // Normal escape
+                final int j = in.read();
+                if (j < 0) {
+                    return -1;
+                }
+                final char[] tmp = {(char) i, (char) j};
+                return Integer.parseInt(new String(tmp), 16);
+            }
+            return MAP_CHAR[i];
+        }
+
+        @Override
+        public int read(final char[] cbuf, final int off, final int len) throws IOException {
+            for (int i = 0; i < len; i++) {
+                cbuf[off + i] = (char) read();
+            }
+            return len;
+        }
+    }
+
+    /**
+     * Encode bytes into valid java identifier characters. Used by
+     * <a href="Utility.html#encode(byte[], boolean)">encode()</a>
+     */
+    private static class JavaWriter extends FilterWriter {
+
+        public JavaWriter(final Writer out) {
+            super(out);
+        }
+
+        @Override
+        public void write(final char[] cbuf, final int off, final int len) throws IOException {
+            for (int i = 0; i < len; i++) {
+                write(cbuf[off + i]);
+            }
+        }
+
+        @Override
+        public void write(final int b) throws IOException {
+            if (isJavaIdentifierPart((char) b) && b != ESCAPE_CHAR) {
+                out.write(b);
+            } else {
+                out.write(ESCAPE_CHAR); // Escape character
+                // Special escape
+                if (b >= 0 && b < FREE_CHARS) {
+                    out.write(CHAR_MAP[b]);
+                } else { // Normal escape
+                    final char[] tmp = Integer.toHexString(b).toCharArray();
+                    if (tmp.length == 1) {
+                        out.write('0');
+                        out.write(tmp[0]);
+                    } else {
+                        out.write(tmp[0]);
+                        out.write(tmp[1]);
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void write(final String str, final int off, final int len) throws IOException {
+            write(str.toCharArray(), off, len);
+        }
     }
 
 }

@@ -60,6 +60,10 @@ public class SimpleElementValue extends ElementValue {
         return index;
     }
 
+    public void setIndex(final int index) {
+        this.index = index;
+    }
+
     public boolean getValueBoolean() {
         if (super.getType() != PRIMITIVE_BOOLEAN) {
             throw new IllegalStateException("Dont call getValueBoolean() on a non BOOLEAN ElementValue");
@@ -126,10 +130,6 @@ public class SimpleElementValue extends ElementValue {
             throw new IllegalStateException("Dont call getValueString() on a non STRING ElementValue");
         }
         return super.getConstantPool().getConstantUtf8(getIndex()).getBytes();
-    }
-
-    public void setIndex(final int index) {
-        this.index = index;
     }
 
     // Whatever kind of value it is, return it as a string

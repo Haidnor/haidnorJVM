@@ -112,17 +112,17 @@ public final class LineNumber implements Cloneable, Node {
     }
 
     /**
-     * @return PC in code
-     */
-    public int getStartPC() {
-        return startPc & 0xffff;
-    }
-
-    /**
      * @param lineNumber the source line number
      */
     public void setLineNumber(final int lineNumber) {
         this.lineNumber = (short) lineNumber;
+    }
+
+    /**
+     * @return PC in code
+     */
+    public int getStartPC() {
+        return startPc & 0xffff;
     }
 
     /**

@@ -75,6 +75,19 @@ public abstract class CPInstruction extends Instruction implements TypedInstruct
     }
 
     /**
+     * Set the index to constant pool.
+     *
+     * @param index in constant pool.
+     */
+    @Override
+    public void setIndex(final int index) { // TODO could be package-protected?
+        if (index < 0) {
+            throw new ClassGenException("Negative index value: " + index);
+        }
+        this.index = index;
+    }
+
+    /**
      * @return type related with this instruction.
      */
     @Override
@@ -97,19 +110,6 @@ public abstract class CPInstruction extends Instruction implements TypedInstruct
     protected void initFromFile(final ByteSequence bytes, final boolean wide) throws IOException {
         setIndex(bytes.readUnsignedShort());
         super.setLength(3);
-    }
-
-    /**
-     * Set the index to constant pool.
-     *
-     * @param index in constant pool.
-     */
-    @Override
-    public void setIndex(final int index) { // TODO could be package-protected?
-        if (index < 0) {
-            throw new ClassGenException("Negative index value: " + index);
-        }
-        this.index = index;
     }
 
     /**

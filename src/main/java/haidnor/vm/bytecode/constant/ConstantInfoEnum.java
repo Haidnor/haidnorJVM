@@ -25,13 +25,13 @@ public enum ConstantInfoEnum {
     CONSTANT_MethodType(16),
     CONSTANT_InvokeDynamic(18);
 
-    public final int tag;
-
     public static final Map<Integer, ConstantInfoEnum> enumMap;
 
     static {
         enumMap = Arrays.stream(ConstantInfoEnum.values())
                 .collect(Collectors.toMap(constantInfoEnum -> constantInfoEnum.tag, Function.identity()));
     }
+
+    public final int tag;
 
 }

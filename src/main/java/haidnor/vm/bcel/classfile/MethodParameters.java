@@ -86,12 +86,12 @@ public class MethodParameters extends Attribute implements Iterable<MethodParame
         return parameters;
     }
 
+    public void setParameters(final MethodParameter[] parameters) {
+        this.parameters = parameters;
+    }
+
     @Override
     public Iterator<MethodParameter> iterator() {
         return Stream.of(parameters).iterator();
-    }
-
-    public void setParameters(final MethodParameter[] parameters) {
-        this.parameters = parameters;
     }
 }

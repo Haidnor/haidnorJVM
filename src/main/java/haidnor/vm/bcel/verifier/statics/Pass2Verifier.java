@@ -43,6 +43,361 @@ import java.util.*;
 public final class Pass2Verifier extends PassVerifier implements Constants {
 
     /**
+     * The Verifier that created this.
+     */
+    private final Verifier verifier;
+    /**
+     * The LocalVariableInfo instances used by Pass3bVerifier. localVariablesInfos[i] denotes the information for the local
+     * variables of method number i in the JavaClass this verifier operates on.
+     */
+    private LocalVariablesInfo[] localVariablesInfos;
+
+    /**
+     * Should only be instantiated by a Verifier.
+     *
+     * @see Verifier
+     */
+    public Pass2Verifier(final Verifier verifier) {
+        this.verifier = verifier;
+    }
+
+    /**
+     * This method is here to save typing work and improve code readability.
+     */
+    private static String tostring(final Node n) {
+        return new StringRepresentation(n).toString();
+    }
+
+    /**
+     * This method returns true if and only if the supplied String represents a valid method name that may be referenced by
+     * ConstantMethodref objects.
+     */
+    private static boolean validClassMethodName(final String name) {
+        return validMethodName(name, false);
+    }
+
+    /**
+     * This method returns true if and only if the supplied String represents a valid Java class name.
+     */
+    private static boolean validClassName(final String name) {
+        /*
+         * TODO: implement. Are there any restrictions?
+         */
+        Objects.requireNonNull(name, "name");
+        return true;
+    }
+
+    /**
+     * This method returns true if and only if the supplied String represents a valid Java field name.
+     */
+    private static boolean validFieldName(final String name) {
+        // vmspec2 2.7, vmspec2 2.2
+        return validJavaIdentifier(name);
+    }
+
+    /**
+     * This method returns true if and only if the supplied String represents a valid Java interface method name that may be
+     * referenced by ConstantInterfaceMethodref objects.
+     */
+    private static boolean validInterfaceMethodName(final String name) {
+        // I guess we should assume special names forbidden here.
+        if (name.startsWith("<")) {
+            return false;
+        }
+        return validJavaLangMethodName(name);
+    }
+
+    /**
+     * This method returns true if and only if the supplied String represents a valid Java identifier (so-called simple or
+     * unqualified name).
+     */
+    private static boolean validJavaIdentifier(final String name) {
+        // vmspec2 2.7, vmspec2 2.2
+        if (name.isEmpty() || !Character.isJavaIdentifierStart(name.charAt(0))) {
+            return false;
+        }
+
+        for (int i = 1; i < name.length(); i++) {
+            if (!Character.isJavaIdentifierPart(name.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * This method returns true if and only if the supplied String represents a valid Java programming language method name
+     * stored as a simple (non-qualified) name. Conforming to: The Java Virtual Machine Specification, Second Edition,
+     * �2.7, �2.7.1, �2.2.
+     */
+    private static boolean validJavaLangMethodName(final String name) {
+        return validJavaIdentifier(name);
+    }
+
+    /**
+     * This method returns true if and only if the supplied String represents a valid method name. This is basically the
+     * same as a valid identifier name in the Java programming language, but the special name for the instance
+     * initialization method is allowed and the special name for the class/interface initialization method may be allowed.
+     */
+    private static boolean validMethodName(final String name, final boolean allowStaticInit) {
+        if (validJavaLangMethodName(name)) {
+            return true;
+        }
+
+        if (allowStaticInit) {
+            return name.equals(Const.CONSTRUCTOR_NAME) || name.equals(Const.STATIC_INITIALIZER_NAME);
+        }
+        return name.equals(Const.CONSTRUCTOR_NAME);
+    }
+
+    /**
+     * Ensures that the constant pool entries satisfy the static constraints as described in The Java Virtual Machine
+     * Specification, 2nd Edition.
+     *
+     * @throws ClassConstraintException otherwise.
+     */
+    private void constantPoolEntriesSatisfyStaticConstraints() {
+        try {
+            // Most of the consistency is handled internally by BCEL; here
+            // we only have to verify if the indices of the constants point
+            // to constants of the appropriate type and such.
+            final JavaClass jc = Repository.lookupClass(verifier.getClassName());
+            new CPESSC_Visitor(jc); // constructor implicitly traverses jc
+
+        } catch (final ClassNotFoundException e) {
+            // FIXME: this might not be the best way to handle missing classes.
+            throw new AssertionViolatedException("Missing class: " + e, e);
+        }
+    }
+
+    /**
+     * Pass 2 is the pass where static properties of the class file are checked without looking into "Code" arrays of
+     * methods. This verification pass is usually invoked when a class is resolved; and it may be possible that this
+     * verification pass has to load in other classes such as superclasses or implemented interfaces. Therefore, Pass 1 is
+     * run on them.<BR>
+     * Note that most referenced classes are <B>not</B> loaded in for verification or for an existance check by this pass;
+     * only the syntactical correctness of their names and descriptors (a.k.a. signatures) is checked.<BR>
+     * Very few checks that conceptually belong here are delayed until pass 3a in JustIce. JustIce does not only check for
+     * syntactical correctness but also for semantical sanity - therefore it needs access to the "Code" array of methods in
+     * a few cases. Please see the pass 3a documentation, too.
+     *
+     * @see Pass3aVerifier
+     */
+    @Override
+    public VerificationResult do_verify() {
+        try {
+            final VerificationResult vr1 = verifier.doPass1();
+            if (vr1.equals(VerificationResult.VR_OK)) {
+
+                // For every method, we could have information about the local variables out of LocalVariableTable attributes of
+                // the Code attributes.
+                localVariablesInfos = new LocalVariablesInfo[Repository.lookupClass(verifier.getClassName()).getMethods().length];
+
+                VerificationResult vr = VerificationResult.VR_OK; // default.
+                try {
+                    constantPoolEntriesSatisfyStaticConstraints();
+                    fieldAndMethodRefsAreValid();
+                    everyClassHasAnAccessibleSuperclass();
+                    finalMethodsAreNotOverridden();
+                } catch (final ClassConstraintException cce) {
+                    vr = new VerificationResult(VerificationResult.VERIFIED_REJECTED, cce.getMessage());
+                }
+                return vr;
+            }
+            return VerificationResult.VR_NOTYET;
+
+        } catch (final ClassNotFoundException e) {
+            // FIXME: this might not be the best way to handle missing classes.
+            throw new AssertionViolatedException("Missing class: " + e, e);
+        }
+    }
+
+    /**
+     * Ensures that every class has a super class and that <B>final</B> classes are not subclassed. This means, the class
+     * this Pass2Verifier operates on has proper super classes (transitively) up to java.lang.Object. The reason for really
+     * loading (and Pass1-verifying) all of those classes here is that we need them in Pass2 anyway to verify no final
+     * methods are overridden (that could be declared anywhere in the ancestor hierarchy).
+     *
+     * @throws ClassConstraintException otherwise.
+     */
+    private void everyClassHasAnAccessibleSuperclass() {
+        try {
+            final Set<String> hs = new HashSet<>(); // save class names to detect circular inheritance
+            JavaClass jc = Repository.lookupClass(verifier.getClassName());
+            int supidx = -1;
+
+            while (supidx != 0) {
+                supidx = jc.getSuperclassNameIndex();
+
+                if (supidx == 0) {
+                    if (jc != Repository.lookupClass(Type.OBJECT.getClassName())) {
+                        throw new ClassConstraintException(
+                                "Superclass of '" + jc.getClassName() + "' missing but not " + Type.OBJECT.getClassName() + " itself!");
+                    }
+                } else {
+                    final String supername = jc.getSuperclassName();
+                    if (!hs.add(supername)) { // If supername already is in the list
+                        throw new ClassConstraintException("Circular superclass hierarchy detected.");
+                    }
+                    final Verifier v = VerifierFactory.getVerifier(supername);
+                    final VerificationResult vr = v.doPass1();
+
+                    if (vr != VerificationResult.VR_OK) {
+                        throw new ClassConstraintException("Could not load in ancestor class '" + supername + "'.");
+                    }
+                    jc = Repository.lookupClass(supername);
+
+                    if (jc.isFinal()) {
+                        throw new ClassConstraintException(
+                                "Ancestor class '" + supername + "' has the FINAL access modifier and must therefore not be subclassed.");
+                    }
+                }
+            }
+
+        } catch (final ClassNotFoundException e) {
+            // FIXME: this might not be the best way to handle missing classes.
+            throw new AssertionViolatedException("Missing class: " + e, e);
+        }
+    }
+
+    /**
+     * Ensures that the ConstantCP-subclassed entries of the constant pool are valid. According to "Yellin: Low Level
+     * Security in Java", this method does not verify the existence of referenced entities (such as classes) but only the
+     * formal correctness (such as well-formed signatures). The visitXXX() methods throw ClassConstraintException instances
+     * otherwise. <B>Precondition: index-style cross referencing in the constant pool must be valid. Simply invoke
+     * constant_pool_entries_satisfy_static_constraints() before.</B>
+     *
+     * @throws ClassConstraintException otherwise.
+     * @see #constantPoolEntriesSatisfyStaticConstraints()
+     */
+    private void fieldAndMethodRefsAreValid() {
+        try {
+            final JavaClass jc = Repository.lookupClass(verifier.getClassName());
+            final DescendingVisitor v = new DescendingVisitor(jc, new FAMRAV_Visitor(jc));
+            v.visit();
+
+        } catch (final ClassNotFoundException e) {
+            // FIXME: this might not be the best way to handle missing classes.
+            throw new AssertionViolatedException("Missing class: " + e, e);
+        }
+    }
+
+    /**
+     * Ensures that <B>final</B> methods are not overridden. <B>Precondition to run this method:
+     * constant_pool_entries_satisfy_static_constraints() and every_class_has_an_accessible_superclass() have to be invoked
+     * before (in that order).</B>
+     *
+     * @throws ClassConstraintException otherwise.
+     * @see #constantPoolEntriesSatisfyStaticConstraints()
+     * @see #everyClassHasAnAccessibleSuperclass()
+     */
+    private void finalMethodsAreNotOverridden() {
+        try {
+            final Map<String, String> map = new HashMap<>();
+            JavaClass jc = Repository.lookupClass(verifier.getClassName());
+
+            int supidx = -1;
+            while (supidx != 0) {
+                supidx = jc.getSuperclassNameIndex();
+
+                final Method[] methods = jc.getMethods();
+                for (final Method method : methods) {
+                    final String nameAndSig = method.getName() + method.getSignature();
+
+                    if (map.containsKey(nameAndSig) && method.isFinal()) {
+                        if (!method.isPrivate()) {
+                            throw new ClassConstraintException("Method '" + nameAndSig + "' in class '" + map.get(nameAndSig)
+                                    + "' overrides the final (not-overridable) definition in class '" + jc.getClassName() + "'.");
+                        }
+                        addMessage("Method '" + nameAndSig + "' in class '" + map.get(nameAndSig)
+                                + "' overrides the final (not-overridable) definition in class '" + jc.getClassName()
+                                + "'. This is okay, as the original definition was private; however this constraint leverage"
+                                + " was introduced by JLS 8.4.6 (not vmspec2) and the behavior of the Sun verifiers.");
+                    } else if (!method.isStatic()) { // static methods don't inherit
+                        map.put(nameAndSig, jc.getClassName());
+                    }
+                }
+
+                jc = Repository.lookupClass(jc.getSuperclassName());
+                // Well, for OBJECT this returns OBJECT so it works (could return anything but must not throw an Exception).
+            }
+
+        } catch (final ClassNotFoundException e) {
+            // FIXME: this might not be the best way to handle missing classes.
+            throw new AssertionViolatedException("Missing class: " + e, e);
+        }
+
+    }
+
+    /**
+     * Returns a LocalVariablesInfo object containing information about the usage of the local variables in the Code
+     * attribute of the said method or <B>null</B> if the class file this Pass2Verifier operates on could not be
+     * pass-2-verified correctly. The method number method_nr is the method you get using
+     * <B>Repository.lookupClass(myOwner.getClassname()).getMethods()[method_nr];</B>. You should not add own information.
+     * Leave that to JustIce.
+     */
+    public LocalVariablesInfo getLocalVariablesInfo(final int methodNr) {
+        if (this.verify() != VerificationResult.VR_OK) {
+            return null; // It's cached, don't worry.
+        }
+        if (methodNr < 0 || methodNr >= localVariablesInfos.length) {
+            throw new AssertionViolatedException("Method number out of range.");
+        }
+        return localVariablesInfos[methodNr];
+    }
+
+    /**
+     * This class serves for finding out if a given JavaClass' ConstantPool references an Inner Class. The Java Virtual
+     * Machine Specification, Second Edition is not very precise about when an "InnerClasses" attribute has to appear.
+     * However, it states that there has to be exactly one InnerClasses attribute in the ClassFile structure if the constant
+     * pool of a class or interface refers to any class or interface "that is not a member of a package". Sun does not mean
+     * "member of the default package". In "Inner Classes Specification" they point out how a "bytecode name" is derived so
+     * one has to deduce what a class name of a class "that is not a member of a package" looks like: there is at least one
+     * character in the byte- code name that cannot be part of a legal Java Language Class name (and not equal to '/'). This
+     * assumption is wrong as the delimiter is '$' for which Character.isJavaIdentifierPart() == true. Hence, you really run
+     * into trouble if you have a toplevel class called "A$XXX" and another toplevel class called "A" with in inner class
+     * called "XXX". JustIce cannot repair this; please note that existing verifiers at this time even fail to detect
+     * missing InnerClasses attributes in pass 2.
+     */
+    private static class InnerClassDetector extends EmptyVisitor {
+        private final JavaClass jc;
+        private final ConstantPool cp;
+        private boolean hasInnerClass;
+
+        /**
+         * Constructs an InnerClassDetector working on the JavaClass _jc.
+         */
+        public InnerClassDetector(final JavaClass javaClass) {
+            this.jc = javaClass;
+            this.cp = jc.getConstantPool();
+            new DescendingVisitor(jc, this).visit();
+        }
+
+        /**
+         * Returns if the JavaClass this InnerClassDetector is working on has an Inner Class reference in its constant pool.
+         *
+         * @return Whether this InnerClassDetector is working on has an Inner Class reference in its constant pool.
+         */
+        public boolean innerClassReferenced() {
+            return hasInnerClass;
+        }
+
+        /**
+         * This method casually visits ConstantClass references.
+         */
+        @Override
+        public void visitConstantClass(final ConstantClass obj) {
+            final Constant c = cp.getConstant(obj.getNameIndex());
+            if (c instanceof ConstantUtf8) { // Ignore the case where it's not a ConstantUtf8 here, we'll find out later.
+                final String className = ((ConstantUtf8) c).getBytes();
+                if (className.startsWith(Utility.packageToPath(jc.getClassName()) + "$")) {
+                    hasInnerClass = true;
+                }
+            }
+        }
+    }
+
+    /**
      * A Visitor class that ensures the constant pool satisfies the static constraints. The visitXXX() methods throw
      * ClassConstraintException instances otherwise.
      *
@@ -1063,360 +1418,5 @@ public final class Pass2Verifier extends PassVerifier implements Constants {
             }
         }
 
-    }
-
-    /**
-     * This class serves for finding out if a given JavaClass' ConstantPool references an Inner Class. The Java Virtual
-     * Machine Specification, Second Edition is not very precise about when an "InnerClasses" attribute has to appear.
-     * However, it states that there has to be exactly one InnerClasses attribute in the ClassFile structure if the constant
-     * pool of a class or interface refers to any class or interface "that is not a member of a package". Sun does not mean
-     * "member of the default package". In "Inner Classes Specification" they point out how a "bytecode name" is derived so
-     * one has to deduce what a class name of a class "that is not a member of a package" looks like: there is at least one
-     * character in the byte- code name that cannot be part of a legal Java Language Class name (and not equal to '/'). This
-     * assumption is wrong as the delimiter is '$' for which Character.isJavaIdentifierPart() == true. Hence, you really run
-     * into trouble if you have a toplevel class called "A$XXX" and another toplevel class called "A" with in inner class
-     * called "XXX". JustIce cannot repair this; please note that existing verifiers at this time even fail to detect
-     * missing InnerClasses attributes in pass 2.
-     */
-    private static class InnerClassDetector extends EmptyVisitor {
-        private boolean hasInnerClass;
-        private final JavaClass jc;
-        private final ConstantPool cp;
-
-        /**
-         * Constructs an InnerClassDetector working on the JavaClass _jc.
-         */
-        public InnerClassDetector(final JavaClass javaClass) {
-            this.jc = javaClass;
-            this.cp = jc.getConstantPool();
-            new DescendingVisitor(jc, this).visit();
-        }
-
-        /**
-         * Returns if the JavaClass this InnerClassDetector is working on has an Inner Class reference in its constant pool.
-         *
-         * @return Whether this InnerClassDetector is working on has an Inner Class reference in its constant pool.
-         */
-        public boolean innerClassReferenced() {
-            return hasInnerClass;
-        }
-
-        /**
-         * This method casually visits ConstantClass references.
-         */
-        @Override
-        public void visitConstantClass(final ConstantClass obj) {
-            final Constant c = cp.getConstant(obj.getNameIndex());
-            if (c instanceof ConstantUtf8) { // Ignore the case where it's not a ConstantUtf8 here, we'll find out later.
-                final String className = ((ConstantUtf8) c).getBytes();
-                if (className.startsWith(Utility.packageToPath(jc.getClassName()) + "$")) {
-                    hasInnerClass = true;
-                }
-            }
-        }
-    }
-
-    /**
-     * This method is here to save typing work and improve code readability.
-     */
-    private static String tostring(final Node n) {
-        return new StringRepresentation(n).toString();
-    }
-
-    /**
-     * This method returns true if and only if the supplied String represents a valid method name that may be referenced by
-     * ConstantMethodref objects.
-     */
-    private static boolean validClassMethodName(final String name) {
-        return validMethodName(name, false);
-    }
-
-    /**
-     * This method returns true if and only if the supplied String represents a valid Java class name.
-     */
-    private static boolean validClassName(final String name) {
-        /*
-         * TODO: implement. Are there any restrictions?
-         */
-        Objects.requireNonNull(name, "name");
-        return true;
-    }
-
-    /**
-     * This method returns true if and only if the supplied String represents a valid Java field name.
-     */
-    private static boolean validFieldName(final String name) {
-        // vmspec2 2.7, vmspec2 2.2
-        return validJavaIdentifier(name);
-    }
-
-    /**
-     * This method returns true if and only if the supplied String represents a valid Java interface method name that may be
-     * referenced by ConstantInterfaceMethodref objects.
-     */
-    private static boolean validInterfaceMethodName(final String name) {
-        // I guess we should assume special names forbidden here.
-        if (name.startsWith("<")) {
-            return false;
-        }
-        return validJavaLangMethodName(name);
-    }
-
-    /**
-     * This method returns true if and only if the supplied String represents a valid Java identifier (so-called simple or
-     * unqualified name).
-     */
-    private static boolean validJavaIdentifier(final String name) {
-        // vmspec2 2.7, vmspec2 2.2
-        if (name.isEmpty() || !Character.isJavaIdentifierStart(name.charAt(0))) {
-            return false;
-        }
-
-        for (int i = 1; i < name.length(); i++) {
-            if (!Character.isJavaIdentifierPart(name.charAt(i))) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * This method returns true if and only if the supplied String represents a valid Java programming language method name
-     * stored as a simple (non-qualified) name. Conforming to: The Java Virtual Machine Specification, Second Edition,
-     * �2.7, �2.7.1, �2.2.
-     */
-    private static boolean validJavaLangMethodName(final String name) {
-        return validJavaIdentifier(name);
-    }
-
-    /**
-     * This method returns true if and only if the supplied String represents a valid method name. This is basically the
-     * same as a valid identifier name in the Java programming language, but the special name for the instance
-     * initialization method is allowed and the special name for the class/interface initialization method may be allowed.
-     */
-    private static boolean validMethodName(final String name, final boolean allowStaticInit) {
-        if (validJavaLangMethodName(name)) {
-            return true;
-        }
-
-        if (allowStaticInit) {
-            return name.equals(Const.CONSTRUCTOR_NAME) || name.equals(Const.STATIC_INITIALIZER_NAME);
-        }
-        return name.equals(Const.CONSTRUCTOR_NAME);
-    }
-
-    /**
-     * The LocalVariableInfo instances used by Pass3bVerifier. localVariablesInfos[i] denotes the information for the local
-     * variables of method number i in the JavaClass this verifier operates on.
-     */
-    private LocalVariablesInfo[] localVariablesInfos;
-    /**
-     * The Verifier that created this.
-     */
-    private final Verifier verifier;
-
-    /**
-     * Should only be instantiated by a Verifier.
-     *
-     * @see Verifier
-     */
-    public Pass2Verifier(final Verifier verifier) {
-        this.verifier = verifier;
-    }
-
-    /**
-     * Ensures that the constant pool entries satisfy the static constraints as described in The Java Virtual Machine
-     * Specification, 2nd Edition.
-     *
-     * @throws ClassConstraintException otherwise.
-     */
-    private void constantPoolEntriesSatisfyStaticConstraints() {
-        try {
-            // Most of the consistency is handled internally by BCEL; here
-            // we only have to verify if the indices of the constants point
-            // to constants of the appropriate type and such.
-            final JavaClass jc = Repository.lookupClass(verifier.getClassName());
-            new CPESSC_Visitor(jc); // constructor implicitly traverses jc
-
-        } catch (final ClassNotFoundException e) {
-            // FIXME: this might not be the best way to handle missing classes.
-            throw new AssertionViolatedException("Missing class: " + e, e);
-        }
-    }
-
-    /**
-     * Pass 2 is the pass where static properties of the class file are checked without looking into "Code" arrays of
-     * methods. This verification pass is usually invoked when a class is resolved; and it may be possible that this
-     * verification pass has to load in other classes such as superclasses or implemented interfaces. Therefore, Pass 1 is
-     * run on them.<BR>
-     * Note that most referenced classes are <B>not</B> loaded in for verification or for an existance check by this pass;
-     * only the syntactical correctness of their names and descriptors (a.k.a. signatures) is checked.<BR>
-     * Very few checks that conceptually belong here are delayed until pass 3a in JustIce. JustIce does not only check for
-     * syntactical correctness but also for semantical sanity - therefore it needs access to the "Code" array of methods in
-     * a few cases. Please see the pass 3a documentation, too.
-     *
-     * @see Pass3aVerifier
-     */
-    @Override
-    public VerificationResult do_verify() {
-        try {
-            final VerificationResult vr1 = verifier.doPass1();
-            if (vr1.equals(VerificationResult.VR_OK)) {
-
-                // For every method, we could have information about the local variables out of LocalVariableTable attributes of
-                // the Code attributes.
-                localVariablesInfos = new LocalVariablesInfo[Repository.lookupClass(verifier.getClassName()).getMethods().length];
-
-                VerificationResult vr = VerificationResult.VR_OK; // default.
-                try {
-                    constantPoolEntriesSatisfyStaticConstraints();
-                    fieldAndMethodRefsAreValid();
-                    everyClassHasAnAccessibleSuperclass();
-                    finalMethodsAreNotOverridden();
-                } catch (final ClassConstraintException cce) {
-                    vr = new VerificationResult(VerificationResult.VERIFIED_REJECTED, cce.getMessage());
-                }
-                return vr;
-            }
-            return VerificationResult.VR_NOTYET;
-
-        } catch (final ClassNotFoundException e) {
-            // FIXME: this might not be the best way to handle missing classes.
-            throw new AssertionViolatedException("Missing class: " + e, e);
-        }
-    }
-
-    /**
-     * Ensures that every class has a super class and that <B>final</B> classes are not subclassed. This means, the class
-     * this Pass2Verifier operates on has proper super classes (transitively) up to java.lang.Object. The reason for really
-     * loading (and Pass1-verifying) all of those classes here is that we need them in Pass2 anyway to verify no final
-     * methods are overridden (that could be declared anywhere in the ancestor hierarchy).
-     *
-     * @throws ClassConstraintException otherwise.
-     */
-    private void everyClassHasAnAccessibleSuperclass() {
-        try {
-            final Set<String> hs = new HashSet<>(); // save class names to detect circular inheritance
-            JavaClass jc = Repository.lookupClass(verifier.getClassName());
-            int supidx = -1;
-
-            while (supidx != 0) {
-                supidx = jc.getSuperclassNameIndex();
-
-                if (supidx == 0) {
-                    if (jc != Repository.lookupClass(Type.OBJECT.getClassName())) {
-                        throw new ClassConstraintException(
-                                "Superclass of '" + jc.getClassName() + "' missing but not " + Type.OBJECT.getClassName() + " itself!");
-                    }
-                } else {
-                    final String supername = jc.getSuperclassName();
-                    if (!hs.add(supername)) { // If supername already is in the list
-                        throw new ClassConstraintException("Circular superclass hierarchy detected.");
-                    }
-                    final Verifier v = VerifierFactory.getVerifier(supername);
-                    final VerificationResult vr = v.doPass1();
-
-                    if (vr != VerificationResult.VR_OK) {
-                        throw new ClassConstraintException("Could not load in ancestor class '" + supername + "'.");
-                    }
-                    jc = Repository.lookupClass(supername);
-
-                    if (jc.isFinal()) {
-                        throw new ClassConstraintException(
-                                "Ancestor class '" + supername + "' has the FINAL access modifier and must therefore not be subclassed.");
-                    }
-                }
-            }
-
-        } catch (final ClassNotFoundException e) {
-            // FIXME: this might not be the best way to handle missing classes.
-            throw new AssertionViolatedException("Missing class: " + e, e);
-        }
-    }
-
-    /**
-     * Ensures that the ConstantCP-subclassed entries of the constant pool are valid. According to "Yellin: Low Level
-     * Security in Java", this method does not verify the existence of referenced entities (such as classes) but only the
-     * formal correctness (such as well-formed signatures). The visitXXX() methods throw ClassConstraintException instances
-     * otherwise. <B>Precondition: index-style cross referencing in the constant pool must be valid. Simply invoke
-     * constant_pool_entries_satisfy_static_constraints() before.</B>
-     *
-     * @throws ClassConstraintException otherwise.
-     * @see #constantPoolEntriesSatisfyStaticConstraints()
-     */
-    private void fieldAndMethodRefsAreValid() {
-        try {
-            final JavaClass jc = Repository.lookupClass(verifier.getClassName());
-            final DescendingVisitor v = new DescendingVisitor(jc, new FAMRAV_Visitor(jc));
-            v.visit();
-
-        } catch (final ClassNotFoundException e) {
-            // FIXME: this might not be the best way to handle missing classes.
-            throw new AssertionViolatedException("Missing class: " + e, e);
-        }
-    }
-
-    /**
-     * Ensures that <B>final</B> methods are not overridden. <B>Precondition to run this method:
-     * constant_pool_entries_satisfy_static_constraints() and every_class_has_an_accessible_superclass() have to be invoked
-     * before (in that order).</B>
-     *
-     * @throws ClassConstraintException otherwise.
-     * @see #constantPoolEntriesSatisfyStaticConstraints()
-     * @see #everyClassHasAnAccessibleSuperclass()
-     */
-    private void finalMethodsAreNotOverridden() {
-        try {
-            final Map<String, String> map = new HashMap<>();
-            JavaClass jc = Repository.lookupClass(verifier.getClassName());
-
-            int supidx = -1;
-            while (supidx != 0) {
-                supidx = jc.getSuperclassNameIndex();
-
-                final Method[] methods = jc.getMethods();
-                for (final Method method : methods) {
-                    final String nameAndSig = method.getName() + method.getSignature();
-
-                    if (map.containsKey(nameAndSig) && method.isFinal()) {
-                        if (!method.isPrivate()) {
-                            throw new ClassConstraintException("Method '" + nameAndSig + "' in class '" + map.get(nameAndSig)
-                                    + "' overrides the final (not-overridable) definition in class '" + jc.getClassName() + "'.");
-                        }
-                        addMessage("Method '" + nameAndSig + "' in class '" + map.get(nameAndSig)
-                                + "' overrides the final (not-overridable) definition in class '" + jc.getClassName()
-                                + "'. This is okay, as the original definition was private; however this constraint leverage"
-                                + " was introduced by JLS 8.4.6 (not vmspec2) and the behavior of the Sun verifiers.");
-                    } else if (!method.isStatic()) { // static methods don't inherit
-                        map.put(nameAndSig, jc.getClassName());
-                    }
-                }
-
-                jc = Repository.lookupClass(jc.getSuperclassName());
-                // Well, for OBJECT this returns OBJECT so it works (could return anything but must not throw an Exception).
-            }
-
-        } catch (final ClassNotFoundException e) {
-            // FIXME: this might not be the best way to handle missing classes.
-            throw new AssertionViolatedException("Missing class: " + e, e);
-        }
-
-    }
-
-    /**
-     * Returns a LocalVariablesInfo object containing information about the usage of the local variables in the Code
-     * attribute of the said method or <B>null</B> if the class file this Pass2Verifier operates on could not be
-     * pass-2-verified correctly. The method number method_nr is the method you get using
-     * <B>Repository.lookupClass(myOwner.getClassname()).getMethods()[method_nr];</B>. You should not add own information.
-     * Leave that to JustIce.
-     */
-    public LocalVariablesInfo getLocalVariablesInfo(final int methodNr) {
-        if (this.verify() != VerificationResult.VR_OK) {
-            return null; // It's cached, don't worry.
-        }
-        if (methodNr < 0 || methodNr >= localVariablesInfos.length) {
-            throw new AssertionViolatedException("Method number out of range.");
-        }
-        return localVariablesInfos[methodNr];
     }
 }

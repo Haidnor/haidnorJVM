@@ -134,6 +134,14 @@ public final class ExceptionTable extends Attribute {
     }
 
     /**
+     * @param exceptionIndexTable the list of exception indexes Also redefines number_of_exceptions according to table
+     *                            length.
+     */
+    public void setExceptionIndexTable(final int[] exceptionIndexTable) {
+        this.exceptionIndexTable = exceptionIndexTable != null ? exceptionIndexTable : ArrayUtils.EMPTY_INT_ARRAY;
+    }
+
+    /**
      * @return class names of thrown exceptions
      */
     public String[] getExceptionNames() {
@@ -147,14 +155,6 @@ public final class ExceptionTable extends Attribute {
      */
     public int getNumberOfExceptions() {
         return exceptionIndexTable == null ? 0 : exceptionIndexTable.length;
-    }
-
-    /**
-     * @param exceptionIndexTable the list of exception indexes Also redefines number_of_exceptions according to table
-     *                            length.
-     */
-    public void setExceptionIndexTable(final int[] exceptionIndexTable) {
-        this.exceptionIndexTable = exceptionIndexTable != null ? exceptionIndexTable : ArrayUtils.EMPTY_INT_ARRAY;
     }
 
     /**

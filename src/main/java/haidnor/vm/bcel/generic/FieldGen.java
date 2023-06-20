@@ -48,23 +48,7 @@ public class FieldGen extends FieldGenOrMethodGen {
             return THIS.getSignature().hashCode() ^ THIS.getName().hashCode();
         }
     };
-
-    /**
-     * @return Comparison strategy object
-     */
-    public static BCELComparator getComparator() {
-        return bcelComparator;
-    }
-
-    /**
-     * @param comparator Comparison strategy object
-     */
-    public static void setComparator(final BCELComparator comparator) {
-        bcelComparator = comparator;
-    }
-
     private Object value;
-
     private List<FieldObserver> observers;
 
     /**
@@ -102,6 +86,20 @@ public class FieldGen extends FieldGenOrMethodGen {
         setType(type);
         setName(name);
         setConstantPool(cp);
+    }
+
+    /**
+     * @return Comparison strategy object
+     */
+    public static BCELComparator getComparator() {
+        return bcelComparator;
+    }
+
+    /**
+     * @param comparator Comparison strategy object
+     */
+    public static void setComparator(final BCELComparator comparator) {
+        bcelComparator = comparator;
     }
 
     private void addAnnotationsAsAttribute(final ConstantPoolGen cp) {
@@ -202,31 +200,6 @@ public class FieldGen extends FieldGenOrMethodGen {
         return null;
     }
 
-    @Override
-    public String getSignature() {
-        return super.getType().getSignature();
-    }
-
-    /**
-     * Return value as defined by given BCELComparator strategy. By default return the hashcode of the field's name XOR
-     * signature.
-     *
-     * @see Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-        return bcelComparator.hashCode(this);
-    }
-
-    /**
-     * Remove observer for this object.
-     */
-    public void removeObserver(final FieldObserver o) {
-        if (observers != null) {
-            observers.remove(o);
-        }
-    }
-
     public void setInitValue(final boolean b) {
         checkType(Type.BOOLEAN);
         if (b) {
@@ -290,6 +263,31 @@ public class FieldGen extends FieldGenOrMethodGen {
         checkType(ObjectType.getInstance("java.lang.String"));
         if (str != null) {
             value = str;
+        }
+    }
+
+    @Override
+    public String getSignature() {
+        return super.getType().getSignature();
+    }
+
+    /**
+     * Return value as defined by given BCELComparator strategy. By default return the hashcode of the field's name XOR
+     * signature.
+     *
+     * @see Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        return bcelComparator.hashCode(this);
+    }
+
+    /**
+     * Remove observer for this object.
+     */
+    public void removeObserver(final FieldObserver o) {
+        if (observers != null) {
+            observers.remove(o);
         }
     }
 

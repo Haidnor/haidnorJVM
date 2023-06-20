@@ -53,16 +53,57 @@ import java.util.Map;
  */
 public abstract class Attribute implements Cloneable, Node {
 
-    private static final boolean debug = Boolean.getBoolean(Attribute.class.getCanonicalName() + ".debug"); // Debugging on/off
-
-    private static final Map<String, Object> READERS = new HashMap<>();
-
     /**
      * Empty array.
      *
      * @since 6.6.0
      */
     public static final Attribute[] EMPTY_ARRAY = {};
+    private static final boolean debug = Boolean.getBoolean(Attribute.class.getCanonicalName() + ".debug"); // Debugging on/off
+    private static final Map<String, Object> READERS = new HashMap<>();
+    /**
+     * @deprecated (since 6.0) will be made private; do not access directly, use getter/setter
+     */
+    @java.lang.Deprecated
+    protected int name_index; // Points to attribute name in constant pool TODO make private (has getter & setter)
+    /**
+     * @deprecated (since 6.0) (since 6.0) will be made private; do not access directly, use getter/setter
+     */
+    @java.lang.Deprecated
+    protected int length; // Content length of attribute field TODO make private (has getter & setter)
+    /**
+     * @deprecated (since 6.0) will be made private; do not access directly, use getter/setter
+     */
+    @java.lang.Deprecated
+    protected byte tag; // Tag to distinguish subclasses TODO make private & final; supposed to be immutable
+    /**
+     * @deprecated (since 6.0) will be made private; do not access directly, use getter/setter
+     */
+    @java.lang.Deprecated
+    protected ConstantPool constant_pool; // TODO make private (has getter & setter)
+
+    /**
+     * Constructs an instance.
+     *
+     * <pre>
+     * attribute_info {
+     *   u2 attribute_name_index;
+     *   u4 attribute_length;
+     *   u1 info[attribute_length];
+     * }
+     * </pre>
+     *
+     * @param tag          tag.
+     * @param nameIndex    u2 name index.
+     * @param length       u4 length.
+     * @param constantPool constant pool.
+     */
+    protected Attribute(final byte tag, final int nameIndex, final int length, final ConstantPool constantPool) {
+        this.tag = tag;
+        this.name_index = Args.requireU2(nameIndex, 0, constantPool.getLength(), getClass().getSimpleName() + " name index");
+        this.length = Args.requireU4(length, getClass().getSimpleName() + " attribute length");
+        this.constant_pool = constantPool;
+    }
 
     /**
      * Add an Attribute reader capable of parsing (user-defined) attributes named "name". You should not add readers for the
@@ -221,53 +262,6 @@ public abstract class Attribute implements Cloneable, Node {
     }
 
     /**
-     * @deprecated (since 6.0) will be made private; do not access directly, use getter/setter
-     */
-    @java.lang.Deprecated
-    protected int name_index; // Points to attribute name in constant pool TODO make private (has getter & setter)
-
-    /**
-     * @deprecated (since 6.0) (since 6.0) will be made private; do not access directly, use getter/setter
-     */
-    @java.lang.Deprecated
-    protected int length; // Content length of attribute field TODO make private (has getter & setter)
-
-    /**
-     * @deprecated (since 6.0) will be made private; do not access directly, use getter/setter
-     */
-    @java.lang.Deprecated
-    protected byte tag; // Tag to distinguish subclasses TODO make private & final; supposed to be immutable
-
-    /**
-     * @deprecated (since 6.0) will be made private; do not access directly, use getter/setter
-     */
-    @java.lang.Deprecated
-    protected ConstantPool constant_pool; // TODO make private (has getter & setter)
-
-    /**
-     * Constructs an instance.
-     *
-     * <pre>
-     * attribute_info {
-     *   u2 attribute_name_index;
-     *   u4 attribute_length;
-     *   u1 info[attribute_length];
-     * }
-     * </pre>
-     *
-     * @param tag          tag.
-     * @param nameIndex    u2 name index.
-     * @param length       u4 length.
-     * @param constantPool constant pool.
-     */
-    protected Attribute(final byte tag, final int nameIndex, final int length, final ConstantPool constantPool) {
-        this.tag = tag;
-        this.name_index = Args.requireU2(nameIndex, 0, constantPool.getLength(), getClass().getSimpleName() + " name index");
-        this.length = Args.requireU4(length, getClass().getSimpleName() + " attribute length");
-        this.constant_pool = constantPool;
-    }
-
-    /**
      * Called by objects that are traversing the nodes of the tree implicitly defined by the contents of a Java class.
      * I.e., the hierarchy of methods, fields, attributes, etc. spawns a tree of objects.
      *
@@ -318,10 +312,25 @@ public abstract class Attribute implements Cloneable, Node {
     }
 
     /**
+     * @param constantPool Constant pool to be used for this object.
+     * @see ConstantPool
+     */
+    public final void setConstantPool(final ConstantPool constantPool) {
+        this.constant_pool = constantPool;
+    }
+
+    /**
      * @return Length of attribute field in bytes.
      */
     public final int getLength() {
         return length;
+    }
+
+    /**
+     * @param length length in bytes.
+     */
+    public final void setLength(final int length) {
+        this.length = length;
     }
 
     /**
@@ -340,32 +349,17 @@ public abstract class Attribute implements Cloneable, Node {
     }
 
     /**
-     * @return Tag of attribute, i.e., its type. Value may not be altered, thus there is no setTag() method.
-     */
-    public final byte getTag() {
-        return tag;
-    }
-
-    /**
-     * @param constantPool Constant pool to be used for this object.
-     * @see ConstantPool
-     */
-    public final void setConstantPool(final ConstantPool constantPool) {
-        this.constant_pool = constantPool;
-    }
-
-    /**
-     * @param length length in bytes.
-     */
-    public final void setLength(final int length) {
-        this.length = length;
-    }
-
-    /**
      * @param nameIndex of attribute.
      */
     public final void setNameIndex(final int nameIndex) {
         this.name_index = nameIndex;
+    }
+
+    /**
+     * @return Tag of attribute, i.e., its type. Value may not be altered, thus there is no setTag() method.
+     */
+    public final byte getTag() {
+        return tag;
     }
 
     /**

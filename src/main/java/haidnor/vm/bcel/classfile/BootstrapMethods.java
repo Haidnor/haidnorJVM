@@ -122,16 +122,16 @@ public class BootstrapMethods extends Attribute implements Iterable<BootstrapMet
         return bootstrapMethods;
     }
 
-    @Override
-    public Iterator<BootstrapMethod> iterator() {
-        return Stream.of(bootstrapMethods).iterator();
-    }
-
     /**
      * @param bootstrapMethods the array of bootstrap methods
      */
     public final void setBootstrapMethods(final BootstrapMethod[] bootstrapMethods) {
         this.bootstrapMethods = bootstrapMethods;
+    }
+
+    @Override
+    public Iterator<BootstrapMethod> iterator() {
+        return Stream.of(bootstrapMethods).iterator();
     }
 
     /**

@@ -39,66 +39,16 @@ import java.awt.event.WindowEvent;
  */
 public class VerifyDialog extends JDialog {
 
-    /**
-     * Machine-generated.
-     */
-    class IvjEventHandler implements ActionListener {
-
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-            if (e.getSource() == VerifyDialog.this.getPass1Button()) {
-                connEtoC1(e);
-            }
-            if (e.getSource() == VerifyDialog.this.getPass2Button()) {
-                connEtoC2(e);
-            }
-            if (e.getSource() == VerifyDialog.this.getPass3Button()) {
-                connEtoC3(e);
-            }
-            if (e.getSource() == VerifyDialog.this.getFlushButton()) {
-                connEtoC4(e);
-            }
-        }
-    }
-
     private static final long serialVersionUID = -6374807677043142313L;
     /**
      * This field is here to count the number of open VerifyDialog instances so the JVM can be exited afer every Dialog had
      * been closed.
      */
     private static int classesToVerify;
-
     /**
-     * Verifies one or more class files. Verification results are presented graphically: Red means 'rejected', green means
-     * 'passed' while yellow means 'could not be verified yet'.
-     *
-     * @param args String[] fully qualified names of classes to verify.
+     * Machine-generated.
      */
-    public static void main(final String[] args) {
-        classesToVerify = args.length;
-        for (final String arg : args) {
-            try {
-                final VerifyDialog aVerifyDialog;
-                aVerifyDialog = new VerifyDialog(arg);
-                aVerifyDialog.setModal(true);
-                aVerifyDialog.addWindowListener(new WindowAdapter() {
-
-                    @Override
-                    public void windowClosing(final WindowEvent e) {
-                        classesToVerify--;
-                        if (classesToVerify == 0) {
-                            System.exit(0);
-                        }
-                    }
-                });
-                aVerifyDialog.setVisible(true);
-            } catch (final Throwable exception) {
-                System.err.println("Exception occurred in main() of JDialog");
-                exception.printStackTrace(System.out);
-            }
-        }
-    }
-
+    private final IvjEventHandler ivjEventHandler = new IvjEventHandler();
     /**
      * Machine-generated.
      */
@@ -127,18 +77,11 @@ public class VerifyDialog extends JDialog {
      * Machine-generated.
      */
     private JButton ivjPass3Button;
-
-    /**
-     * Machine-generated.
-     */
-    private final IvjEventHandler ivjEventHandler = new IvjEventHandler();
-
     /**
      * The class to verify. Default set to 'java.lang.Object' in case this class is instantiated via one of the many
      * machine-generated constructors.
      */
     private String className = "java.lang.Object";
-
     /**
      * Machine-generated.
      */
@@ -220,6 +163,37 @@ public class VerifyDialog extends JDialog {
         fullyQualifiedClassName = Utility.pathToPackage(fullyQualifiedClassName);
         this.className = fullyQualifiedClassName;
         initialize();
+    }
+
+    /**
+     * Verifies one or more class files. Verification results are presented graphically: Red means 'rejected', green means
+     * 'passed' while yellow means 'could not be verified yet'.
+     *
+     * @param args String[] fully qualified names of classes to verify.
+     */
+    public static void main(final String[] args) {
+        classesToVerify = args.length;
+        for (final String arg : args) {
+            try {
+                final VerifyDialog aVerifyDialog;
+                aVerifyDialog = new VerifyDialog(arg);
+                aVerifyDialog.setModal(true);
+                aVerifyDialog.addWindowListener(new WindowAdapter() {
+
+                    @Override
+                    public void windowClosing(final WindowEvent e) {
+                        classesToVerify--;
+                        if (classesToVerify == 0) {
+                            System.exit(0);
+                        }
+                    }
+                });
+                aVerifyDialog.setVisible(true);
+            } catch (final Throwable exception) {
+                System.err.println("Exception occurred in main() of JDialog");
+                exception.printStackTrace(System.out);
+            }
+        }
     }
 
     /**
@@ -607,5 +581,27 @@ public class VerifyDialog extends JDialog {
         }
         getPass3Panel().setBackground(color);
         getPass3Panel().repaint();
+    }
+
+    /**
+     * Machine-generated.
+     */
+    class IvjEventHandler implements ActionListener {
+
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            if (e.getSource() == VerifyDialog.this.getPass1Button()) {
+                connEtoC1(e);
+            }
+            if (e.getSource() == VerifyDialog.this.getPass2Button()) {
+                connEtoC2(e);
+            }
+            if (e.getSource() == VerifyDialog.this.getPass3Button()) {
+                connEtoC3(e);
+            }
+            if (e.getSource() == VerifyDialog.this.getFlushButton()) {
+                connEtoC4(e);
+            }
+        }
     }
 }

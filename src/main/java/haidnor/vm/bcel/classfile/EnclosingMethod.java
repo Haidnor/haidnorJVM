@@ -81,6 +81,10 @@ public class EnclosingMethod extends Attribute {
         return classIndex;
     }
 
+    public final void setEnclosingClassIndex(final int idx) {
+        classIndex = idx;
+    }
+
     public final ConstantNameAndType getEnclosingMethod() {
         if (methodIndex == 0) {
             return null;
@@ -90,10 +94,6 @@ public class EnclosingMethod extends Attribute {
 
     public final int getEnclosingMethodIndex() {
         return methodIndex;
-    }
-
-    public final void setEnclosingClassIndex(final int idx) {
-        classIndex = idx;
     }
 
     public final void setEnclosingMethodIndex(final int idx) {

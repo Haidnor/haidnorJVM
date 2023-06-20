@@ -33,9 +33,9 @@ final class CodeHTML {
     private final String className; // name of current class
     // private Method[] methods; // Methods to print
     private final PrintWriter printWriter; // file to write to
-    private BitSet gotoSet;
     private final ConstantPool constantPool;
     private final ConstantHTML constantHtml;
+    private BitSet gotoSet;
 
     CodeHTML(final String dir, final String className, final Method[] methods, final ConstantPool constantPool, final ConstantHTML constantHtml,
              final Charset charset) throws IOException {

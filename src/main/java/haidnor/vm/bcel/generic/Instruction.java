@@ -31,6 +31,27 @@ public abstract class Instruction implements Cloneable {
     static final Instruction[] EMPTY_ARRAY = {};
 
     private static InstructionComparator cmp = InstructionComparator.DEFAULT;
+    /**
+     * @deprecated (since 6.0) will be made private; do not access directly, use getter/setter
+     */
+    @Deprecated
+    protected short length = 1; // Length of instruction in bytes
+    /**
+     * @deprecated (since 6.0) will be made private; do not access directly, use getter/setter
+     */
+    @Deprecated
+    protected short opcode = -1; // Opcode number
+
+    /**
+     * Empty constructor needed for Instruction.readInstruction. Not to be used otherwise.
+     */
+    Instruction() {
+    }
+
+    public Instruction(final short opcode, final short length) {
+        this.length = length;
+        this.opcode = opcode;
+    }
 
     /**
      * Gets Comparator object used in the equals() method to determine equality of instructions.
@@ -41,6 +62,16 @@ public abstract class Instruction implements Cloneable {
     @Deprecated
     public static InstructionComparator getComparator() {
         return cmp;
+    }
+
+    /**
+     * Sets comparator to be used for equals().
+     *
+     * @deprecated (6.0) use the built in comparator, or wrap this class in another object that implements these methods
+     */
+    @Deprecated
+    public static void setComparator(final InstructionComparator c) {
+        cmp = c;
     }
 
     /**
@@ -396,39 +427,6 @@ public abstract class Instruction implements Cloneable {
     }
 
     /**
-     * Sets comparator to be used for equals().
-     *
-     * @deprecated (6.0) use the built in comparator, or wrap this class in another object that implements these methods
-     */
-    @Deprecated
-    public static void setComparator(final InstructionComparator c) {
-        cmp = c;
-    }
-
-    /**
-     * @deprecated (since 6.0) will be made private; do not access directly, use getter/setter
-     */
-    @Deprecated
-    protected short length = 1; // Length of instruction in bytes
-
-    /**
-     * @deprecated (since 6.0) will be made private; do not access directly, use getter/setter
-     */
-    @Deprecated
-    protected short opcode = -1; // Opcode number
-
-    /**
-     * Empty constructor needed for Instruction.readInstruction. Not to be used otherwise.
-     */
-    Instruction() {
-    }
-
-    public Instruction(final short opcode, final short length) {
-        this.length = length;
-        this.opcode = opcode;
-    }
-
-    /**
      * Call corresponding visitor method(s). The order is: Call visitor methods of implemented interfaces first, then call
      * methods according to the class hierarchy in descending order, i.e., the most specific visitXXX() call comes last.
      *
@@ -503,6 +501,15 @@ public abstract class Instruction implements Cloneable {
     }
 
     /**
+     * Needed in readInstruction and subclasses in this package
+     *
+     * @since 6.0
+     */
+    final void setLength(final int length) {
+        this.length = (short) length; // TODO check range?
+    }
+
+    /**
      * @return name of instruction, i.e., opcode name
      */
     public String getName() {
@@ -514,6 +521,13 @@ public abstract class Instruction implements Cloneable {
      */
     public short getOpcode() {
         return opcode;
+    }
+
+    /**
+     * Needed in readInstruction and subclasses in this package
+     */
+    final void setOpcode(final short opcode) {
+        this.opcode = opcode;
     }
 
     /**
@@ -547,22 +561,6 @@ public abstract class Instruction implements Cloneable {
      */
     public int produceStack(final ConstantPoolGen cpg) {
         return Const.getProduceStack(opcode);
-    }
-
-    /**
-     * Needed in readInstruction and subclasses in this package
-     *
-     * @since 6.0
-     */
-    final void setLength(final int length) {
-        this.length = (short) length; // TODO check range?
-    }
-
-    /**
-     * Needed in readInstruction and subclasses in this package
-     */
-    final void setOpcode(final short opcode) {
-        this.opcode = opcode;
     }
 
     /**

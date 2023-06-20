@@ -45,12 +45,36 @@ public abstract class Constant implements Cloneable, Node {
             return THIS.toString().hashCode();
         }
     };
+    /**
+     * @deprecated (since 6.0) will be made private; do not access directly, use getter/setter
+     */
+    @java.lang.Deprecated
+    protected byte tag; // TODO should be private & final
+
+    Constant(final byte tag) {
+        this.tag = tag;
+    }
 
     /**
      * @return Comparison strategy object
      */
     public static BCELComparator getComparator() {
         return bcelComparator;
+    }
+
+    /*
+     * In fact this tag is redundant since we can distinguish different 'Constant' objects by their type, i.e., via
+     * 'instanceof'. In some places we will use the tag for switch()es anyway.
+     *
+     * First, we want match the specification as closely as possible. Second we need the tag as an index to select the
+     * corresponding class name from the 'CONSTANT_NAMES' array.
+     */
+
+    /**
+     * @param comparator Comparison strategy object
+     */
+    public static void setComparator(final BCELComparator comparator) {
+        bcelComparator = comparator;
     }
 
     /**
@@ -102,30 +126,6 @@ public abstract class Constant implements Cloneable, Node {
             default:
                 throw new ClassFormatException("Invalid byte tag in constant pool: " + b);
         }
-    }
-
-    /**
-     * @param comparator Comparison strategy object
-     */
-    public static void setComparator(final BCELComparator comparator) {
-        bcelComparator = comparator;
-    }
-
-    /*
-     * In fact this tag is redundant since we can distinguish different 'Constant' objects by their type, i.e., via
-     * 'instanceof'. In some places we will use the tag for switch()es anyway.
-     *
-     * First, we want match the specification as closely as possible. Second we need the tag as an index to select the
-     * corresponding class name from the 'CONSTANT_NAMES' array.
-     */
-    /**
-     * @deprecated (since 6.0) will be made private; do not access directly, use getter/setter
-     */
-    @java.lang.Deprecated
-    protected byte tag; // TODO should be private & final
-
-    Constant(final byte tag) {
-        this.tag = tag;
     }
 
     /**

@@ -39,7 +39,7 @@ public class ConstantFloatInfo extends ConstantInfo {
     }
 
     @Override
-    public   ConstantInfoEnum getConstantInfoEnum() {
+    public ConstantInfoEnum getConstantInfoEnum() {
         return constantInfoEnum;
     }
 }

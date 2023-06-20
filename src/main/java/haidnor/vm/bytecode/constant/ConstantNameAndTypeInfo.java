@@ -23,15 +23,12 @@ public class ConstantNameAndTypeInfo extends ConstantInfo {
      * 表示特殊方法名称 <init> （§2.9）或表示字段或方法的有效非限定名称（§4.2.2） .
      */
     public final int nameIndex;
-
-    public ConstantUtf8Info nameConstantUtf8Info;
-
     /**
      * descriptor_index 项的值必须是 constant_pool 表中的有效索引。
      * 该索引处的 constant_pool 条目必须是 CONSTANT_Utf8_info 结构（§4.4.7），表示有效的字段描述符或方法描述符（§4.3.2、§4.3.3）。
      */
     public final int descriptionIndex;
-
+    public ConstantUtf8Info nameConstantUtf8Info;
     public ConstantUtf8Info descriptionConstantUtf8Info;
 
     public ConstantNameAndTypeInfo(int nameIndex, int descriptionIndex) {
@@ -49,7 +46,7 @@ public class ConstantNameAndTypeInfo extends ConstantInfo {
     }
 
     @Override
-    public   ConstantInfoEnum getConstantInfoEnum() {
+    public ConstantInfoEnum getConstantInfoEnum() {
         return constantInfoEnum;
     }
 }

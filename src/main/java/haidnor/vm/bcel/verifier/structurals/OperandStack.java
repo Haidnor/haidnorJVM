@@ -31,14 +31,13 @@ import java.util.ArrayList;
 public class OperandStack implements Cloneable {
 
     /**
-     * We hold the stack information here.
-     */
-    private ArrayList<Type> stack = new ArrayList<>();
-
-    /**
      * The maximum number of stack slots this OperandStack instance may hold.
      */
     private final int maxStack;
+    /**
+     * We hold the stack information here.
+     */
+    private ArrayList<Type> stack = new ArrayList<>();
 
     /**
      * Creates an empty stack with a maximum of maxStack slots.

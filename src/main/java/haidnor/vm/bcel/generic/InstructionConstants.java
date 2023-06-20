@@ -34,12 +34,6 @@ package haidnor.vm.bcel.generic;
 @Deprecated
 public interface InstructionConstants {
 
-    /**
-     * Deprecated, consider private and ignore.
-     */
-    class Clinit {
-    }
-
     /*
      * NOTE these are not currently immutable, because Instruction has mutable protected fields opcode and length.
      */
@@ -150,7 +144,6 @@ public interface InstructionConstants {
     Instruction ATHROW = InstructionConst.ATHROW;
     Instruction MONITORENTER = InstructionConst.MONITORENTER;
     Instruction MONITOREXIT = InstructionConst.MONITOREXIT;
-
     /**
      * You can use these constants in multiple places safely, if you can guarantee that you will never alter their internal
      * values, e.g. call setIndex().
@@ -168,14 +161,18 @@ public interface InstructionConstants {
     LocalVariableInstruction ISTORE_0 = InstructionConst.ISTORE_0;
     LocalVariableInstruction ISTORE_1 = InstructionConst.ISTORE_1;
     LocalVariableInstruction ISTORE_2 = InstructionConst.ISTORE_2;
-
     /**
      * Gets object via its opcode, for immutable instructions like branch instructions entries are set to null.
      */
     Instruction[] INSTRUCTIONS = InstructionConst.INSTRUCTIONS;
-
     /**
      * Interfaces may have no static initializers, so we simulate this with an inner class.
      */
     Clinit bla = new Clinit();
+
+    /**
+     * Deprecated, consider private and ignore.
+     */
+    class Clinit {
+    }
 }

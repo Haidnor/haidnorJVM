@@ -45,42 +45,23 @@ public class ClassGen extends AccessFlags implements Cloneable {
             return THIS.getClassName().hashCode();
         }
     };
-
-    /**
-     * @return Comparison strategy object
-     */
-    public static BCELComparator getComparator() {
-        return bcelComparator;
-    }
-
-    /**
-     * @param comparator Comparison strategy object
-     */
-    public static void setComparator(final BCELComparator comparator) {
-        bcelComparator = comparator;
-    }
-
+    private final String fileName;
+    // ArrayLists instead of arrays to gather fields, methods, etc.
+    private final List<Field> fieldList = new ArrayList<>();
+    private final List<Method> methodList = new ArrayList<>();
+    private final List<Attribute> attributeList = new ArrayList<>();
+    private final List<String> interfaceList = new ArrayList<>();
+    private final List<AnnotationEntryGen> annotationList = new ArrayList<>();
     /*
      * Corresponds to the fields found in a JavaClass object.
      */
     private String className;
     private String superClassName;
-    private final String fileName;
     private int classNameIndex = -1;
     private int superclassNameIndex = -1;
     private int major = Const.MAJOR_1_1;
     private int minor = Const.MINOR_1_1;
     private ConstantPoolGen cp; // Template for building up constant pool
-    // ArrayLists instead of arrays to gather fields, methods, etc.
-    private final List<Field> fieldList = new ArrayList<>();
-    private final List<Method> methodList = new ArrayList<>();
-
-    private final List<Attribute> attributeList = new ArrayList<>();
-
-    private final List<String> interfaceList = new ArrayList<>();
-
-    private final List<AnnotationEntryGen> annotationList = new ArrayList<>();
-
     private List<ClassObserver> observers;
 
     /**
@@ -151,6 +132,20 @@ public class ClassGen extends AccessFlags implements Cloneable {
         if (interfaces != null) {
             Collections.addAll(interfaceList, interfaces);
         }
+    }
+
+    /**
+     * @return Comparison strategy object
+     */
+    public static BCELComparator getComparator() {
+        return bcelComparator;
+    }
+
+    /**
+     * @param comparator Comparison strategy object
+     */
+    public static void setComparator(final BCELComparator comparator) {
+        bcelComparator = comparator;
     }
 
     public void addAnnotationEntry(final AnnotationEntryGen a) {
@@ -281,12 +276,26 @@ public class ClassGen extends AccessFlags implements Cloneable {
         return className;
     }
 
+    public void setClassName(final String name) {
+        className = Utility.pathToPackage(name);
+        classNameIndex = cp.addClass(name);
+    }
+
     public int getClassNameIndex() {
         return classNameIndex;
     }
 
+    public void setClassNameIndex(final int classNameIndex) {
+        this.classNameIndex = classNameIndex;
+        this.className = Utility.pathToPackage(cp.getConstantPool().getConstantString(classNameIndex, Const.CONSTANT_Class));
+    }
+
     public ConstantPoolGen getConstantPool() {
         return cp;
+    }
+
+    public void setConstantPool(final ConstantPoolGen constantPool) {
+        cp = constantPool;
     }
 
     public Field[] getFields() {
@@ -338,12 +347,26 @@ public class ClassGen extends AccessFlags implements Cloneable {
         return major;
     }
 
+    /**
+     * Set major version number of class file, default value is 45 (JDK 1.1)
+     *
+     * @param major major version number
+     */
+    public void setMajor(final int major) { // TODO could be package-protected - only called by test code
+        this.major = major;
+    }
+
     public Method getMethodAt(final int pos) {
         return methodList.get(pos);
     }
 
     public Method[] getMethods() {
         return methodList.toArray(Method.EMPTY_ARRAY);
+    }
+
+    public void setMethods(final Method[] methods) {
+        methodList.clear();
+        Collections.addAll(methodList, methods);
     }
 
     /**
@@ -353,12 +376,31 @@ public class ClassGen extends AccessFlags implements Cloneable {
         return minor;
     }
 
+    /**
+     * Set minor version number of class file, default value is 3 (JDK 1.1)
+     *
+     * @param minor minor version number
+     */
+    public void setMinor(final int minor) { // TODO could be package-protected - only called by test code
+        this.minor = minor;
+    }
+
     public String getSuperclassName() {
         return superClassName;
     }
 
+    public void setSuperclassName(final String name) {
+        superClassName = Utility.pathToPackage(name);
+        superclassNameIndex = cp.addClass(name);
+    }
+
     public int getSuperclassNameIndex() {
         return superclassNameIndex;
+    }
+
+    public void setSuperclassNameIndex(final int superclassNameIndex) {
+        this.superclassNameIndex = superclassNameIndex;
+        superClassName = Utility.pathToPackage(cp.getConstantPool().getConstantString(superclassNameIndex, Const.CONSTANT_Class));
     }
 
     /**
@@ -446,55 +488,8 @@ public class ClassGen extends AccessFlags implements Cloneable {
         }
     }
 
-    public void setClassName(final String name) {
-        className = Utility.pathToPackage(name);
-        classNameIndex = cp.addClass(name);
-    }
-
-    public void setClassNameIndex(final int classNameIndex) {
-        this.classNameIndex = classNameIndex;
-        this.className = Utility.pathToPackage(cp.getConstantPool().getConstantString(classNameIndex, Const.CONSTANT_Class));
-    }
-
-    public void setConstantPool(final ConstantPoolGen constantPool) {
-        cp = constantPool;
-    }
-
-    /**
-     * Set major version number of class file, default value is 45 (JDK 1.1)
-     *
-     * @param major major version number
-     */
-    public void setMajor(final int major) { // TODO could be package-protected - only called by test code
-        this.major = major;
-    }
-
     public void setMethodAt(final Method method, final int pos) {
         methodList.set(pos, method);
-    }
-
-    public void setMethods(final Method[] methods) {
-        methodList.clear();
-        Collections.addAll(methodList, methods);
-    }
-
-    /**
-     * Set minor version number of class file, default value is 3 (JDK 1.1)
-     *
-     * @param minor minor version number
-     */
-    public void setMinor(final int minor) { // TODO could be package-protected - only called by test code
-        this.minor = minor;
-    }
-
-    public void setSuperclassName(final String name) {
-        superClassName = Utility.pathToPackage(name);
-        superclassNameIndex = cp.addClass(name);
-    }
-
-    public void setSuperclassNameIndex(final int superclassNameIndex) {
-        this.superclassNameIndex = superclassNameIndex;
-        superClassName = Utility.pathToPackage(cp.getConstantPool().getConstantString(superclassNameIndex, Const.CONSTANT_Class));
     }
 
     /**

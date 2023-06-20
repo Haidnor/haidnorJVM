@@ -39,17 +39,25 @@ import java.util.Locale;
  */
 public class BCELifier extends EmptyVisitor {
 
-    /**
-     * Enum corresponding to flag source.
-     */
-    public enum FLAGS {
-        UNKNOWN, CLASS, METHOD,
-    }
-
     // The base package name for imports; assumes Const is at the top level
     // N.B we use the class so renames will be detected by the compiler/IDE
     private static final String BASE_PACKAGE = Const.class.getPackage().getName();
     private static final String CONSTANT_PREFIX = Const.class.getSimpleName() + ".";
+    private final JavaClass clazz;
+    private final PrintWriter printWriter;
+    private final ConstantPoolGen constantPoolGen;
+
+    /**
+     * Constructs a new instance.
+     *
+     * @param clazz Java class to "decompile".
+     * @param out   where to print the Java program in UTF-8.
+     */
+    public BCELifier(final JavaClass clazz, final OutputStream out) {
+        this.clazz = clazz;
+        this.printWriter = new PrintWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8), false);
+        this.constantPoolGen = new ConstantPoolGen(this.clazz.getConstantPool());
+    }
 
     // Needs to be accessible from unit test code
     static JavaClass getJavaClass(final String name) throws ClassNotFoundException, IOException {
@@ -148,24 +156,6 @@ public class BCELifier extends EmptyVisitor {
 
     static String printType(final Type type) {
         return printType(type.getSignature());
-    }
-
-    private final JavaClass clazz;
-
-    private final PrintWriter printWriter;
-
-    private final ConstantPoolGen constantPoolGen;
-
-    /**
-     * Constructs a new instance.
-     *
-     * @param clazz Java class to "decompile".
-     * @param out   where to print the Java program in UTF-8.
-     */
-    public BCELifier(final JavaClass clazz, final OutputStream out) {
-        this.clazz = clazz;
-        this.printWriter = new PrintWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8), false);
-        this.constantPoolGen = new ConstantPoolGen(this.clazz.getConstantPool());
     }
 
     private void printCreate() {
@@ -307,5 +297,12 @@ public class BCELifier extends EmptyVisitor {
         printWriter.println("    method.setMaxLocals();");
         printWriter.println("    _cg.addMethod(method.getMethod());");
         printWriter.println("    il.dispose();");
+    }
+
+    /**
+     * Enum corresponding to flag source.
+     */
+    public enum FLAGS {
+        UNKNOWN, CLASS, METHOD,
     }
 }

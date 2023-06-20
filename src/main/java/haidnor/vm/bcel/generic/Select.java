@@ -158,10 +158,26 @@ public abstract class Select extends BranchInstruction implements VariableLength
     }
 
     /**
+     * @param fixedLength the fixed_length to set
+     * @since 6.0
+     */
+    final void setFixedLength(final int fixedLength) {
+        this.fixed_length = fixedLength;
+    }
+
+    /**
      * @return array of match target offsets
      */
     public int[] getIndices() {
         return indices;
+    }
+
+    /**
+     * @param array
+     * @since 6.0
+     */
+    final void setIndices(final int[] array) {
+        indices = array;
     }
 
     /**
@@ -219,6 +235,14 @@ public abstract class Select extends BranchInstruction implements VariableLength
     }
 
     /**
+     * @param array
+     * @since 6.0
+     */
+    final void setTargets(final InstructionHandle[] array) {
+        targets = array;
+    }
+
+    /**
      * Read needed data (e.g. index) from file.
      */
     @Override
@@ -232,27 +256,11 @@ public abstract class Select extends BranchInstruction implements VariableLength
     }
 
     /**
-     * @param fixedLength the fixed_length to set
-     * @since 6.0
-     */
-    final void setFixedLength(final int fixedLength) {
-        this.fixed_length = fixedLength;
-    }
-
-    /**
      * @since 6.0
      */
     final int setIndices(final int i, final int value) {
         indices[i] = value;
         return value; // Allow use in nested calls
-    }
-
-    /**
-     * @param array
-     * @since 6.0
-     */
-    final void setIndices(final int[] array) {
-        indices = array;
     }
 
     /**
@@ -287,14 +295,6 @@ public abstract class Select extends BranchInstruction implements VariableLength
     public void setTarget(final int i, final InstructionHandle target) { // TODO could be package-protected?
         notifyTarget(targets[i], target, this);
         targets[i] = target;
-    }
-
-    /**
-     * @param array
-     * @since 6.0
-     */
-    final void setTargets(final InstructionHandle[] array) {
-        targets = array;
     }
 
     /**

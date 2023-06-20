@@ -43,6 +43,16 @@ import java.lang.reflect.Modifier;
  */
 public class JavaWrapper {
 
+    private final java.lang.ClassLoader loader;
+
+    public JavaWrapper() {
+        this(getClassLoader());
+    }
+
+    public JavaWrapper(final java.lang.ClassLoader loader) {
+        this.loader = loader;
+    }
+
     private static java.lang.ClassLoader getClassLoader() {
         final String s = System.getProperty("bcel.classloader");
         if (StringUtils.isEmpty(s)) {
@@ -70,16 +80,6 @@ public class JavaWrapper {
         final String[] newArgv = new String[argv.length - 1];
         System.arraycopy(argv, 1, newArgv, 0, newArgv.length);
         new JavaWrapper().runMain(className, newArgv);
-    }
-
-    private final java.lang.ClassLoader loader;
-
-    public JavaWrapper() {
-        this(getClassLoader());
-    }
-
-    public JavaWrapper(final java.lang.ClassLoader loader) {
-        this.loader = loader;
     }
 
     /**

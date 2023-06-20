@@ -44,10 +44,10 @@ import java.util.Set;
  */
 public class Class2HTML implements Constants {
 
+    private static final Set<String> basicTypes = new HashSet<>();
     private static String classPackage; // name of package, unclean to make it static, but ...
     private static String className; // name of current class, dito
     private static ConstantPool constantPool;
-    private static final Set<String> basicTypes = new HashSet<>();
 
     static {
         basicTypes.add("int");
@@ -59,6 +59,45 @@ public class Class2HTML implements Constants {
         basicTypes.add("long");
         basicTypes.add("double");
         basicTypes.add("float");
+    }
+
+    private final JavaClass javaClass; // current class object
+    private final String dir;
+
+    /**
+     * Write contents of the given JavaClass into HTML files.
+     *
+     * @param javaClass The class to write
+     * @param dir       The directory to put the files in
+     * @throws IOException Thrown when an I/O exception of some sort has occurred.
+     */
+    public Class2HTML(final JavaClass javaClass, final String dir) throws IOException {
+        this(javaClass, dir, StandardCharsets.UTF_8);
+    }
+
+    private Class2HTML(final JavaClass javaClass, final String dir, final Charset charset) throws IOException {
+        final Method[] methods = javaClass.getMethods();
+        this.javaClass = javaClass;
+        this.dir = dir;
+        className = javaClass.getClassName(); // Remember full name
+        constantPool = javaClass.getConstantPool();
+        // Get package name by tacking off everything after the last '.'
+        final int index = className.lastIndexOf('.');
+        if (index > -1) {
+            classPackage = className.substring(0, index);
+        } else {
+            classPackage = ""; // default package
+        }
+        final ConstantHTML constantHtml = new ConstantHTML(dir, className, classPackage, methods, constantPool, charset);
+        /*
+         * Attributes can't be written in one step, so we just open a file which will be written consequently.
+         */
+        try (AttributeHTML attributeHtml = new AttributeHTML(dir, className, constantPool, constantHtml, charset)) {
+            new MethodHTML(dir, className, methods, javaClass.getFields(), constantHtml, attributeHtml, charset);
+            // Write main file (with frames, yuk)
+            writeMainHTML(attributeHtml, charset);
+            new CodeHTML(dir, className, methods, constantPool, constantHtml, charset);
+        }
     }
 
     public static void main(final String[] argv) throws IOException {
@@ -159,46 +198,6 @@ public class Class2HTML implements Constants {
             }
         }
         return buf.toString();
-    }
-
-    private final JavaClass javaClass; // current class object
-
-    private final String dir;
-
-    /**
-     * Write contents of the given JavaClass into HTML files.
-     *
-     * @param javaClass The class to write
-     * @param dir       The directory to put the files in
-     * @throws IOException Thrown when an I/O exception of some sort has occurred.
-     */
-    public Class2HTML(final JavaClass javaClass, final String dir) throws IOException {
-        this(javaClass, dir, StandardCharsets.UTF_8);
-    }
-
-    private Class2HTML(final JavaClass javaClass, final String dir, final Charset charset) throws IOException {
-        final Method[] methods = javaClass.getMethods();
-        this.javaClass = javaClass;
-        this.dir = dir;
-        className = javaClass.getClassName(); // Remember full name
-        constantPool = javaClass.getConstantPool();
-        // Get package name by tacking off everything after the last '.'
-        final int index = className.lastIndexOf('.');
-        if (index > -1) {
-            classPackage = className.substring(0, index);
-        } else {
-            classPackage = ""; // default package
-        }
-        final ConstantHTML constantHtml = new ConstantHTML(dir, className, classPackage, methods, constantPool, charset);
-        /*
-         * Attributes can't be written in one step, so we just open a file which will be written consequently.
-         */
-        try (AttributeHTML attributeHtml = new AttributeHTML(dir, className, constantPool, constantHtml, charset)) {
-            new MethodHTML(dir, className, methods, javaClass.getFields(), constantHtml, attributeHtml, charset);
-            // Write main file (with frames, yuk)
-            writeMainHTML(attributeHtml, charset);
-            new CodeHTML(dir, className, methods, constantPool, constantHtml, charset);
-        }
     }
 
     private void writeMainHTML(final AttributeHTML attributeHtml, final Charset charset) throws FileNotFoundException, UnsupportedEncodingException {

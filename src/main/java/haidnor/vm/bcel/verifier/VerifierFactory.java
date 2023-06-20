@@ -41,6 +41,12 @@ public class VerifierFactory {
     private static final List<VerifierFactoryObserver> OBSVERVERS = new Vector<>();
 
     /**
+     * The VerifierFactory is not instantiable.
+     */
+    private VerifierFactory() {
+    }
+
+    /**
      * Adds the VerifierFactoryObserver o to the list of observers.
      */
     public static void attach(final VerifierFactoryObserver o) {
@@ -92,11 +98,5 @@ public class VerifierFactory {
     private static void notify(final String fullyQualifiedClassName) {
         // notify the observers
         OBSVERVERS.forEach(vfo -> vfo.update(fullyQualifiedClassName));
-    }
-
-    /**
-     * The VerifierFactory is not instantiable.
-     */
-    private VerifierFactory() {
     }
 }

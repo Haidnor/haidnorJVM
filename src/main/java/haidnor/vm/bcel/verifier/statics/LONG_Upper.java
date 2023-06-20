@@ -30,18 +30,18 @@ public final class LONG_Upper extends Type {
     private static final LONG_Upper INSTANCE = new LONG_Upper();
 
     /**
+     * The constructor; this class must not be instantiated from the outside.
+     */
+    private LONG_Upper() {
+        super(Const.T_UNKNOWN, "Long_Upper");
+    }
+
+    /**
      * Gets the single instance of this class.
      *
      * @return the single instance of this class.
      */
     public static LONG_Upper theInstance() {
         return INSTANCE;
-    }
-
-    /**
-     * The constructor; this class must not be instantiated from the outside.
-     */
-    private LONG_Upper() {
-        super(Const.T_UNKNOWN, "Long_Upper");
     }
 }

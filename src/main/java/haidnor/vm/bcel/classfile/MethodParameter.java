@@ -89,8 +89,16 @@ public class MethodParameter implements Cloneable, Node {
         return accessFlags;
     }
 
+    public void setAccessFlags(final int accessFlags) {
+        this.accessFlags = accessFlags;
+    }
+
     public int getNameIndex() {
         return nameIndex;
+    }
+
+    public void setNameIndex(final int nameIndex) {
+        this.nameIndex = nameIndex;
     }
 
     /**
@@ -113,13 +121,5 @@ public class MethodParameter implements Cloneable, Node {
 
     public boolean isSynthetic() {
         return (accessFlags & Const.ACC_SYNTHETIC) != 0;
-    }
-
-    public void setAccessFlags(final int accessFlags) {
-        this.accessFlags = accessFlags;
-    }
-
-    public void setNameIndex(final int nameIndex) {
-        this.nameIndex = nameIndex;
     }
 }

@@ -30,13 +30,13 @@ import haidnor.vm.bcel.verifier.exc.AssertionViolatedException;
  */
 public class StringRepresentation extends EmptyVisitor {
     /**
-     * The string representation, created by a visitXXX() method, output by toString().
-     */
-    private String tostring;
-    /**
      * The node we ask for its string representation. Not really needed; only for debug output.
      */
     private final Node n;
+    /**
+     * The string representation, created by a visitXXX() method, output by toString().
+     */
+    private String tostring;
 
     /**
      * Creates a new StringRepresentation object which is the representation of n.

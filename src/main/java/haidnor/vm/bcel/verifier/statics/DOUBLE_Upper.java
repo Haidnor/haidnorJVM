@@ -30,18 +30,18 @@ public final class DOUBLE_Upper extends Type {
     private static final DOUBLE_Upper INSTANCE = new DOUBLE_Upper();
 
     /**
+     * The constructor; this class must not be instantiated from the outside.
+     */
+    private DOUBLE_Upper() {
+        super(Const.T_UNKNOWN, "Double_Upper");
+    }
+
+    /**
      * Gets the single instance of this class.
      *
      * @return the single instance of this class.
      */
     public static DOUBLE_Upper theInstance() {
         return INSTANCE;
-    }
-
-    /**
-     * The constructor; this class must not be instantiated from the outside.
-     */
-    private DOUBLE_Upper() {
-        super(Const.T_UNKNOWN, "Double_Upper");
     }
 }

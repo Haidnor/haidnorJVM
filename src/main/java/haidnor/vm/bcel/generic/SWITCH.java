@@ -24,53 +24,6 @@ import java.util.Arrays;
  */
 public final class SWITCH implements CompoundInstruction {
 
-    /**
-     * @return match is sorted in ascending order with no gap bigger than maxGap?
-     */
-    private static boolean matchIsOrdered(final int[] match, final int matchLength, final int maxGap) {
-        for (int i = 1; i < matchLength; i++) {
-            if (match[i] - match[i - 1] > maxGap) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Sorts match and targets array with QuickSort.
-     */
-    private static void sort(final int l, final int r, final int[] match, final InstructionHandle[] targets) {
-        int i = l;
-        int j = r;
-        int h;
-        final int m = match[l + r >>> 1];
-        InstructionHandle h2;
-        do {
-            while (match[i] < m) {
-                i++;
-            }
-            while (m < match[j]) {
-                j--;
-            }
-            if (i <= j) {
-                h = match[i];
-                match[i] = match[j];
-                match[j] = h; // Swap elements
-                h2 = targets[i];
-                targets[i] = targets[j];
-                targets[j] = h2; // Swap instructions, too
-                i++;
-                j--;
-            }
-        } while (i <= j);
-        if (l < j) {
-            sort(l, j, match, targets);
-        }
-        if (i < r) {
-            sort(i, r, match, targets);
-        }
-    }
-
     private final Select instruction;
 
     public SWITCH(final int[] match, final InstructionHandle[] targets, final InstructionHandle target) {
@@ -120,6 +73,53 @@ public final class SWITCH implements CompoundInstruction {
             } else {
                 instruction = new LOOKUPSWITCH(matchClone, targetsClone, target);
             }
+        }
+    }
+
+    /**
+     * @return match is sorted in ascending order with no gap bigger than maxGap?
+     */
+    private static boolean matchIsOrdered(final int[] match, final int matchLength, final int maxGap) {
+        for (int i = 1; i < matchLength; i++) {
+            if (match[i] - match[i - 1] > maxGap) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Sorts match and targets array with QuickSort.
+     */
+    private static void sort(final int l, final int r, final int[] match, final InstructionHandle[] targets) {
+        int i = l;
+        int j = r;
+        int h;
+        final int m = match[l + r >>> 1];
+        InstructionHandle h2;
+        do {
+            while (match[i] < m) {
+                i++;
+            }
+            while (m < match[j]) {
+                j--;
+            }
+            if (i <= j) {
+                h = match[i];
+                match[i] = match[j];
+                match[j] = h; // Swap elements
+                h2 = targets[i];
+                targets[i] = targets[j];
+                targets[j] = h2; // Swap instructions, too
+                i++;
+                j--;
+            }
+        } while (i <= j);
+        if (l < j) {
+            sort(l, j, match, targets);
+        }
+        if (i < r) {
+            sort(i, r, match, targets);
         }
     }
 

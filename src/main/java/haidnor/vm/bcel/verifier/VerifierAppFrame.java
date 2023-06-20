@@ -36,7 +36,6 @@ import java.util.Arrays;
 public class VerifierAppFrame extends JFrame {
 
     private static final long serialVersionUID = -542458133073307640L;
-    private JPanel contentPane;
     private final JSplitPane jSplitPane1 = new JSplitPane();
     private final JPanel jPanel1 = new JPanel();
     private final JPanel jPanel2 = new JPanel();
@@ -54,7 +53,6 @@ public class VerifierAppFrame extends JFrame {
     private final GridLayout gridLayout4 = new GridLayout();
     private final JScrollPane jScrollPane4 = new JScrollPane();
     private final CardLayout cardLayout1 = new CardLayout();
-    private String currentClass;
     private final GridLayout gridLayout3 = new GridLayout();
     private final JTextPane pass1TextPane = new JTextPane();
     private final JTextPane pass2TextPane = new JTextPane();
@@ -73,6 +71,8 @@ public class VerifierAppFrame extends JFrame {
     private final JMenu jMenu2 = new JMenu();
     private final JMenuItem whatisMenuItem = new JMenuItem();
     private final JMenuItem aboutMenuItem = new JMenuItem();
+    private JPanel contentPane;
+    private String currentClass;
 
     /**
      * Constructor.

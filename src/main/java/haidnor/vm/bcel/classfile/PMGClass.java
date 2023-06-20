@@ -108,6 +108,13 @@ public final class PMGClass extends Attribute {
     }
 
     /**
+     * @param pmgClassIndex
+     */
+    public void setPMGClassIndex(final int pmgClassIndex) {
+        this.pmgClassIndex = pmgClassIndex;
+    }
+
+    /**
      * @return PMG class name.
      */
     public String getPMGClassName() {
@@ -122,24 +129,17 @@ public final class PMGClass extends Attribute {
     }
 
     /**
-     * @return PMG name.
-     */
-    public String getPMGName() {
-        return super.getConstantPool().getConstantUtf8(pmgIndex).getBytes();
-    }
-
-    /**
-     * @param pmgClassIndex
-     */
-    public void setPMGClassIndex(final int pmgClassIndex) {
-        this.pmgClassIndex = pmgClassIndex;
-    }
-
-    /**
      * @param pmgIndex
      */
     public void setPMGIndex(final int pmgIndex) {
         this.pmgIndex = pmgIndex;
+    }
+
+    /**
+     * @return PMG name.
+     */
+    public String getPMGName() {
+        return super.getConstantPool().getConstantUtf8(pmgIndex).getBytes();
     }
 
     /**

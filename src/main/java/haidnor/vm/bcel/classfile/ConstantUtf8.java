@@ -57,45 +57,51 @@ import java.util.Objects;
  */
 public final class ConstantUtf8 extends Constant {
 
-    private static class Cache {
-
-        private static final boolean BCEL_STATISTICS = Boolean.getBoolean(SYS_PROP_STATISTICS);
-        private static final int MAX_ENTRIES = Integer.getInteger(SYS_PROP_CACHE_MAX_ENTRIES, 0).intValue();
-        private static final int INITIAL_CAPACITY = (int) (MAX_ENTRIES / 0.75);
-
-        private static final HashMap<String, ConstantUtf8> CACHE = new LinkedHashMap<String, ConstantUtf8>(INITIAL_CAPACITY, 0.75f, true) {
-
-            private static final long serialVersionUID = -8506975356158971766L;
-
-            @Override
-            protected boolean removeEldestEntry(final Map.Entry<String, ConstantUtf8> eldest) {
-                return size() > MAX_ENTRIES;
-            }
-        };
-
-        // Set the size to 0 or below to skip caching entirely
-        private static final int MAX_ENTRY_SIZE = Integer.getInteger(SYS_PROP_CACHE_MAX_ENTRY_SIZE, 200).intValue();
-
-        static boolean isEnabled() {
-            return Cache.MAX_ENTRIES > 0 && MAX_ENTRY_SIZE > 0;
-        }
-
-    }
-
+    private static final String SYS_PROP_CACHE_MAX_ENTRIES = "bcel.maxcached";
+    private static final String SYS_PROP_CACHE_MAX_ENTRY_SIZE = "bcel.maxcached.size";
+    private static final String SYS_PROP_STATISTICS = "bcel.statistics";
     // TODO these should perhaps be AtomicInt?
     private static volatile int considered;
     private static volatile int created;
     private static volatile int hits;
     private static volatile int skipped;
 
-    private static final String SYS_PROP_CACHE_MAX_ENTRIES = "bcel.maxcached";
-    private static final String SYS_PROP_CACHE_MAX_ENTRY_SIZE = "bcel.maxcached.size";
-    private static final String SYS_PROP_STATISTICS = "bcel.statistics";
-
     static {
         if (Cache.BCEL_STATISTICS) {
             Runtime.getRuntime().addShutdownHook(new Thread(ConstantUtf8::printStats));
         }
+    }
+
+    private final String value;
+
+    /**
+     * Initializes from another object.
+     *
+     * @param constantUtf8 the value.
+     */
+    public ConstantUtf8(final ConstantUtf8 constantUtf8) {
+        this(constantUtf8.getBytes());
+    }
+
+    /**
+     * Initializes instance from file data.
+     *
+     * @param dataInput Input stream
+     * @throws IOException if an I/O error occurs.
+     */
+    ConstantUtf8(final DataInput dataInput) throws IOException {
+        super(Const.CONSTANT_Utf8);
+        value = dataInput.readUTF();
+        created++;
+    }
+
+    /**
+     * @param value Data
+     */
+    public ConstantUtf8(final String value) {
+        super(Const.CONSTANT_Utf8);
+        this.value = Objects.requireNonNull(value, "value");
+        created++;
     }
 
     /**
@@ -178,38 +184,6 @@ public final class ConstantUtf8 extends Constant {
                 Cache.MAX_ENTRY_SIZE);
     }
 
-    private final String value;
-
-    /**
-     * Initializes from another object.
-     *
-     * @param constantUtf8 the value.
-     */
-    public ConstantUtf8(final ConstantUtf8 constantUtf8) {
-        this(constantUtf8.getBytes());
-    }
-
-    /**
-     * Initializes instance from file data.
-     *
-     * @param dataInput Input stream
-     * @throws IOException if an I/O error occurs.
-     */
-    ConstantUtf8(final DataInput dataInput) throws IOException {
-        super(Const.CONSTANT_Utf8);
-        value = dataInput.readUTF();
-        created++;
-    }
-
-    /**
-     * @param value Data
-     */
-    public ConstantUtf8(final String value) {
-        super(Const.CONSTANT_Utf8);
-        this.value = Objects.requireNonNull(value, "value");
-        created++;
-    }
-
     /**
      * Called by objects that are traversing the nodes of the tree implicitly defined by the contents of a Java class.
      * I.e., the hierarchy of methods, fields, attributes, etc. spawns a tree of objects.
@@ -255,5 +229,30 @@ public final class ConstantUtf8 extends Constant {
     @Override
     public String toString() {
         return super.toString() + "(\"" + Utility.replace(value, "\n", "\\n") + "\")";
+    }
+
+    private static class Cache {
+
+        private static final boolean BCEL_STATISTICS = Boolean.getBoolean(SYS_PROP_STATISTICS);
+        private static final int MAX_ENTRIES = Integer.getInteger(SYS_PROP_CACHE_MAX_ENTRIES, 0).intValue();
+        private static final int INITIAL_CAPACITY = (int) (MAX_ENTRIES / 0.75);
+
+        private static final HashMap<String, ConstantUtf8> CACHE = new LinkedHashMap<String, ConstantUtf8>(INITIAL_CAPACITY, 0.75f, true) {
+
+            private static final long serialVersionUID = -8506975356158971766L;
+
+            @Override
+            protected boolean removeEldestEntry(final Map.Entry<String, ConstantUtf8> eldest) {
+                return size() > MAX_ENTRIES;
+            }
+        };
+
+        // Set the size to 0 or below to skip caching entirely
+        private static final int MAX_ENTRY_SIZE = Integer.getInteger(SYS_PROP_CACHE_MAX_ENTRY_SIZE, 200).intValue();
+
+        static boolean isEnabled() {
+            return Cache.MAX_ENTRIES > 0 && MAX_ENTRY_SIZE > 0;
+        }
+
     }
 }

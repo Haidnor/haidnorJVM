@@ -44,34 +44,26 @@ public class ConstantPoolGen {
     private static final String FIELDREF_DELIM = "&";
 
     private static final String NAT_DELIM = "%"; // Name and Type
-
+    private final Map<String, Integer> stringTable = new HashMap<>();
+    private final Map<String, Integer> classTable = new HashMap<>();
+    private final Map<String, Integer> utf8Table = new HashMap<>();
+    private final Map<String, Integer> natTable = new HashMap<>();
+    private final Map<String, Integer> cpTable = new HashMap<>();
     /**
      * @deprecated (since 6.0) will be made private; do not access directly, use getter/setter
      */
     @Deprecated
     protected int size;
-
     /**
      * @deprecated (since 6.0) will be made private; do not access directly, use getter/setter
      */
     @Deprecated
     protected Constant[] constants;
-
     /**
      * @deprecated (since 6.0) will be made private; do not access directly, use getSize()
      */
     @Deprecated
     protected int index = 1; // First entry (0) used by JVM
-
-    private final Map<String, Integer> stringTable = new HashMap<>();
-
-    private final Map<String, Integer> classTable = new HashMap<>();
-
-    private final Map<String, Integer> utf8Table = new HashMap<>();
-
-    private final Map<String, Integer> natTable = new HashMap<>();
-
-    private final Map<String, Integer> cpTable = new HashMap<>();
 
     /**
      * Constructs a new empty constant pool.

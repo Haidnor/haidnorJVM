@@ -28,10 +28,103 @@ import java.util.*;
 public class ControlFlowGraph {
 
     /**
+     * The Subroutines object for the method whose control flow is represented by this ControlFlowGraph.
+     */
+    private final Subroutines subroutines;
+
+    /// ** The MethodGen object we're working on. */
+    // private final MethodGen method_gen;
+    /**
+     * The ExceptionHandlers object for the method whose control flow is represented by this ControlFlowGraph.
+     */
+    private final ExceptionHandlers exceptionhandlers;
+    /**
+     * All InstructionContext instances of this ControlFlowGraph.
+     */
+    private final Map<InstructionHandle, InstructionContext> instructionContexts = new HashMap<>();
+
+    /**
+     * A Control Flow Graph; with additional JustIce checks
+     *
+     * @param methodGen the method generator instance
+     */
+    public ControlFlowGraph(final MethodGen methodGen) {
+        this(methodGen, true);
+    }
+
+    /**
+     * A Control Flow Graph.
+     *
+     * @param methodGen          the method generator instance
+     * @param enableJustIceCheck if true, additional JustIce checks are performed
+     * @since 6.0
+     */
+    public ControlFlowGraph(final MethodGen methodGen, final boolean enableJustIceCheck) {
+        subroutines = new Subroutines(methodGen, enableJustIceCheck);
+        exceptionhandlers = new ExceptionHandlers(methodGen);
+
+        final InstructionHandle[] instructionhandles = methodGen.getInstructionList().getInstructionHandles();
+        for (final InstructionHandle instructionhandle : instructionhandles) {
+            instructionContexts.put(instructionhandle, new InstructionContextImpl(instructionhandle));
+        }
+
+        // this.method_gen = method_gen;
+    }
+
+    /**
+     * Returns the InstructionContext of a given instruction.
+     */
+    public InstructionContext contextOf(final InstructionHandle inst) {
+        final InstructionContext ic = instructionContexts.get(inst);
+        if (ic == null) {
+            throw new AssertionViolatedException("InstructionContext requested for an InstructionHandle that's not known!");
+        }
+        return ic;
+    }
+
+    /**
+     * Returns the InstructionContext[] of a given InstructionHandle[], in a naturally ordered manner.
+     */
+    public InstructionContext[] contextsOf(final InstructionHandle[] insts) {
+        final InstructionContext[] ret = new InstructionContext[insts.length];
+        Arrays.setAll(ret, i -> contextOf(insts[i]));
+        return ret;
+    }
+
+    /**
+     * Returns an InstructionContext[] with all the InstructionContext instances for the method whose control flow is
+     * represented by this ControlFlowGraph <B>(NOT ORDERED!)</B>.
+     */
+    public InstructionContext[] getInstructionContexts() {
+        final InstructionContext[] ret = new InstructionContext[instructionContexts.size()];
+        return instructionContexts.values().toArray(ret);
+    }
+
+    /**
+     * Returns true, if and only if the said instruction is not reachable; that means, if it is not part of this
+     * ControlFlowGraph.
+     */
+    public boolean isDead(final InstructionHandle i) {
+        return subroutines.subroutineOf(i) == null;
+    }
+
+    /**
      * Objects of this class represent a node in a ControlFlowGraph. These nodes are instructions, not basic blocks.
      */
     private class InstructionContextImpl implements InstructionContext {
 
+        /**
+         * The InstructionHandle this InstructionContext is wrapped around.
+         */
+        private final InstructionHandle instruction;
+        /**
+         * The 'incoming' execution Frames.
+         */
+        private final Map<InstructionContext, Frame> inFrames; // key: the last-executed JSR
+        /**
+         * The 'outgoing' execution Frames.
+         */
+        private final Map<InstructionContext, Frame> outFrames; // key: the last-executed JSR
         /**
          * The TAG field is here for external temporary flagging, such as graph colouring.
          *
@@ -39,22 +132,6 @@ public class ControlFlowGraph {
          * @see #setTag(int)
          */
         private int TAG;
-
-        /**
-         * The InstructionHandle this InstructionContext is wrapped around.
-         */
-        private final InstructionHandle instruction;
-
-        /**
-         * The 'incoming' execution Frames.
-         */
-        private final Map<InstructionContext, Frame> inFrames; // key: the last-executed JSR
-
-        /**
-         * The 'outgoing' execution Frames.
-         */
-        private final Map<InstructionContext, Frame> outFrames; // key: the last-executed JSR
-
         /**
          * The 'execution predecessors' - a list of type InstructionContext of those instances that have been execute()d before
          * in that order.
@@ -286,6 +363,12 @@ public class ControlFlowGraph {
             return TAG;
         }
 
+        /* Satisfies InstructionContext.setTag(int). */
+        @Override
+        public void setTag(final int tag) { // part of InstructionContext interface
+            TAG = tag;
+        }
+
         /**
          * Returns the InstructionContextImpl with an JSR/JSR_W that was last in the ExecutionChain, without a corresponding
          * RET, i.e. we were called by this one. Returns null if we were called from the top level.
@@ -330,12 +413,6 @@ public class ControlFlowGraph {
             return !(oldstack.equals(inF.getStack()) && oldlocals.equals(inF.getLocals()));
         }
 
-        /* Satisfies InstructionContext.setTag(int). */
-        @Override
-        public void setTag(final int tag) { // part of InstructionContext interface
-            TAG = tag;
-        }
-
         /**
          * Returns a simple String representation of this InstructionContext.
          */
@@ -348,87 +425,4 @@ public class ControlFlowGraph {
         }
 
     } // End Inner InstructionContextImpl Class.
-
-    /// ** The MethodGen object we're working on. */
-    // private final MethodGen method_gen;
-
-    /**
-     * The Subroutines object for the method whose control flow is represented by this ControlFlowGraph.
-     */
-    private final Subroutines subroutines;
-
-    /**
-     * The ExceptionHandlers object for the method whose control flow is represented by this ControlFlowGraph.
-     */
-    private final ExceptionHandlers exceptionhandlers;
-
-    /**
-     * All InstructionContext instances of this ControlFlowGraph.
-     */
-    private final Map<InstructionHandle, InstructionContext> instructionContexts = new HashMap<>();
-
-    /**
-     * A Control Flow Graph; with additional JustIce checks
-     *
-     * @param methodGen the method generator instance
-     */
-    public ControlFlowGraph(final MethodGen methodGen) {
-        this(methodGen, true);
-    }
-
-    /**
-     * A Control Flow Graph.
-     *
-     * @param methodGen          the method generator instance
-     * @param enableJustIceCheck if true, additional JustIce checks are performed
-     * @since 6.0
-     */
-    public ControlFlowGraph(final MethodGen methodGen, final boolean enableJustIceCheck) {
-        subroutines = new Subroutines(methodGen, enableJustIceCheck);
-        exceptionhandlers = new ExceptionHandlers(methodGen);
-
-        final InstructionHandle[] instructionhandles = methodGen.getInstructionList().getInstructionHandles();
-        for (final InstructionHandle instructionhandle : instructionhandles) {
-            instructionContexts.put(instructionhandle, new InstructionContextImpl(instructionhandle));
-        }
-
-        // this.method_gen = method_gen;
-    }
-
-    /**
-     * Returns the InstructionContext of a given instruction.
-     */
-    public InstructionContext contextOf(final InstructionHandle inst) {
-        final InstructionContext ic = instructionContexts.get(inst);
-        if (ic == null) {
-            throw new AssertionViolatedException("InstructionContext requested for an InstructionHandle that's not known!");
-        }
-        return ic;
-    }
-
-    /**
-     * Returns the InstructionContext[] of a given InstructionHandle[], in a naturally ordered manner.
-     */
-    public InstructionContext[] contextsOf(final InstructionHandle[] insts) {
-        final InstructionContext[] ret = new InstructionContext[insts.length];
-        Arrays.setAll(ret, i -> contextOf(insts[i]));
-        return ret;
-    }
-
-    /**
-     * Returns an InstructionContext[] with all the InstructionContext instances for the method whose control flow is
-     * represented by this ControlFlowGraph <B>(NOT ORDERED!)</B>.
-     */
-    public InstructionContext[] getInstructionContexts() {
-        final InstructionContext[] ret = new InstructionContext[instructionContexts.size()];
-        return instructionContexts.values().toArray(ret);
-    }
-
-    /**
-     * Returns true, if and only if the said instruction is not reachable; that means, if it is not part of this
-     * ControlFlowGraph.
-     */
-    public boolean isDead(final InstructionHandle i) {
-        return subroutines.subroutineOf(i) == null;
-    }
 }

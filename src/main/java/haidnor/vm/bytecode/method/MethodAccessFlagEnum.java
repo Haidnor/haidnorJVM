@@ -61,12 +61,12 @@ public enum MethodAccessFlagEnum {
      */
     ACC_SYNTHETIC(0x1000);
 
-    public final int value;
-
     public static final Map<Integer, MethodAccessFlagEnum> enumMap;
 
     static {
         enumMap = Arrays.stream(MethodAccessFlagEnum.values())
                 .collect(Collectors.toMap(methodAccessFlagEnum -> methodAccessFlagEnum.value, Function.identity()));
     }
+
+    public final int value;
 }

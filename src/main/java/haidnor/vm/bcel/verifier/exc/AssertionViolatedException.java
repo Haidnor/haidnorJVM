@@ -24,16 +24,6 @@ import java.util.Arrays;
  */
 public final class AssertionViolatedException extends RuntimeException {
     private static final long serialVersionUID = -129822266349567409L;
-
-    /**
-     * DO NOT USE. It's for experimental testing during development only.
-     */
-    public static void main(final String[] args) {
-        final AssertionViolatedException ave = new AssertionViolatedException(Arrays.toString(args));
-        ave.extendMessage("\nFOUND:\n\t", "\nExiting!!\n");
-        throw ave;
-    }
-
     /**
      * The error message.
      */
@@ -62,6 +52,15 @@ public final class AssertionViolatedException extends RuntimeException {
     public AssertionViolatedException(String message, final Throwable initCause) {
         super(message = "INTERNAL ERROR: " + message, initCause);
         detailMessage = message;
+    }
+
+    /**
+     * DO NOT USE. It's for experimental testing during development only.
+     */
+    public static void main(final String[] args) {
+        final AssertionViolatedException ave = new AssertionViolatedException(Arrays.toString(args));
+        ave.extendMessage("\nFOUND:\n\t", "\nExiting!!\n");
+        throw ave;
     }
 
     /**

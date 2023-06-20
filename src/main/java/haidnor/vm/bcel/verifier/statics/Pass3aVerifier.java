@@ -38,6 +38,359 @@ import java.util.Arrays;
 public final class Pass3aVerifier extends PassVerifier {
 
     /**
+     * The Verifier that created this.
+     */
+    private final Verifier verifier;
+    /**
+     * The method number to verify. This is the index in the array returned by JavaClass.getMethods().
+     */
+    private final int methodNo;
+    /**
+     * The one and only InstructionList object used by an instance of this class. It's here for performance reasons by
+     * do_verify() and its callees.
+     */
+    private InstructionList instructionList;
+    /**
+     * The one and only Code object used by an instance of this class. It's here for performance reasons by do_verify() and
+     * its callees.
+     */
+    private Code code;
+
+    /**
+     * Should only be instantiated by a Verifier.
+     */
+    public Pass3aVerifier(final Verifier verifier, final int methodNo) {
+        this.verifier = verifier;
+        this.methodNo = methodNo;
+    }
+
+    /**
+     * A small utility method returning if a given int i is in the given int[] ints.
+     */
+    private static boolean contains(final int[] ints, final int i) {
+        for (final int k : ints) {
+            if (k == i) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * These are the checks that could be done in pass 2 but are delayed to pass 3 for performance reasons. Also, these
+     * checks need access to the code array of the Code attribute of a Method so it's okay to perform them here. Also see
+     * the description of the do_verify() method.
+     *
+     * @throws ClassConstraintException if the verification fails.
+     * @see #do_verify()
+     */
+    private void delayedPass2Checks() {
+
+        final int[] instructionPositions = instructionList.getInstructionPositions();
+        final int codeLength = code.getCode().length;
+
+        /////////////////////
+        // LineNumberTable //
+        /////////////////////
+        final LineNumberTable lnt = code.getLineNumberTable();
+        if (lnt != null) {
+            final LineNumber[] lineNumbers = lnt.getLineNumberTable();
+            final IntList offsets = new IntList();
+            lineNumberLoop:
+            for (final LineNumber lineNumber : lineNumbers) { // may appear in any order.
+                for (final int instructionPosition : instructionPositions) {
+                    // TODO: Make this a binary search! The instructionPositions array is naturally ordered!
+                    final int offset = lineNumber.getStartPC();
+                    if (instructionPosition == offset) {
+                        if (offsets.contains(offset)) {
+                            addMessage("LineNumberTable attribute '" + code.getLineNumberTable() + "' refers to the same code offset ('" + offset
+                                    + "') more than once" + " which is violating the semantics [but is sometimes produced by IBM's 'jikes' compiler].");
+                        } else {
+                            offsets.add(offset);
+                        }
+                        continue lineNumberLoop;
+                    }
+                }
+                throw new ClassConstraintException("Code attribute '" + tostring(code) + "' has a LineNumberTable attribute '" + code.getLineNumberTable()
+                        + "' referring to a code offset ('" + lineNumber.getStartPC() + "') that does not exist.");
+            }
+        }
+
+        ///////////////////////////
+        // LocalVariableTable(s) //
+        ///////////////////////////
+        /*
+         * We cannot use code.getLocalVariableTable() because there could be more than only one. This is a bug in BCEL.
+         */
+        final Attribute[] atts = code.getAttributes();
+        for (final Attribute att : atts) {
+            if (att instanceof LocalVariableTable) {
+                ((LocalVariableTable) att).forEach(localVariable -> {
+                    final int startpc = localVariable.getStartPC();
+                    final int length = localVariable.getLength();
+
+                    if (!contains(instructionPositions, startpc)) {
+                        throw new ClassConstraintException("Code attribute '" + tostring(code) + "' has a LocalVariableTable attribute '"
+                                + code.getLocalVariableTable() + "' referring to a code offset ('" + startpc + "') that does not exist.");
+                    }
+                    if (!contains(instructionPositions, startpc + length) && startpc + length != codeLength) {
+                        throw new ClassConstraintException(
+                                "Code attribute '" + tostring(code) + "' has a LocalVariableTable attribute '" + code.getLocalVariableTable()
+                                        + "' referring to a code offset start_pc+length ('" + (startpc + length) + "') that does not exist.");
+                    }
+                });
+            }
+        }
+
+        ////////////////////
+        // ExceptionTable //
+        ////////////////////
+        // In BCEL's "classfile" API, the startPC/endPC-notation is
+        // inclusive/exclusive as in the Java Virtual Machine Specification.
+        // WARNING: This is not true for BCEL's "generic" API.
+        final CodeException[] exceptionTable = code.getExceptionTable();
+        for (final CodeException element : exceptionTable) {
+            final int startpc = element.getStartPC();
+            final int endpc = element.getEndPC();
+            final int handlerpc = element.getHandlerPC();
+            if (startpc >= endpc) {
+                throw new ClassConstraintException("Code attribute '" + tostring(code) + "' has an exception_table entry '" + element
+                        + "' that has its start_pc ('" + startpc + "') not smaller than its end_pc ('" + endpc + "').");
+            }
+            if (!contains(instructionPositions, startpc)) {
+                throw new ClassConstraintException("Code attribute '" + tostring(code) + "' has an exception_table entry '" + element
+                        + "' that has a non-existant bytecode offset as its start_pc ('" + startpc + "').");
+            }
+            if (!contains(instructionPositions, endpc) && endpc != codeLength) {
+                throw new ClassConstraintException("Code attribute '" + tostring(code) + "' has an exception_table entry '" + element
+                        + "' that has a non-existant bytecode offset as its end_pc ('" + startpc + "') [that is also not equal to code_length ('" + codeLength
+                        + "')].");
+            }
+            if (!contains(instructionPositions, handlerpc)) {
+                throw new ClassConstraintException("Code attribute '" + tostring(code) + "' has an exception_table entry '" + element
+                        + "' that has a non-existant bytecode offset as its handler_pc ('" + handlerpc + "').");
+            }
+        }
+    }
+
+    /**
+     * Pass 3a is the verification of static constraints of JVM code (such as legal targets of branch instructions). This is
+     * the part of pass 3 where you do not need data flow analysis. JustIce also delays the checks for a correct exception
+     * table of a Code attribute and correct line number entries in a LineNumberTable attribute of a Code attribute (which
+     * conceptually belong to pass 2) to this pass. Also, most of the check for valid local variable entries in a
+     * LocalVariableTable attribute of a Code attribute is delayed until this pass. All these checks need access to the code
+     * array of the Code attribute.
+     *
+     * @throws InvalidMethodException if the method to verify does not exist.
+     */
+    @Override
+    public VerificationResult do_verify() {
+        try {
+            if (verifier.doPass2().equals(VerificationResult.VR_OK)) {
+                // Okay, class file was loaded correctly by Pass 1
+                // and satisfies static constraints of Pass 2.
+                final JavaClass jc = Repository.lookupClass(verifier.getClassName());
+                final Method[] methods = jc.getMethods();
+                if (methodNo >= methods.length) {
+                    throw new InvalidMethodException("METHOD DOES NOT EXIST!");
+                }
+                final Method method = methods[methodNo];
+                code = method.getCode();
+
+                // No Code? Nothing to verify!
+                if (method.isAbstract() || method.isNative()) { // IF mg HAS NO CODE (static constraint of Pass 2)
+                    return VerificationResult.VR_OK;
+                }
+
+                // TODO:
+                // We want a very sophisticated code examination here with good explanations
+                // on where to look for an illegal instruction or such.
+                // Only after that we should try to build an InstructionList and throw an
+                // AssertionViolatedException if after our examination InstructionList building
+                // still fails.
+                // That examination should be implemented in a byte-oriented way, i.e. look for
+                // an instruction, make sure its validity, count its length, find the next
+                // instruction and so on.
+                try {
+                    instructionList = new InstructionList(method.getCode().getCode());
+                } catch (final RuntimeException re) {
+                    return new VerificationResult(VerificationResult.VERIFIED_REJECTED,
+                            "Bad bytecode in the code array of the Code attribute of method '" + tostring(method) + "'.");
+                }
+
+                instructionList.setPositions(true);
+
+                // Start verification.
+                VerificationResult vr = VerificationResult.VR_OK; // default
+                try {
+                    delayedPass2Checks();
+                } catch (final ClassConstraintException | ClassFormatException cce) {
+                    vr = new VerificationResult(VerificationResult.VERIFIED_REJECTED, cce.getMessage());
+                    return vr;
+                }
+                try {
+                    pass3StaticInstructionChecks();
+                    pass3StaticInstructionOperandsChecks();
+                } catch (final StaticCodeConstraintException | ClassFormatException scce) {
+                    vr = new VerificationResult(VerificationResult.VERIFIED_REJECTED, scce.getMessage());
+                } catch (final ClassCastException cce) {
+                    vr = new VerificationResult(VerificationResult.VERIFIED_REJECTED, "Class Cast Exception: " + cce.getMessage());
+                }
+                return vr;
+            }
+            // did not pass Pass 2.
+            return VerificationResult.VR_NOTYET;
+        } catch (final ClassNotFoundException e) {
+            // FIXME: maybe not the best way to handle this
+            throw new AssertionViolatedException("Missing class: " + e, e);
+        }
+    }
+
+    /**
+     * Returns the method number as supplied when instantiating.
+     */
+    public int getMethodNo() {
+        return methodNo;
+    }
+
+    /**
+     * These are the checks if constraints are satisfied which are described in the Java Virtual Machine Specification,
+     * Second Edition as Static Constraints on the instructions of Java Virtual Machine Code (chapter 4.8.1).
+     *
+     * @throws StaticCodeConstraintException if the verification fails.
+     */
+    private void pass3StaticInstructionChecks() {
+
+        // Code array must not be empty:
+        // Enforced in pass 2 (also stated in the static constraints of the Code
+        // array in vmspec2), together with pass 1 (reading code_length bytes and
+        // interpreting them as code[]). So this must not be checked again here.
+
+        if (code.getCode().length >= Const.MAX_CODE_SIZE) {// length must be LESS than the max
+            throw new StaticCodeInstructionConstraintException(
+                    "Code array in code attribute '" + tostring(code) + "' too big: must be smaller than " + Const.MAX_CODE_SIZE + "65536 bytes.");
+        }
+
+        // First opcode at offset 0: okay, that's clear. Nothing to do.
+
+        // Only instances of the instructions documented in Section 6.4 may appear in
+        // the code array.
+
+        // For BCEL's sake, we cannot handle WIDE stuff, but hopefully BCEL does its job right :)
+
+        // The last byte of the last instruction in the code array must be the byte at index
+        // code_length-1 : See the do_verify() comments. We actually don't iterate through the
+        // byte array, but use an InstructionList so we cannot check for this. But BCEL does
+        // things right, so it's implicitly okay.
+
+        // TODO: Check how BCEL handles (and will handle) instructions like IMPDEP1, IMPDEP2,
+        // BREAKPOINT... that BCEL knows about but which are illegal anyway.
+        // We currently go the safe way here.
+        InstructionHandle ih = instructionList.getStart();
+        while (ih != null) {
+            final Instruction i = ih.getInstruction();
+            if (i instanceof IMPDEP1) {
+                throw new StaticCodeInstructionConstraintException("IMPDEP1 must not be in the code, it is an illegal instruction for _internal_ JVM use!");
+            }
+            if (i instanceof IMPDEP2) {
+                throw new StaticCodeInstructionConstraintException("IMPDEP2 must not be in the code, it is an illegal instruction for _internal_ JVM use!");
+            }
+            if (i instanceof BREAKPOINT) {
+                throw new StaticCodeInstructionConstraintException("BREAKPOINT must not be in the code, it is an illegal instruction for _internal_ JVM use!");
+            }
+            ih = ih.getNext();
+        }
+
+        // The original verifier seems to do this check here, too.
+        // An unreachable last instruction may also not fall through the
+        // end of the code, which is stupid -- but with the original
+        // verifier's subroutine semantics one cannot predict reachability.
+        final Instruction last = instructionList.getEnd().getInstruction();
+        if (!(last instanceof ReturnInstruction || last instanceof RET || last instanceof GotoInstruction || last instanceof ATHROW)) {
+            throw new StaticCodeInstructionConstraintException(
+                    "Execution must not fall off the bottom of the code array." + " This constraint is enforced statically as some existing verifiers do"
+                            + " - so it may be a false alarm if the last instruction is not reachable.");
+        }
+    }
+
+    /**
+     * These are the checks for the satisfaction of constraints which are described in the Java Virtual Machine
+     * Specification, Second Edition as Static Constraints on the operands of instructions of Java Virtual Machine Code
+     * (chapter 4.8.1). BCEL parses the code array to create an InstructionList and therefore has to check some of these
+     * constraints. Additional checks are also implemented here.
+     *
+     * @throws StaticCodeConstraintException if the verification fails.
+     */
+    private void pass3StaticInstructionOperandsChecks() {
+        try {
+            // When building up the InstructionList, BCEL has already done all those checks
+            // mentioned in The Java Virtual Machine Specification, Second Edition, as
+            // "static constraints on the operands of instructions in the code array".
+            // TODO: see the do_verify() comments. Maybe we should really work on the
+            // byte array first to give more comprehensive messages.
+            // TODO: Review Exception API, possibly build in some "offending instruction" thing
+            // when we're ready to insulate the offending instruction by doing the
+            // above thing.
+
+            // TODO: Implement as much as possible here. BCEL does _not_ check everything.
+
+            final ConstantPoolGen cpg = new ConstantPoolGen(Repository.lookupClass(verifier.getClassName()).getConstantPool());
+            final InstOperandConstraintVisitor v = new InstOperandConstraintVisitor(cpg);
+
+            // Checks for the things BCEL does _not_ handle itself.
+            InstructionHandle ih = instructionList.getStart();
+            while (ih != null) {
+                final Instruction i = ih.getInstruction();
+
+                // An "own" constraint, due to JustIce's new definition of what "subroutine" means.
+                if (i instanceof JsrInstruction) {
+                    final InstructionHandle target = ((JsrInstruction) i).getTarget();
+                    if (target == instructionList.getStart()) {
+                        throw new StaticCodeInstructionOperandConstraintException(
+                                "Due to JustIce's clear definition of subroutines, no JSR or JSR_W may have a top-level instruction"
+                                        + " (such as the very first instruction, which is targeted by instruction '" + tostring(ih) + "' as its target.");
+                    }
+                    if (!(target.getInstruction() instanceof ASTORE)) {
+                        throw new StaticCodeInstructionOperandConstraintException(
+                                "Due to JustIce's clear definition of subroutines, no JSR or JSR_W may target anything else"
+                                        + " than an ASTORE instruction. Instruction '" + tostring(ih) + "' targets '" + tostring(target) + "'.");
+                    }
+                }
+
+                // vmspec2, page 134-137
+                ih.accept(v);
+
+                ih = ih.getNext();
+            }
+
+        } catch (final ClassNotFoundException e) {
+            // FIXME: maybe not the best way to handle this
+            throw new AssertionViolatedException("Missing class: " + e, e);
+        }
+    }
+
+    /**
+     * This method is a slightly modified version of verifier.statics.StringRepresentation.toString(final Node obj) that
+     * accepts any Object, not just a Node.
+     * <p>
+     * Returns the String representation of the Object obj; this is obj.toString() if it does not throw any
+     * RuntimeException, or else it is a string derived only from obj's class name.
+     */
+    protected String tostring(final Object obj) {
+        String ret;
+        try {
+            ret = obj.toString();
+        } catch (final RuntimeException e) {
+            // including ClassFormatException, trying to convert the "signature" of a ReturnaddressType LocalVariable
+            // (shouldn't occur, but people do crazy things)
+            String s = obj.getClass().getName();
+            s = s.substring(s.lastIndexOf(".") + 1);
+            ret = "<<" + s + ">>";
+        }
+        return ret;
+    }
+
+    /**
      * This visitor class does the actual checking for the instruction operand's constraints.
      */
     private class InstOperandConstraintVisitor extends EmptyVisitor {
@@ -909,361 +1262,5 @@ public final class Pass3aVerifier extends PassVerifier {
             // "high" must be >= "low". We cannot check this, as BCEL hides
             // it from us.
         }
-    }
-
-    /**
-     * A small utility method returning if a given int i is in the given int[] ints.
-     */
-    private static boolean contains(final int[] ints, final int i) {
-        for (final int k : ints) {
-            if (k == i) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * The Verifier that created this.
-     */
-    private final Verifier verifier;
-
-    /**
-     * The method number to verify. This is the index in the array returned by JavaClass.getMethods().
-     */
-    private final int methodNo;
-
-    /**
-     * The one and only InstructionList object used by an instance of this class. It's here for performance reasons by
-     * do_verify() and its callees.
-     */
-    private InstructionList instructionList;
-
-    /**
-     * The one and only Code object used by an instance of this class. It's here for performance reasons by do_verify() and
-     * its callees.
-     */
-    private Code code;
-
-    /**
-     * Should only be instantiated by a Verifier.
-     */
-    public Pass3aVerifier(final Verifier verifier, final int methodNo) {
-        this.verifier = verifier;
-        this.methodNo = methodNo;
-    }
-
-    /**
-     * These are the checks that could be done in pass 2 but are delayed to pass 3 for performance reasons. Also, these
-     * checks need access to the code array of the Code attribute of a Method so it's okay to perform them here. Also see
-     * the description of the do_verify() method.
-     *
-     * @throws ClassConstraintException if the verification fails.
-     * @see #do_verify()
-     */
-    private void delayedPass2Checks() {
-
-        final int[] instructionPositions = instructionList.getInstructionPositions();
-        final int codeLength = code.getCode().length;
-
-        /////////////////////
-        // LineNumberTable //
-        /////////////////////
-        final LineNumberTable lnt = code.getLineNumberTable();
-        if (lnt != null) {
-            final LineNumber[] lineNumbers = lnt.getLineNumberTable();
-            final IntList offsets = new IntList();
-            lineNumberLoop:
-            for (final LineNumber lineNumber : lineNumbers) { // may appear in any order.
-                for (final int instructionPosition : instructionPositions) {
-                    // TODO: Make this a binary search! The instructionPositions array is naturally ordered!
-                    final int offset = lineNumber.getStartPC();
-                    if (instructionPosition == offset) {
-                        if (offsets.contains(offset)) {
-                            addMessage("LineNumberTable attribute '" + code.getLineNumberTable() + "' refers to the same code offset ('" + offset
-                                    + "') more than once" + " which is violating the semantics [but is sometimes produced by IBM's 'jikes' compiler].");
-                        } else {
-                            offsets.add(offset);
-                        }
-                        continue lineNumberLoop;
-                    }
-                }
-                throw new ClassConstraintException("Code attribute '" + tostring(code) + "' has a LineNumberTable attribute '" + code.getLineNumberTable()
-                        + "' referring to a code offset ('" + lineNumber.getStartPC() + "') that does not exist.");
-            }
-        }
-
-        ///////////////////////////
-        // LocalVariableTable(s) //
-        ///////////////////////////
-        /*
-         * We cannot use code.getLocalVariableTable() because there could be more than only one. This is a bug in BCEL.
-         */
-        final Attribute[] atts = code.getAttributes();
-        for (final Attribute att : atts) {
-            if (att instanceof LocalVariableTable) {
-                ((LocalVariableTable) att).forEach(localVariable -> {
-                    final int startpc = localVariable.getStartPC();
-                    final int length = localVariable.getLength();
-
-                    if (!contains(instructionPositions, startpc)) {
-                        throw new ClassConstraintException("Code attribute '" + tostring(code) + "' has a LocalVariableTable attribute '"
-                                + code.getLocalVariableTable() + "' referring to a code offset ('" + startpc + "') that does not exist.");
-                    }
-                    if (!contains(instructionPositions, startpc + length) && startpc + length != codeLength) {
-                        throw new ClassConstraintException(
-                                "Code attribute '" + tostring(code) + "' has a LocalVariableTable attribute '" + code.getLocalVariableTable()
-                                        + "' referring to a code offset start_pc+length ('" + (startpc + length) + "') that does not exist.");
-                    }
-                });
-            }
-        }
-
-        ////////////////////
-        // ExceptionTable //
-        ////////////////////
-        // In BCEL's "classfile" API, the startPC/endPC-notation is
-        // inclusive/exclusive as in the Java Virtual Machine Specification.
-        // WARNING: This is not true for BCEL's "generic" API.
-        final CodeException[] exceptionTable = code.getExceptionTable();
-        for (final CodeException element : exceptionTable) {
-            final int startpc = element.getStartPC();
-            final int endpc = element.getEndPC();
-            final int handlerpc = element.getHandlerPC();
-            if (startpc >= endpc) {
-                throw new ClassConstraintException("Code attribute '" + tostring(code) + "' has an exception_table entry '" + element
-                        + "' that has its start_pc ('" + startpc + "') not smaller than its end_pc ('" + endpc + "').");
-            }
-            if (!contains(instructionPositions, startpc)) {
-                throw new ClassConstraintException("Code attribute '" + tostring(code) + "' has an exception_table entry '" + element
-                        + "' that has a non-existant bytecode offset as its start_pc ('" + startpc + "').");
-            }
-            if (!contains(instructionPositions, endpc) && endpc != codeLength) {
-                throw new ClassConstraintException("Code attribute '" + tostring(code) + "' has an exception_table entry '" + element
-                        + "' that has a non-existant bytecode offset as its end_pc ('" + startpc + "') [that is also not equal to code_length ('" + codeLength
-                        + "')].");
-            }
-            if (!contains(instructionPositions, handlerpc)) {
-                throw new ClassConstraintException("Code attribute '" + tostring(code) + "' has an exception_table entry '" + element
-                        + "' that has a non-existant bytecode offset as its handler_pc ('" + handlerpc + "').");
-            }
-        }
-    }
-
-    /**
-     * Pass 3a is the verification of static constraints of JVM code (such as legal targets of branch instructions). This is
-     * the part of pass 3 where you do not need data flow analysis. JustIce also delays the checks for a correct exception
-     * table of a Code attribute and correct line number entries in a LineNumberTable attribute of a Code attribute (which
-     * conceptually belong to pass 2) to this pass. Also, most of the check for valid local variable entries in a
-     * LocalVariableTable attribute of a Code attribute is delayed until this pass. All these checks need access to the code
-     * array of the Code attribute.
-     *
-     * @throws InvalidMethodException if the method to verify does not exist.
-     */
-    @Override
-    public VerificationResult do_verify() {
-        try {
-            if (verifier.doPass2().equals(VerificationResult.VR_OK)) {
-                // Okay, class file was loaded correctly by Pass 1
-                // and satisfies static constraints of Pass 2.
-                final JavaClass jc = Repository.lookupClass(verifier.getClassName());
-                final Method[] methods = jc.getMethods();
-                if (methodNo >= methods.length) {
-                    throw new InvalidMethodException("METHOD DOES NOT EXIST!");
-                }
-                final Method method = methods[methodNo];
-                code = method.getCode();
-
-                // No Code? Nothing to verify!
-                if (method.isAbstract() || method.isNative()) { // IF mg HAS NO CODE (static constraint of Pass 2)
-                    return VerificationResult.VR_OK;
-                }
-
-                // TODO:
-                // We want a very sophisticated code examination here with good explanations
-                // on where to look for an illegal instruction or such.
-                // Only after that we should try to build an InstructionList and throw an
-                // AssertionViolatedException if after our examination InstructionList building
-                // still fails.
-                // That examination should be implemented in a byte-oriented way, i.e. look for
-                // an instruction, make sure its validity, count its length, find the next
-                // instruction and so on.
-                try {
-                    instructionList = new InstructionList(method.getCode().getCode());
-                } catch (final RuntimeException re) {
-                    return new VerificationResult(VerificationResult.VERIFIED_REJECTED,
-                            "Bad bytecode in the code array of the Code attribute of method '" + tostring(method) + "'.");
-                }
-
-                instructionList.setPositions(true);
-
-                // Start verification.
-                VerificationResult vr = VerificationResult.VR_OK; // default
-                try {
-                    delayedPass2Checks();
-                } catch (final ClassConstraintException | ClassFormatException cce) {
-                    vr = new VerificationResult(VerificationResult.VERIFIED_REJECTED, cce.getMessage());
-                    return vr;
-                }
-                try {
-                    pass3StaticInstructionChecks();
-                    pass3StaticInstructionOperandsChecks();
-                } catch (final StaticCodeConstraintException | ClassFormatException scce) {
-                    vr = new VerificationResult(VerificationResult.VERIFIED_REJECTED, scce.getMessage());
-                } catch (final ClassCastException cce) {
-                    vr = new VerificationResult(VerificationResult.VERIFIED_REJECTED, "Class Cast Exception: " + cce.getMessage());
-                }
-                return vr;
-            }
-            // did not pass Pass 2.
-            return VerificationResult.VR_NOTYET;
-        } catch (final ClassNotFoundException e) {
-            // FIXME: maybe not the best way to handle this
-            throw new AssertionViolatedException("Missing class: " + e, e);
-        }
-    }
-
-    /**
-     * Returns the method number as supplied when instantiating.
-     */
-    public int getMethodNo() {
-        return methodNo;
-    }
-
-    /**
-     * These are the checks if constraints are satisfied which are described in the Java Virtual Machine Specification,
-     * Second Edition as Static Constraints on the instructions of Java Virtual Machine Code (chapter 4.8.1).
-     *
-     * @throws StaticCodeConstraintException if the verification fails.
-     */
-    private void pass3StaticInstructionChecks() {
-
-        // Code array must not be empty:
-        // Enforced in pass 2 (also stated in the static constraints of the Code
-        // array in vmspec2), together with pass 1 (reading code_length bytes and
-        // interpreting them as code[]). So this must not be checked again here.
-
-        if (code.getCode().length >= Const.MAX_CODE_SIZE) {// length must be LESS than the max
-            throw new StaticCodeInstructionConstraintException(
-                    "Code array in code attribute '" + tostring(code) + "' too big: must be smaller than " + Const.MAX_CODE_SIZE + "65536 bytes.");
-        }
-
-        // First opcode at offset 0: okay, that's clear. Nothing to do.
-
-        // Only instances of the instructions documented in Section 6.4 may appear in
-        // the code array.
-
-        // For BCEL's sake, we cannot handle WIDE stuff, but hopefully BCEL does its job right :)
-
-        // The last byte of the last instruction in the code array must be the byte at index
-        // code_length-1 : See the do_verify() comments. We actually don't iterate through the
-        // byte array, but use an InstructionList so we cannot check for this. But BCEL does
-        // things right, so it's implicitly okay.
-
-        // TODO: Check how BCEL handles (and will handle) instructions like IMPDEP1, IMPDEP2,
-        // BREAKPOINT... that BCEL knows about but which are illegal anyway.
-        // We currently go the safe way here.
-        InstructionHandle ih = instructionList.getStart();
-        while (ih != null) {
-            final Instruction i = ih.getInstruction();
-            if (i instanceof IMPDEP1) {
-                throw new StaticCodeInstructionConstraintException("IMPDEP1 must not be in the code, it is an illegal instruction for _internal_ JVM use!");
-            }
-            if (i instanceof IMPDEP2) {
-                throw new StaticCodeInstructionConstraintException("IMPDEP2 must not be in the code, it is an illegal instruction for _internal_ JVM use!");
-            }
-            if (i instanceof BREAKPOINT) {
-                throw new StaticCodeInstructionConstraintException("BREAKPOINT must not be in the code, it is an illegal instruction for _internal_ JVM use!");
-            }
-            ih = ih.getNext();
-        }
-
-        // The original verifier seems to do this check here, too.
-        // An unreachable last instruction may also not fall through the
-        // end of the code, which is stupid -- but with the original
-        // verifier's subroutine semantics one cannot predict reachability.
-        final Instruction last = instructionList.getEnd().getInstruction();
-        if (!(last instanceof ReturnInstruction || last instanceof RET || last instanceof GotoInstruction || last instanceof ATHROW)) {
-            throw new StaticCodeInstructionConstraintException(
-                    "Execution must not fall off the bottom of the code array." + " This constraint is enforced statically as some existing verifiers do"
-                            + " - so it may be a false alarm if the last instruction is not reachable.");
-        }
-    }
-
-    /**
-     * These are the checks for the satisfaction of constraints which are described in the Java Virtual Machine
-     * Specification, Second Edition as Static Constraints on the operands of instructions of Java Virtual Machine Code
-     * (chapter 4.8.1). BCEL parses the code array to create an InstructionList and therefore has to check some of these
-     * constraints. Additional checks are also implemented here.
-     *
-     * @throws StaticCodeConstraintException if the verification fails.
-     */
-    private void pass3StaticInstructionOperandsChecks() {
-        try {
-            // When building up the InstructionList, BCEL has already done all those checks
-            // mentioned in The Java Virtual Machine Specification, Second Edition, as
-            // "static constraints on the operands of instructions in the code array".
-            // TODO: see the do_verify() comments. Maybe we should really work on the
-            // byte array first to give more comprehensive messages.
-            // TODO: Review Exception API, possibly build in some "offending instruction" thing
-            // when we're ready to insulate the offending instruction by doing the
-            // above thing.
-
-            // TODO: Implement as much as possible here. BCEL does _not_ check everything.
-
-            final ConstantPoolGen cpg = new ConstantPoolGen(Repository.lookupClass(verifier.getClassName()).getConstantPool());
-            final InstOperandConstraintVisitor v = new InstOperandConstraintVisitor(cpg);
-
-            // Checks for the things BCEL does _not_ handle itself.
-            InstructionHandle ih = instructionList.getStart();
-            while (ih != null) {
-                final Instruction i = ih.getInstruction();
-
-                // An "own" constraint, due to JustIce's new definition of what "subroutine" means.
-                if (i instanceof JsrInstruction) {
-                    final InstructionHandle target = ((JsrInstruction) i).getTarget();
-                    if (target == instructionList.getStart()) {
-                        throw new StaticCodeInstructionOperandConstraintException(
-                                "Due to JustIce's clear definition of subroutines, no JSR or JSR_W may have a top-level instruction"
-                                        + " (such as the very first instruction, which is targeted by instruction '" + tostring(ih) + "' as its target.");
-                    }
-                    if (!(target.getInstruction() instanceof ASTORE)) {
-                        throw new StaticCodeInstructionOperandConstraintException(
-                                "Due to JustIce's clear definition of subroutines, no JSR or JSR_W may target anything else"
-                                        + " than an ASTORE instruction. Instruction '" + tostring(ih) + "' targets '" + tostring(target) + "'.");
-                    }
-                }
-
-                // vmspec2, page 134-137
-                ih.accept(v);
-
-                ih = ih.getNext();
-            }
-
-        } catch (final ClassNotFoundException e) {
-            // FIXME: maybe not the best way to handle this
-            throw new AssertionViolatedException("Missing class: " + e, e);
-        }
-    }
-
-    /**
-     * This method is a slightly modified version of verifier.statics.StringRepresentation.toString(final Node obj) that
-     * accepts any Object, not just a Node.
-     * <p>
-     * Returns the String representation of the Object obj; this is obj.toString() if it does not throw any
-     * RuntimeException, or else it is a string derived only from obj's class name.
-     */
-    protected String tostring(final Object obj) {
-        String ret;
-        try {
-            ret = obj.toString();
-        } catch (final RuntimeException e) {
-            // including ClassFormatException, trying to convert the "signature" of a ReturnaddressType LocalVariable
-            // (shouldn't occur, but people do crazy things)
-            String s = obj.getClass().getName();
-            s = s.substring(s.lastIndexOf(".") + 1);
-            ret = "<<" + s + ">>";
-        }
-        return ret;
     }
 }

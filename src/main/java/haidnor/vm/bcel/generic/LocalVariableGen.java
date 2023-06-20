@@ -117,12 +117,25 @@ public class LocalVariableGen implements InstructionTargeter, NamedAndTyped, Clo
         return end;
     }
 
+    public void setEnd(final InstructionHandle end) { // TODO could be package-protected?
+        BranchInstruction.notifyTarget(this.end, end, this);
+        this.end = end;
+    }
+
     public int getIndex() {
         return index;
     }
 
+    public void setIndex(final int index) {
+        this.index = index;
+    }
+
     public boolean getLiveToEnd() {
         return liveToEnd;
+    }
+
+    public void setLiveToEnd(final boolean liveToEnd) {
+        this.liveToEnd = liveToEnd;
     }
 
     /**
@@ -157,6 +170,11 @@ public class LocalVariableGen implements InstructionTargeter, NamedAndTyped, Clo
         return name;
     }
 
+    @Override
+    public void setName(final String name) {
+        this.name = name;
+    }
+
     public int getOrigIndex() {
         return origIndex;
     }
@@ -165,9 +183,19 @@ public class LocalVariableGen implements InstructionTargeter, NamedAndTyped, Clo
         return start;
     }
 
+    public void setStart(final InstructionHandle start) { // TODO could be package-protected?
+        BranchInstruction.notifyTarget(this.start, start, this);
+        this.start = start;
+    }
+
     @Override
     public Type getType() {
         return type;
+    }
+
+    @Override
+    public void setType(final Type type) {
+        this.type = type;
     }
 
     @Override
@@ -175,34 +203,6 @@ public class LocalVariableGen implements InstructionTargeter, NamedAndTyped, Clo
         // If the user changes the name or type, problems with the targeter hashmap will occur.
         // Note: index cannot be part of hash as it may be changed by the user.
         return name.hashCode() ^ type.hashCode();
-    }
-
-    public void setEnd(final InstructionHandle end) { // TODO could be package-protected?
-        BranchInstruction.notifyTarget(this.end, end, this);
-        this.end = end;
-    }
-
-    public void setIndex(final int index) {
-        this.index = index;
-    }
-
-    public void setLiveToEnd(final boolean liveToEnd) {
-        this.liveToEnd = liveToEnd;
-    }
-
-    @Override
-    public void setName(final String name) {
-        this.name = name;
-    }
-
-    public void setStart(final InstructionHandle start) { // TODO could be package-protected?
-        BranchInstruction.notifyTarget(this.start, start, this);
-        this.start = start;
-    }
-
-    @Override
-    public void setType(final Type type) {
-        this.type = type;
     }
 
     @Override

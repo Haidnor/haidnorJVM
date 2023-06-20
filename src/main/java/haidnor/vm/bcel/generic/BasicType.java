@@ -23,6 +23,19 @@ import haidnor.vm.bcel.Const;
  */
 public final class BasicType extends Type {
 
+    /**
+     * Constructor for basic types such as int, long, 'void'
+     *
+     * @param type one of T_INT, T_BOOLEAN, ..., T_VOID
+     * @see Const
+     */
+    BasicType(final byte type) {
+        super(type, Const.getShortTypeName(type));
+        if (type < Const.T_BOOLEAN || type > Const.T_VOID) {
+            throw new ClassGenException("Invalid type: " + type);
+        }
+    }
+
     // @since 6.0 no longer final
     public static BasicType getType(final byte type) {
         switch (type) {
@@ -46,19 +59,6 @@ public final class BasicType extends Type {
                 return FLOAT;
             default:
                 throw new ClassGenException("Invalid type: " + type);
-        }
-    }
-
-    /**
-     * Constructor for basic types such as int, long, 'void'
-     *
-     * @param type one of T_INT, T_BOOLEAN, ..., T_VOID
-     * @see Const
-     */
-    BasicType(final byte type) {
-        super(type, Const.getShortTypeName(type));
-        if (type < Const.T_BOOLEAN || type > Const.T_VOID) {
-            throw new ClassGenException("Invalid type: " + type);
         }
     }
 

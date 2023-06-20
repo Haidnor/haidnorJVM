@@ -108,15 +108,15 @@ public abstract class ParameterAnnotations extends Attribute implements Iterable
         return parameterAnnotationTable;
     }
 
-    @Override
-    public Iterator<ParameterAnnotationEntry> iterator() {
-        return Stream.of(parameterAnnotationTable).iterator();
-    }
-
     /**
      * @param parameterAnnotationTable the entries to set in this parameter annotation
      */
     public final void setParameterAnnotationTable(final ParameterAnnotationEntry[] parameterAnnotationTable) {
         this.parameterAnnotationTable = parameterAnnotationTable;
+    }
+
+    @Override
+    public Iterator<ParameterAnnotationEntry> iterator() {
+        return Stream.of(parameterAnnotationTable).iterator();
     }
 }

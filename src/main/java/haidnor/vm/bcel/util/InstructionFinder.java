@@ -57,19 +57,6 @@ import java.util.regex.Pattern;
  */
 public class InstructionFinder {
 
-    /**
-     * Code patterns found may be checked using an additional user-defined constraint object whether they really match the
-     * needed criterion. I.e., check constraints that can not expressed with regular expressions.
-     */
-    public interface CodeConstraint {
-
-        /**
-         * @param match array of instructions matching the requested pattern
-         * @return true if the matched area is really useful
-         */
-        boolean checkCode(InstructionHandle[] match);
-    }
-
     private static final int OFFSET = 32767; // char + OFFSET is outside of LATIN-1
     private static final int NO_OPCODES = 256; // Potential number, some are not used
     private static final Map<String, String> map = new HashMap<>();
@@ -157,6 +144,18 @@ public class InstructionFinder {
         map.put("instruction", buf.toString());
     }
 
+    private final InstructionList il;
+    private String ilString; // instruction list as string
+    private InstructionHandle[] handles; // map instruction
+
+    /**
+     * @param il instruction list to search for given patterns
+     */
+    public InstructionFinder(final InstructionList il) {
+        this.il = il;
+        reread();
+    }
+
     /**
      * Replace symbolic names of instructions with the appropriate character and remove all white space from string. Meta
      * characters such as +, * are ignored.
@@ -226,21 +225,7 @@ public class InstructionFinder {
         return buf.toString();
     }
 
-    private final InstructionList il;
-
-    private String ilString; // instruction list as string
-
-    private InstructionHandle[] handles; // map instruction
-
     // list to array
-
-    /**
-     * @param il instruction list to search for given patterns
-     */
-    public InstructionFinder(final InstructionList il) {
-        this.il = il;
-        reread();
-    }
 
     /**
      * @return the inquired instruction list
@@ -354,6 +339,19 @@ public class InstructionFinder {
             start = endExpr;
         }
         return matches.iterator();
+    }
+
+    /**
+     * Code patterns found may be checked using an additional user-defined constraint object whether they really match the
+     * needed criterion. I.e., check constraints that can not expressed with regular expressions.
+     */
+    public interface CodeConstraint {
+
+        /**
+         * @param match array of instructions matching the requested pattern
+         * @return true if the matched area is really useful
+         */
+        boolean checkCode(InstructionHandle[] match);
     }
 
     /*

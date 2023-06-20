@@ -50,16 +50,13 @@ public abstract class FieldOrMethod extends AccessFlags implements Cloneable, No
      */
     @java.lang.Deprecated
     protected int attributes_count; // No. of attributes
-
-    // @since 6.0
-    private AnnotationEntry[] annotationEntries; // annotations defined on the field or method
-
     /**
      * @deprecated (since 6.0) will be made private; do not access directly, use getter/setter
      */
     @java.lang.Deprecated
     protected ConstantPool constant_pool;
-
+    // @since 6.0
+    private AnnotationEntry[] annotationEntries; // annotations defined on the field or method
     private String signatureAttributeString;
     private boolean searchedForSignatureAttribute;
 
@@ -174,10 +171,25 @@ public abstract class FieldOrMethod extends AccessFlags implements Cloneable, No
     }
 
     /**
+     * @param attributes Collection of object attributes.
+     */
+    public final void setAttributes(final Attribute[] attributes) {
+        this.attributes = attributes;
+        this.attributes_count = attributes != null ? attributes.length : 0; // init deprecated field
+    }
+
+    /**
      * @return Constant pool used by this object.
      */
     public final ConstantPool getConstantPool() {
         return constant_pool;
+    }
+
+    /**
+     * @param constantPool Constant pool to be used for this object.
+     */
+    public final void setConstantPool(final ConstantPool constantPool) {
+        this.constant_pool = constantPool;
     }
 
     /**
@@ -216,6 +228,13 @@ public abstract class FieldOrMethod extends AccessFlags implements Cloneable, No
     }
 
     /**
+     * @param nameIndex Index in constant pool of object's name.
+     */
+    public final void setNameIndex(final int nameIndex) {
+        this.name_index = nameIndex;
+    }
+
+    /**
      * @return String representation of object's type signature (java style)
      */
     public final String getSignature() {
@@ -227,28 +246,6 @@ public abstract class FieldOrMethod extends AccessFlags implements Cloneable, No
      */
     public final int getSignatureIndex() {
         return signature_index;
-    }
-
-    /**
-     * @param attributes Collection of object attributes.
-     */
-    public final void setAttributes(final Attribute[] attributes) {
-        this.attributes = attributes;
-        this.attributes_count = attributes != null ? attributes.length : 0; // init deprecated field
-    }
-
-    /**
-     * @param constantPool Constant pool to be used for this object.
-     */
-    public final void setConstantPool(final ConstantPool constantPool) {
-        this.constant_pool = constantPool;
-    }
-
-    /**
-     * @param nameIndex Index in constant pool of object's name.
-     */
-    public final void setNameIndex(final int nameIndex) {
-        this.name_index = nameIndex;
     }
 
     /**

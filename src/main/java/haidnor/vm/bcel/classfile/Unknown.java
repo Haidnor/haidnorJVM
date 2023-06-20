@@ -34,9 +34,8 @@ import java.util.Arrays;
  */
 public final class Unknown extends Attribute {
 
-    private byte[] bytes;
-
     private final String name;
+    private byte[] bytes;
 
     /**
      * Constructs a new instance for a non-standard attribute.
@@ -124,18 +123,18 @@ public final class Unknown extends Attribute {
     }
 
     /**
+     * @param bytes the bytes to set
+     */
+    public void setBytes(final byte[] bytes) {
+        this.bytes = bytes;
+    }
+
+    /**
      * @return name of attribute.
      */
     @Override
     public String getName() {
         return name;
-    }
-
-    /**
-     * @param bytes the bytes to set
-     */
-    public void setBytes(final byte[] bytes) {
-        this.bytes = bytes;
     }
 
     /**

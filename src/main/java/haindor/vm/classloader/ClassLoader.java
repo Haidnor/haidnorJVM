@@ -1,17 +1,17 @@
 package haindor.vm.classloader;
 
 import haindor.vm.bytecode.*;
-import haindor.vm.bytecode.attribute.AttributeConstants;
-import haindor.vm.bytecode.attribute.SourceFileAttribute;
 import haindor.vm.bytecode.constant.*;
 import haindor.vm.bytecode.method.MethodAccessFlagEnum;
 import haindor.vm.bytecode.method.MethodInfo;
 import haindor.vm.bytecode.util.InputStreamUtil;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
+@Slf4j
 public class ClassLoader {
 
     public ClassFile readClassFile(String path) throws IOException {
@@ -65,100 +65,107 @@ public class ClassLoader {
             methodInfo.accessFlagEnum = MethodAccessFlagEnum.enumMap.get(accessFlags);
 
             methodInfo.nameIndex = nameIndex;
-            methodInfo.nameConstantUtf8Info = (ConstantUtf8Info) classFile.constantPool.getConstantInfo(nameIndex);
+            methodInfo.nameConstantUtf8Info = classFile.constantPool.getConstantUtf8Info(nameIndex);
 
             methodInfo.descriptorIndex = descriptorIndex;
-            methodInfo.descriptorConstantUtf8Info = (ConstantUtf8Info) classFile.constantPool.getConstantInfo(descriptorIndex);
+            methodInfo.descriptorConstantUtf8Info = classFile.constantPool.getConstantUtf8Info(descriptorIndex);
 
             methodInfo.attributesCount = attributesCount;
             methodInfo.attributes = new ArrayList<>(attributesCount);
 
             methods.addMethodInfo(methodInfo);
 
+            log.info("\t第 " + i + " 个方法: access flag: " + methodInfo.accessFlags + ", name index: " + methodInfo.nameIndex + ", descriptor index: " + methodInfo.descriptorIndex + ", attribute count: " + methodInfo.attributesCount);
             for (int m = 0; m < attributesCount; m++) {
-                int attributeNameIndex = stream.readUnsignedShort();
-                String attributeName = classFile.constantPool.getConstantUtf8InfoStr(attributeNameIndex);
-                int attributeLength = stream.readInt();
 
-                switch (attributeName) {
-//  --------------------------------------------------------------------------------------------------------------------
-                    case AttributeConstants.SourceFile:
-                        int sourceFileIndex = stream.readUnsignedShort();
-                        SourceFileAttribute sourceFileAttribute = new SourceFileAttribute(attributeNameIndex, attributeLength);
-                        sourceFileAttribute.sourcefileIndex = sourceFileIndex;
-                        sourceFileAttribute.sourcefileConstantUtf8Info = (ConstantUtf8Info) classFile.constantPool.getConstantInfo(sourceFileIndex);
-                        methodInfo.addAttribute(sourceFileAttribute);
-                        break;
-//  --------------------------------------------------------------------------------------------------------------------
-//                    case AttributeConstants.Code:
-//                        int maxStack = stream.readUnsignedShort();
-//                        int maxLocals = stream.readUnsignedShort();
-//                        int codeLength = stream.readInt();
-//
-//                        CodeAttribute codeAttribute = new CodeAttribute(attributeNameIndex, attributeLength);
-//                        codeAttribute.maxStack = maxStack;
-//                        codeAttribute.maxLocals = maxLocals;
-//                        codeAttribute.codeLength = codeLength;
-//
-//                        byte[] byteCode = Utils.readNBytes(is, codeLength);
-//
-//                        Instruction[] instructions = readByteCode(byteCode, constantPool);
-//
-//                        int exceptionTableLength = is.readUnsignedShort();
-//                        Exception[] exceptions = new Exception[exceptionTableLength];
-//                        for (int i1 = 0; i1 < exceptionTableLength; i1++) {
-//                            int etsp = is.readUnsignedShort();
-//                            int etep = is.readUnsignedShort();
-//                            int ethp = is.readUnsignedShort();
-//                            int ctIdx = is.readUnsignedShort();
-//
-//                            // null => catch any exception
-//                            String etClassname = null;
-//                            if (ctIdx != 0) {
-//                                etClassname = Utils.getClassName(constantPool, ctIdx);
-//                            }
-//
-//                            Exception exception = new Exception(etsp, etep, ethp, etClassname);
-//                            exceptions[i1] = exception;
-//                        }
-//                        ExceptionTable exceptionTable = new ExceptionTable(exceptions);
-//                        int codeAttributeCount = is.readUnsignedShort();
-//                        Attributes codeAttributes = readAttributes(is, codeAttributeCount, constantPool);
-//
-//                        attribute = new Code(maxStack, maxLocals, instructions, exceptionTable, codeAttributes);
-//                        break;
-//                    case AttributeConstants.LineNumberTable:
-//                        int length = is.readUnsignedShort();
-//                        LineNumberTable.Line[] lines = new LineNumberTable.Line[length];
-//                        for (int i1 = 0; i1 < length; i1++) {
-//                            lines[i1] = new LineNumberTable.Line(is.readUnsignedShort(), is.readUnsignedShort());
-//                        }
-//                        attribute = new LineNumberTable(lines);
-//                        break;
-//                    case AttributeConstants.BootstrapMethods:
-//                        int bsmLen = is.readUnsignedShort();
-//                        BootstrapMethods.BootstrapMethod[] bootstrapMethods = new BootstrapMethods.BootstrapMethod[bsmLen];
-//                        for (int i1 = 0; i1 < bsmLen; i1++) {
-//                            int bsmr = is.readUnsignedShort();
-//                            int nbma = is.readUnsignedShort();
-//                            Integer[] args = new Integer[nbma];
-//                            for (int i2 = 0; i2 < nbma; i2++) {
-//                                args[i2] = is.readUnsignedShort();
-//                            }
-//
-//                            bootstrapMethods[i1] = new BootstrapMethods.BootstrapMethod(bsmr, args);
-//                        }
-//
-//                        attribute = new BootstrapMethods(bootstrapMethods);
-//                        break;
-                    default:
-                        byte[] bytes = new byte[attributeLength];
-                        for (int l = 0; l < attributeLength; l++) {
-                            bytes[l] = stream.readByte();
-                        }
-                        break;
+                int attributeNameIndex = stream.readUnsignedShort();   // u2 属性名
+                String attributeName = classFile.constantPool.getConstantUtf8InfoStr(attributeNameIndex);
+                int attributeLength = stream.readInt();         // u4 属性长度
+                int maxStack = stream.readUnsignedShort();      // u2    max stack
+                int maxLocals = stream.readUnsignedShort();     // u2   max stack
+                int codeLength = stream.readInt();              // u4
+
+                // code
+                byte[] codeByte = new byte[codeLength];
+                stream.read(codeByte);
+
+                log.info("\t\t第 " + m + " 个属性: access flag: " + methodInfo.accessFlags + ", name index: " + attributeNameIndex + ", stack: " + maxStack + ", locals: " + maxLocals + ", code len: " + codeLength);
+
+                int exceptionTableLength = stream.readUnsignedShort(); // u2 exceptionTableLength
+
+                // attributesCount
+                int attributeInfoAttributesCount = stream.readUnsignedShort(); // u2 attributesCount
+
+                for (int k = 0; k < attributeInfoAttributesCount; k++) {
+                    int attrNameIndex = stream.readUnsignedShort(); // u2
+                    String attrName = classFile.constantPool.getConstantUtf8Info(attrNameIndex).utf8Str;
+
+                    if (attrName.equals("LineNumberTable")) {
+                        parseLineNumberTable(stream);
+                    } else if (attrName.equals("LocalVariableTable")) {
+                        parseLocalVariableTable(stream);
+                    }
                 }
             }
+        }
+    }
+
+    private static void parseLineNumberTable(DataInputStream stream) throws IOException {
+        // attr name index
+        int attrNameIndex = stream.readUnsignedShort();      // u2
+        // attr len
+        int attrLen = stream.readUnsignedShort();            // u2
+        // table length
+        int tableLength = stream.readUnsignedShort();        // u2
+
+        log.info("\t\t\t lineNumberTable: " + ", name index: " + attrNameIndex + ", attr len: " + attrLen + ", table len: " + tableLength);
+
+        // table
+        for (int l = 0; l < tableLength; l++) {
+            // start pc
+            int startPc = stream.readUnsignedShort();
+            // line number
+            int lineNumber = stream.readUnsignedShort();
+            log.info("\t\t\t\t第 " + l + " 个属性: " + ", start pc: " + startPc + ", line number: " + lineNumber);
+        }
+    }
+
+    private static void parseLocalVariableTable(DataInputStream stream) throws IOException {
+        // attr name index
+        int attrNameIndex = stream.readUnsignedShort(); // u2
+
+        // attr len
+        int attrLength = stream.readUnsignedShort(); // u2
+
+        // table length
+        int tableLength = stream.readUnsignedShort(); // u2
+
+        log.info("\t\t\t localVariableTable: " + ", name index: " + attrNameIndex + ", attr len: " + attrLength + ", table len: " + tableLength);
+
+        // table
+        for (int i = 0; i < tableLength; i++) {
+            // start pc
+            int startPc = stream.readUnsignedShort();
+
+            // length
+            int length = stream.readUnsignedShort();
+
+            // name index
+            int nameIndex = stream.readUnsignedShort();
+
+            // descriptorIndex
+            int descriptorIndex = stream.readUnsignedShort();
+
+            //index
+            int index = stream.readUnsignedShort();
+
+            log.info("\t\t\t\t第 " + i + " 个属性: "
+                    + ", start pc: " + startPc
+                    + ", length: " + length
+                    + ", name index: " + nameIndex
+                    + ", descriptor index: " + descriptorIndex
+                    + ", index: " + index
+            );
         }
     }
 
@@ -238,23 +245,55 @@ public class ClassLoader {
         for (int i = 1; i < classFile.constantPoolCount; i++) {
             int tag = stream.readUnsignedByte();
             switch (tag) {
-                case ConstantInfoConstants.CONSTANT_Utf8 -> readConstantUtf8Info(stream, constantPool);
-                case ConstantInfoConstants.CONSTANT_Integer -> readConstantIntegerInfo(stream, constantPool);
-                case ConstantInfoConstants.CONSTANT_Float -> readConstantFloatInfo(stream, constantPool);
-                case ConstantInfoConstants.CONSTANT_Long -> readConstantLongInfo(stream, constantPool);
-                case ConstantInfoConstants.CONSTANT_Double -> readConstantDoubleInfo(stream, constantPool);
-                case ConstantInfoConstants.CONSTANT_Class -> readConstantClassInfo(stream, constantPool);
-                case ConstantInfoConstants.CONSTANT_String -> readConstantStringInfo(stream, constantPool);
-                case ConstantInfoConstants.CONSTANT_Fieldref -> readConstantFieldrefInfo(stream, constantPool);
-                case ConstantInfoConstants.CONSTANT_Methodref -> readConstantMethodrefInfo(stream, constantPool);
-                case ConstantInfoConstants.CONSTANT_InterfaceMethodref ->
-                        readConstantInterfaceMethodRefInfo(stream, constantPool);
-                case ConstantInfoConstants.CONSTANT_NameAndType -> readConstantNameAndTypeInfo(stream, constantPool);
-                case ConstantInfoConstants.CONSTANT_MethodHandle -> readConstantMethodHandleInfo(stream, constantPool);
-                case ConstantInfoConstants.CONSTANT_MethodType -> readConstantMethodtypeInfo(stream, constantPool);
-                case ConstantInfoConstants.CONSTANT_InvokeDynamic ->
-                        readConstantInvokeDynamicInfo(stream, constantPool);
-                default -> throw new UnsupportedOperationException("Unsupported Constant Tag " + tag);
+                case ConstantInfoConstants.CONSTANT_Utf8 -> {
+                    readConstantUtf8Info(stream, constantPool);
+                }
+                case ConstantInfoConstants.CONSTANT_Integer -> {
+                    readConstantIntegerInfo(stream, constantPool);
+                }
+                case ConstantInfoConstants.CONSTANT_Float -> {
+                    readConstantFloatInfo(stream, constantPool);
+                }
+                case ConstantInfoConstants.CONSTANT_Long -> {
+                    readConstantLongInfo(stream, constantPool);
+                }
+                case ConstantInfoConstants.CONSTANT_Double -> {
+                    readConstantDoubleInfo(stream, constantPool);
+                }
+                case ConstantInfoConstants.CONSTANT_Class -> {
+                    readConstantClassInfo(stream, constantPool);
+                }
+                case ConstantInfoConstants.CONSTANT_String -> {
+                    readConstantStringInfo(stream, constantPool);
+                }
+                case ConstantInfoConstants.CONSTANT_Fieldref -> {
+                    readConstantFieldrefInfo(stream, constantPool);
+                }
+                case ConstantInfoConstants.CONSTANT_Methodref -> {
+                    readConstantMethodrefInfo(stream, constantPool);
+                }
+                case ConstantInfoConstants.CONSTANT_InterfaceMethodref -> {
+                    readConstantInterfaceMethodRefInfo(stream, constantPool);
+                }
+                case ConstantInfoConstants.CONSTANT_NameAndType -> {
+                    readConstantNameAndTypeInfo(stream, constantPool);
+                }
+                case ConstantInfoConstants.CONSTANT_MethodHandle -> {
+                    readConstantMethodHandleInfo(stream, constantPool);
+                }
+                case ConstantInfoConstants.CONSTANT_MethodType -> {
+                    readConstantMethodtypeInfo(stream, constantPool);
+                }
+                case ConstantInfoConstants.CONSTANT_InvokeDynamic -> {
+                    readConstantInvokeDynamicInfo(stream, constantPool);
+                }
+                default -> {
+                    if (tag == 0) {
+
+                    } else {
+                        throw new UnsupportedOperationException("Unsupported Constant Tag " + tag);
+                    }
+                }
             }
         }
 

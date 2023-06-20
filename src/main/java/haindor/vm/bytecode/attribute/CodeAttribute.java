@@ -1,5 +1,10 @@
 package haindor.vm.bytecode.attribute;
 
+import haindor.vm.bytecode.instruction.Instruction;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /*
 https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.3
 
@@ -41,8 +46,15 @@ public class CodeAttribute extends Attribute {
      */
     public int codeLength;
 
+    public List<Instruction> instructions;
+
     public CodeAttribute(int attributeNameIndex, int attributeLength) {
         super(attributeNameIndex, attributeLength);
+        this.instructions = new ArrayList<>();
+    }
+
+    public void addInstruction(Instruction instruction) {
+        this.instructions.add(instruction);
     }
 
 }

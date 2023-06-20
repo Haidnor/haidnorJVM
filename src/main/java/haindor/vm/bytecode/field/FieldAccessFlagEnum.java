@@ -4,6 +4,11 @@ package haindor.vm.bytecode.field;
  https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.5
 */
 
+import java.util.Arrays;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 /**
  * JVM 字段访问权限标识常量
  *
@@ -51,6 +56,13 @@ public enum FieldAccessFlagEnum {
 
     FieldAccessFlagEnum(int value) {
         this.value = value;
+    }
+
+    public static final Map<Integer, FieldAccessFlagEnum> enumMap;
+
+    static {
+        enumMap = Arrays.stream(FieldAccessFlagEnum.values())
+                .collect(Collectors.toMap(FieldAccessFlagEnum -> FieldAccessFlagEnum.value, Function.identity()));
     }
 
 }

@@ -1,6 +1,7 @@
 package haindor.vm.bytecode;
 
 import haindor.vm.bytecode.constant.*;
+import haindor.vm.bytecode.field.FieldAccessFlagEnum;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -279,7 +280,13 @@ public class ClassFile {
         }
 
         sb.append("{\n");
+        for (FieldInfo fieldInfo : fields.fieldInfos) {
+            sb.append("  FIELD: ").append(constantPool.getConstantUtf8Info(fieldInfo.nameIndex).utf8Str).append(";\n");
+            sb.append("    descriptor: ").append(constantPool.getConstantUtf8Info(fieldInfo.descriptorIndex).utf8Str).append("\n");
+            sb.append("    flags: (0x").append(Integer.toHexString(FieldAccessFlagEnum.enumMap.get(fieldInfo.accessFlags).value)).append(") ").append(FieldAccessFlagEnum.enumMap.get(fieldInfo.accessFlags).name()).append("\n");
 
+            sb.append("\n");
+        }
         sb.append("}\n");
         return sb.toString();
     }

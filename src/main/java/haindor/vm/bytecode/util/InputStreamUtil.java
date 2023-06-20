@@ -1,5 +1,6 @@
 package haindor.vm.bytecode.util;
 
+import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -14,6 +15,10 @@ public class InputStreamUtil {
             throw new Error(exception);
         }
         return new DataInputStream(fileInputStream);
+    }
+
+    public static ByteArrayInputStream getByteArrayInputStream(byte[] bytes) {
+        return new ByteArrayInputStream(bytes);
     }
 
 }

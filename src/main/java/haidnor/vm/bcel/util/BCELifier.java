@@ -164,7 +164,7 @@ public class BCELifier extends EmptyVisitor {
         if (fields.length > 0) {
             printWriter.println("    createFields();");
         }
-        final Method[] methods = clazz.getMethods();
+        final MethodInfo[] methods = clazz.getMethods();
         for (int i = 0; i < methods.length; i++) {
             printWriter.println("    createMethod_" + i + "();");
         }
@@ -263,7 +263,7 @@ public class BCELifier extends EmptyVisitor {
             printWriter.println("  }");
             printWriter.println();
         }
-        final Method[] methods = clazz.getMethods();
+        final MethodInfo[] methods = clazz.getMethods();
         for (int i = 0; i < methods.length; i++) {
             printWriter.println("  private void createMethod_" + i + "() {");
             methods[i].accept(this);
@@ -275,7 +275,7 @@ public class BCELifier extends EmptyVisitor {
     }
 
     @Override
-    public void visitMethod(final Method method) {
+    public void visitMethod(final MethodInfo method) {
         final MethodGen mg = new MethodGen(method, clazz.getClassName(), constantPoolGen);
         printWriter.println("    InstructionList il = new InstructionList();");
         printWriter.println("    MethodGen method = new MethodGen(" + printFlags(method.getAccessFlags(), FLAGS.METHOD) + ", " + printType(mg.getReturnType())

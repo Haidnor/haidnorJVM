@@ -76,7 +76,7 @@ public class Class2HTML implements Constants {
     }
 
     private Class2HTML(final JavaClass javaClass, final String dir, final Charset charset) throws IOException {
-        final Method[] methods = javaClass.getMethods();
+        final MethodInfo[] methods = javaClass.getMethods();
         this.javaClass = javaClass;
         this.dir = dir;
         className = javaClass.getClassName(); // Remember full name

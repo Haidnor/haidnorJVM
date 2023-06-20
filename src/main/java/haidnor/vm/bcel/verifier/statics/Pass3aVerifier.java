@@ -190,11 +190,11 @@ public final class Pass3aVerifier extends PassVerifier {
                 // Okay, class file was loaded correctly by Pass 1
                 // and satisfies static constraints of Pass 2.
                 final JavaClass jc = Repository.lookupClass(verifier.getClassName());
-                final Method[] methods = jc.getMethods();
+                final MethodInfo[] methods = jc.getMethods();
                 if (methodNo >= methods.length) {
                     throw new InvalidMethodException("METHOD DOES NOT EXIST!");
                 }
-                final Method method = methods[methodNo];
+                final MethodInfo method = methods[methodNo];
                 code = method.getCode();
 
                 // No Code? Nothing to verify!
@@ -420,9 +420,9 @@ public final class Pass3aVerifier extends PassVerifier {
          * @param invoke the instruction that references the method
          * @return the referenced method or null if not found.
          */
-        private Method getMethod(final JavaClass jc, final InvokeInstruction invoke) {
-            final Method[] ms = jc.getMethods();
-            for (final Method element : ms) {
+        private MethodInfo getMethod(final JavaClass jc, final InvokeInstruction invoke) {
+            final MethodInfo[] ms = jc.getMethods();
+            for (final MethodInfo element : ms) {
                 if (element.getName().equals(invoke.getMethodName(constantPoolGen))
                         && Type.getReturnType(element.getSignature()).equals(invoke.getReturnType(constantPoolGen))
                         && Arrays.equals(Type.getArgumentTypes(element.getSignature()), invoke.getArgumentTypes(constantPoolGen))) {
@@ -441,8 +441,8 @@ public final class Pass3aVerifier extends PassVerifier {
          * @param invoke the instruction that references the method
          * @return the referenced method or null if not found.
          */
-        private Method getMethodRecursive(final JavaClass jc, final InvokeInstruction invoke) throws ClassNotFoundException {
-            Method m;
+        private MethodInfo getMethodRecursive(final JavaClass jc, final InvokeInstruction invoke) throws ClassNotFoundException {
+            MethodInfo m;
             // look in the given class
             m = getMethod(jc, invoke);
             if (m != null) {
@@ -880,7 +880,7 @@ public final class Pass3aVerifier extends PassVerifier {
                 // too. So are the allowed method names.
                 final String className = o.getClassName(constantPoolGen);
                 final JavaClass jc = Repository.lookupClass(className);
-                final Method m = getMethodRecursive(jc, o);
+                final MethodInfo m = getMethodRecursive(jc, o);
                 if (m == null) {
                     constraintViolated(o, "Referenced method '" + o.getMethodName(constantPoolGen) + "' with expected signature '"
                             + o.getSignature(constantPoolGen) + "' not found in class '" + jc.getClassName() + "'.");
@@ -906,7 +906,7 @@ public final class Pass3aVerifier extends PassVerifier {
                 // too. So are the allowed method names.
                 final String className = o.getClassName(constantPoolGen);
                 final JavaClass jc = Repository.lookupClass(className);
-                final Method m = getMethodRecursive(jc, o);
+                final MethodInfo m = getMethodRecursive(jc, o);
                 if (m == null) {
                     constraintViolated(o, "Referenced method '" + o.getMethodName(constantPoolGen) + "' with expected signature '"
                             + o.getSignature(constantPoolGen) + "' not found in class '" + jc.getClassName() + "'.");
@@ -919,13 +919,13 @@ public final class Pass3aVerifier extends PassVerifier {
 
                     int supidx = -1;
 
-                    Method meth = null;
+                    MethodInfo meth = null;
                     while (supidx != 0) {
                         supidx = current.getSuperclassNameIndex();
                         current = Repository.lookupClass(current.getSuperclassName());
 
-                        final Method[] meths = current.getMethods();
-                        for (final Method meth2 : meths) {
+                        final MethodInfo[] meths = current.getMethods();
+                        for (final MethodInfo meth2 : meths) {
                             if (meth2.getName().equals(o.getMethodName(constantPoolGen))
                                     && Type.getReturnType(meth2.getSignature()).equals(o.getReturnType(constantPoolGen))
                                     && Arrays.equals(Type.getArgumentTypes(meth2.getSignature()), o.getArgumentTypes(constantPoolGen))) {
@@ -962,7 +962,7 @@ public final class Pass3aVerifier extends PassVerifier {
                 // too. So are the allowed method names.
                 final String className = o.getClassName(constantPoolGen);
                 final JavaClass jc = Repository.lookupClass(className);
-                final Method m = getMethodRecursive(jc, o);
+                final MethodInfo m = getMethodRecursive(jc, o);
                 if (m == null) {
                     constraintViolated(o, "Referenced method '" + o.getMethodName(constantPoolGen) + "' with expected signature '"
                             + o.getSignature(constantPoolGen) + "' not found in class '" + jc.getClassName() + "'.");
@@ -988,7 +988,7 @@ public final class Pass3aVerifier extends PassVerifier {
                 // too. So are the allowed method names.
                 final String className = o.getClassName(constantPoolGen);
                 final JavaClass jc = Repository.lookupClass(className);
-                final Method m = getMethodRecursive(jc, o);
+                final MethodInfo m = getMethodRecursive(jc, o);
                 if (m == null) {
                     constraintViolated(o, "Referenced method '" + o.getMethodName(constantPoolGen) + "' with expected signature '"
                             + o.getSignature(constantPoolGen) + "' not found in class '" + jc.getClassName() + "'.");

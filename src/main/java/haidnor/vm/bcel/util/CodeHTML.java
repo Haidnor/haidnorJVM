@@ -37,7 +37,7 @@ final class CodeHTML {
     private final ConstantHTML constantHtml;
     private BitSet gotoSet;
 
-    CodeHTML(final String dir, final String className, final Method[] methods, final ConstantPool constantPool, final ConstantHTML constantHtml,
+    CodeHTML(final String dir, final String className, final MethodInfo[] methods, final ConstantPool constantPool, final ConstantHTML constantHtml,
              final Charset charset) throws IOException {
         this.className = className;
 //        this.methods = methods;
@@ -462,7 +462,7 @@ final class CodeHTML {
     /**
      * Write a single method with the byte code associated with it.
      */
-    private void writeMethod(final Method method, final int methodNumber) throws IOException {
+    private void writeMethod(final MethodInfo method, final int methodNumber) throws IOException {
         // Get raw signature
         final String signature = method.getSignature();
         // Get array of strings containing the argument types

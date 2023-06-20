@@ -390,7 +390,7 @@ public class DescendingVisitor implements Visitor {
     }
 
     @Override
-    public void visitMethod(final Method method) {
+    public void visitMethod(final MethodInfo method) {
         stack.push(method);
         method.accept(visitor);
         accept(method.getAttributes());

@@ -34,7 +34,7 @@ final class MethodHTML {
     private final ConstantHTML constantHtml;
     private final AttributeHTML attributeHtml;
 
-    MethodHTML(final String dir, final String className, final Method[] methods, final Field[] fields, final ConstantHTML constantHtml,
+    MethodHTML(final String dir, final String className, final MethodInfo[] methods, final Field[] fields, final ConstantHTML constantHtml,
                final AttributeHTML attributeHtml, final Charset charset) throws FileNotFoundException, UnsupportedEncodingException {
         this.className = className;
         this.attributeHtml = attributeHtml;
@@ -88,7 +88,7 @@ final class MethodHTML {
         printWriter.println("</TR>");
     }
 
-    private void writeMethod(final Method method, final int methodNumber) {
+    private void writeMethod(final MethodInfo method, final int methodNumber) {
         // Get raw signature
         final String signature = method.getSignature();
         // Get array of strings containing the argument types

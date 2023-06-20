@@ -208,7 +208,7 @@ public class EmptyVisitor implements Visitor {
     }
 
     @Override
-    public void visitMethod(final Method obj) {
+    public void visitMethod(final MethodInfo obj) {
     }
 
     /**

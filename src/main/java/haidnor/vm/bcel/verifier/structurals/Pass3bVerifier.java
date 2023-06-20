@@ -19,7 +19,7 @@ package haidnor.vm.bcel.verifier.structurals;
 import haidnor.vm.bcel.Const;
 import haidnor.vm.bcel.Repository;
 import haidnor.vm.bcel.classfile.JavaClass;
-import haidnor.vm.bcel.classfile.Method;
+import haidnor.vm.bcel.classfile.MethodInfo;
 import haidnor.vm.bcel.generic.*;
 import haidnor.vm.bcel.verifier.PassVerifier;
 import haidnor.vm.bcel.verifier.VerificationResult;
@@ -269,7 +269,7 @@ public final class Pass3bVerifier extends PassVerifier {
         final ExecutionVisitor ev = new ExecutionVisitor();
         ev.setConstantPoolGen(constantPoolGen);
 
-        final Method[] methods = jc.getMethods(); // Method no "methodNo" exists, we ran Pass3a before on it!
+        final MethodInfo[] methods = jc.getMethods(); // Method no "methodNo" exists, we ran Pass3a before on it!
 
         try {
 

@@ -32,7 +32,7 @@ import java.util.*;
  * off them. The resulting method object can be obtained via the 'getMethod()' method.
  *
  * @see InstructionList
- * @see Method
+ * @see MethodInfo
  */
 public class MethodGen extends FieldGenOrMethodGen {
 
@@ -142,7 +142,7 @@ public class MethodGen extends FieldGenOrMethodGen {
      * @param className class name containing this method
      * @param cp        constant pool
      */
-    public MethodGen(final Method method, final String className, final ConstantPoolGen cp) {
+    public MethodGen(final MethodInfo method, final String className, final ConstantPoolGen cp) {
         this(method.getAccessFlags(), Type.getReturnType(method.getSignature()), Type.getArgumentTypes(method.getSignature()),
                 null /* may be overridden anyway */
                 , method.getName(), className,
@@ -204,7 +204,7 @@ public class MethodGen extends FieldGenOrMethodGen {
         }
     }
 
-    private static byte[] getByteCodes(final Method method) {
+    private static byte[] getByteCodes(final MethodInfo method) {
         final Code code = method.getCode();
         if (code == null) {
             throw new IllegalStateException(String.format("The method '%s' has no code.", method));
@@ -493,7 +493,7 @@ public class MethodGen extends FieldGenOrMethodGen {
      * @return deep copy of this method
      */
     public MethodGen copy(final String className, final ConstantPoolGen cp) {
-        final Method m = ((MethodGen) clone()).getMethod();
+        final MethodInfo m = ((MethodGen) clone()).getMethod();
         final MethodGen mg = new MethodGen(m, className, super.getConstantPool());
         if (super.getConstantPool() != cp) {
             mg.setConstantPool(cp);
@@ -750,7 +750,7 @@ public class MethodGen extends FieldGenOrMethodGen {
      *
      * @return method object
      */
-    public Method getMethod() {
+    public MethodInfo getMethod() {
         final String signature = getSignature();
         final ConstantPoolGen cp = super.getConstantPool();
         final int nameIndex = cp.addUtf8(super.getName());
@@ -811,7 +811,7 @@ public class MethodGen extends FieldGenOrMethodGen {
             addAttribute(et = getExceptionTable(cp));
             // Add 'Exceptions' if there are "throws" clauses
         }
-        final Method m = new Method(super.getAccessFlags(), nameIndex, signatureIndex, getAttributes(), cp.getConstantPool());
+        final MethodInfo m = new MethodInfo(super.getAccessFlags(), nameIndex, signatureIndex, getAttributes(), cp.getConstantPool());
         // Undo effects of adding attributes
         if (lvt != null) {
             removeCodeAttribute(lvt);

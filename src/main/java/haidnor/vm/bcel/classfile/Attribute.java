@@ -144,7 +144,7 @@ public abstract class Attribute implements Cloneable, Node {
      * @return Attribute
      * @throws IOException if an I/O error occurs.
      * @see Field
-     * @see Method
+     * @see MethodInfo
      * @since 6.0
      */
     public static Attribute readAttribute(final DataInput dataInput, final ConstantPool constantPool) throws IOException {
@@ -246,7 +246,7 @@ public abstract class Attribute implements Cloneable, Node {
      * @return Attribute
      * @throws IOException if an I/O error occurs.
      * @see Field
-     * @see Method
+     * @see MethodInfo
      */
     public static Attribute readAttribute(final DataInputStream dataInputStream, final ConstantPool constantPool) throws IOException {
         return readAttribute((DataInput) dataInputStream, constantPool);

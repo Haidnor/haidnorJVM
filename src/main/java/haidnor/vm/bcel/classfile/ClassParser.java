@@ -47,7 +47,7 @@ public final class ClassParser {
     private int[] interfaces; // Names of implemented interfaces
     private ConstantPool constantPool; // collection of constants
     private Field[] fields; // class fields, i.e., its variables
-    private Method[] methods; // methods defined in the class
+    private MethodInfo[] methods; // methods defined in the class
     private Attribute[] attributes; // attributes defined in the class
 
     /**
@@ -269,9 +269,9 @@ public final class ClassParser {
      */
     private void readMethods() throws IOException {
         final int methodsCount = dataInputStream.readUnsignedShort();
-        methods = new Method[methodsCount];
+        methods = new MethodInfo[methodsCount];
         for (int i = 0; i < methodsCount; i++) {
-            methods[i] = new Method(dataInputStream, constantPool);
+            methods[i] = new MethodInfo(dataInputStream, constantPool);
         }
     }
 

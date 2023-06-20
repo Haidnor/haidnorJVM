@@ -84,7 +84,7 @@ public class JavaClass extends AccessFlags implements Cloneable, Node, Comparabl
     private int[] interfaces; // implemented interfaces
     private String[] interfaceNames;
     private Field[] fields; // Fields, i.e., variables of class
-    private Method[] methods; // methods defined in the class
+    private MethodInfo[] methods; // methods defined in the class
     private Attribute[] attributes; // attributes defined in the class
     private AnnotationEntry[] annotations; // annotations defined on the class
     private byte source = HEAP; // Generated in memory
@@ -113,7 +113,7 @@ public class JavaClass extends AccessFlags implements Cloneable, Node, Comparabl
      * @param attributes          Class attributes
      */
     public JavaClass(final int classNameIndex, final int superclassNameIndex, final String fileName, final int major, final int minor, final int accessFlags,
-                     final ConstantPool constantPool, final int[] interfaces, final Field[] fields, final Method[] methods, final Attribute[] attributes) {
+                     final ConstantPool constantPool, final int[] interfaces, final Field[] fields, final MethodInfo[] methods, final Attribute[] attributes) {
         this(classNameIndex, superclassNameIndex, fileName, major, minor, accessFlags, constantPool, interfaces, fields, methods, attributes, HEAP);
     }
 
@@ -135,7 +135,7 @@ public class JavaClass extends AccessFlags implements Cloneable, Node, Comparabl
      * @param source              Read from file or generated in memory?
      */
     public JavaClass(final int classNameIndex, final int superclassNameIndex, final String fileName, final int major, final int minor, final int accessFlags,
-                     final ConstantPool constantPool, int[] interfaces, Field[] fields, Method[] methods, Attribute[] attributes, final byte source) {
+                     final ConstantPool constantPool, int[] interfaces, Field[] fields, MethodInfo[] methods, Attribute[] attributes, final byte source) {
         super(accessFlags);
         if (interfaces == null) {
             interfaces = ArrayUtils.EMPTY_INT_ARRAY;
@@ -147,7 +147,7 @@ public class JavaClass extends AccessFlags implements Cloneable, Node, Comparabl
             fields = Field.EMPTY_FIELD_ARRAY;
         }
         if (methods == null) {
-            methods = Method.EMPTY_METHOD_ARRAY;
+            methods = MethodInfo.EMPTY_METHOD_ARRAY;
         }
         this.classNameIndex = classNameIndex;
         this.superclassNameIndex = superclassNameIndex;
@@ -192,6 +192,22 @@ public class JavaClass extends AccessFlags implements Cloneable, Node, Comparabl
             interfaceNames[i] = Utility.compactClassName(str, false);
         }
     }
+
+
+    /**
+     * 获取 main 方法
+     *
+     * @return 如果没有则返回 null
+     */
+    public MethodInfo getMainMethod() {
+        for (MethodInfo method : methods) {
+            if (method.toString().equals("public static void main(String[] args)")) {
+                return method;
+            }
+        }
+        return null;
+    }
+
 
     /*
      * Print debug information depending on 'JavaClass.debug'
@@ -282,7 +298,7 @@ public class JavaClass extends AccessFlags implements Cloneable, Node, Comparabl
             c.interfaceNames = interfaceNames.clone();
             c.fields = new Field[fields.length];
             Arrays.setAll(c.fields, i -> fields[i].copy(c.constantPool));
-            c.methods = new Method[methods.length];
+            c.methods = new MethodInfo[methods.length];
             Arrays.setAll(c.methods, i -> methods[i].copy(c.constantPool));
             c.attributes = new Attribute[attributes.length];
             Arrays.setAll(c.attributes, i -> attributes[i].copy(c.constantPool));
@@ -315,7 +331,7 @@ public class JavaClass extends AccessFlags implements Cloneable, Node, Comparabl
             field.dump(file);
         }
         file.writeShort(methods.length);
-        for (final Method method : methods) {
+        for (final MethodInfo method : methods) {
             method.dump(file);
         }
         if (attributes != null) {
@@ -571,10 +587,10 @@ public class JavaClass extends AccessFlags implements Cloneable, Node, Comparabl
     }
 
     /**
-     * @return A {@link Method} corresponding to java.lang.reflect.Method if any
+     * @return A {@link MethodInfo} corresponding to java.lang.reflect.Method if any
      */
-    public Method getMethod(final java.lang.reflect.Method m) {
-        for (final Method method : methods) {
+    public MethodInfo getMethod(final java.lang.reflect.Method m) {
+        for (final MethodInfo method : methods) {
             if (m.getName().equals(method.getName()) && m.getModifiers() == method.getModifiers() && Type.getSignature(m).equals(method.getSignature())) {
                 return method;
             }
@@ -585,14 +601,14 @@ public class JavaClass extends AccessFlags implements Cloneable, Node, Comparabl
     /**
      * @return Methods of the class.
      */
-    public Method[] getMethods() {
+    public MethodInfo[] getMethods() {
         return methods;
     }
 
     /**
      * @param methods .
      */
-    public void setMethods(final Method[] methods) {
+    public void setMethods(final MethodInfo[] methods) {
         this.methods = methods;
     }
 
@@ -850,7 +866,7 @@ public class JavaClass extends AccessFlags implements Cloneable, Node, Comparabl
         }
         if (methods.length > 0) {
             buf.append("\n").append(methods.length).append(" methods:\n");
-            for (final Method method : methods) {
+            for (final MethodInfo method : methods) {
                 buf.append("\t").append(method).append('\n');
             }
         }

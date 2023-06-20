@@ -300,8 +300,8 @@ public final class Pass2Verifier extends PassVerifier implements Constants {
             while (supidx != 0) {
                 supidx = jc.getSuperclassNameIndex();
 
-                final Method[] methods = jc.getMethods();
-                for (final Method method : methods) {
+                final MethodInfo[] methods = jc.getMethods();
+                for (final MethodInfo method : methods) {
                     final String nameAndSig = method.getName() + method.getSignature();
 
                     if (map.containsKey(nameAndSig) && method.isFinal()) {
@@ -478,12 +478,12 @@ public final class Pass2Verifier extends PassVerifier implements Constants {
                     throw new ClassConstraintException("The Code attribute '" + tostring(obj) + "' is not correctly named 'Code' but '" + name + "'.");
                 }
 
-                if (!(carrier.predecessor() instanceof Method)) {
+                if (!(carrier.predecessor() instanceof MethodInfo)) {
                     addMessage(
                             "Code attribute '" + tostring(obj) + "' is not declared in a method_info structure but in '" + carrier.predecessor() + "'. Ignored.");
                     return;
                 }
-                final Method m = (Method) carrier.predecessor(); // we can assume this method was visited before;
+                final MethodInfo m = (MethodInfo) carrier.predecessor(); // we can assume this method was visited before;
                 // i.e. the data consistency was verified.
 
                 if (obj.getCode().length == 0) {
@@ -539,7 +539,7 @@ public final class Pass2Verifier extends PassVerifier implements Constants {
                 // This is highly unelegant due to usage of the Visitor pattern.
                 // TODO: rework it.
                 int methodNumber = -1;
-                final Method[] ms = Repository.lookupClass(verifier.getClassName()).getMethods();
+                final MethodInfo[] ms = Repository.lookupClass(verifier.getClassName()).getMethods();
                 for (int mn = 0; mn < ms.length; mn++) {
                     if (m == ms[mn]) {
                         methodNumber = mn;
@@ -1095,7 +1095,7 @@ public final class Pass2Verifier extends PassVerifier implements Constants {
         // METHODS (vmspec2 4.6) //
         ///////////////////////////
         @Override
-        public void visitMethod(final Method obj) {
+        public void visitMethod(final MethodInfo obj) {
 
             checkIndex(obj, obj.getNameIndex(), CONST_Utf8);
 

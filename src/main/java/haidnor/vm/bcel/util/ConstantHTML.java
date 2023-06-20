@@ -35,9 +35,9 @@ final class ConstantHTML {
     private final PrintWriter printWriter; // file to write to
     private final String[] constantRef; // String to return for cp[i]
     private final Constant[] constants; // The constants in the cp
-    private final Method[] methods;
+    private final MethodInfo[] methods;
 
-    ConstantHTML(final String dir, final String className, final String classPackage, final Method[] methods, final ConstantPool constantPool,
+    ConstantHTML(final String dir, final String className, final String classPackage, final MethodInfo[] methods, final ConstantPool constantPool,
                  final Charset charset) throws FileNotFoundException, UnsupportedEncodingException {
         this.className = className;
         this.classPackage = classPackage;

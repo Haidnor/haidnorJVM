@@ -316,7 +316,7 @@ public class StringRepresentation extends EmptyVisitor {
     }
 
     @Override
-    public void visitMethod(final Method obj) {
+    public void visitMethod(final MethodInfo obj) {
         tostring = toString(obj);
     }
 

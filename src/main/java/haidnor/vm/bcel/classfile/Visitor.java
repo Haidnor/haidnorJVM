@@ -130,7 +130,7 @@ public interface Visitor {
      */
     void visitLocalVariableTypeTable(LocalVariableTypeTable obj);
 
-    void visitMethod(Method obj);
+    void visitMethod(MethodInfo obj);
 
     /**
      * @since 6.4.0

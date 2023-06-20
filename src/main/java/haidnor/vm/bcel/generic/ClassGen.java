@@ -48,7 +48,7 @@ public class ClassGen extends AccessFlags implements Cloneable {
     private final String fileName;
     // ArrayLists instead of arrays to gather fields, methods, etc.
     private final List<Field> fieldList = new ArrayList<>();
-    private final List<Method> methodList = new ArrayList<>();
+    private final List<MethodInfo> methodList = new ArrayList<>();
     private final List<Attribute> attributeList = new ArrayList<>();
     private final List<String> interfaceList = new ArrayList<>();
     private final List<AnnotationEntryGen> annotationList = new ArrayList<>();
@@ -201,7 +201,7 @@ public class ClassGen extends AccessFlags implements Cloneable {
      *
      * @param m method to add
      */
-    public void addMethod(final Method m) {
+    public void addMethod(final MethodInfo m) {
         methodList.add(m);
     }
 
@@ -243,8 +243,8 @@ public class ClassGen extends AccessFlags implements Cloneable {
     /**
      * @return method object with given name and signature, or null
      */
-    public Method containsMethod(final String name, final String signature) {
-        for (final Method m : methodList) {
+    public MethodInfo containsMethod(final String name, final String signature) {
+        for (final MethodInfo m : methodList) {
             if (m.getName().equals(name) && m.getSignature().equals(signature)) {
                 return m;
             }
@@ -323,7 +323,7 @@ public class ClassGen extends AccessFlags implements Cloneable {
     public JavaClass getJavaClass() {
         final int[] interfaces = getInterfaces();
         final Field[] fields = getFields();
-        final Method[] methods = getMethods();
+        final MethodInfo[] methods = getMethods();
         Attribute[] attributes = null;
         if (annotationList.isEmpty()) {
             attributes = getAttributes();
@@ -356,15 +356,15 @@ public class ClassGen extends AccessFlags implements Cloneable {
         this.major = major;
     }
 
-    public Method getMethodAt(final int pos) {
+    public MethodInfo getMethodAt(final int pos) {
         return methodList.get(pos);
     }
 
-    public Method[] getMethods() {
-        return methodList.toArray(Method.EMPTY_ARRAY);
+    public MethodInfo[] getMethods() {
+        return methodList.toArray(MethodInfo.EMPTY_ARRAY);
     }
 
-    public void setMethods(final Method[] methods) {
+    public void setMethods(final MethodInfo[] methods) {
         methodList.clear();
         Collections.addAll(methodList, methods);
     }
@@ -445,7 +445,7 @@ public class ClassGen extends AccessFlags implements Cloneable {
      *
      * @param m method to remove
      */
-    public void removeMethod(final Method m) {
+    public void removeMethod(final MethodInfo m) {
         methodList.remove(m);
     }
 
@@ -476,7 +476,7 @@ public class ClassGen extends AccessFlags implements Cloneable {
     /**
      * Replace given method with new one. If the old one does not exist add the newMethod method to the class anyway.
      */
-    public void replaceMethod(final Method old, final Method newMethod) {
+    public void replaceMethod(final MethodInfo old, final MethodInfo newMethod) {
         if (newMethod == null) {
             throw new ClassGenException("Replacement method must not be null");
         }
@@ -488,7 +488,7 @@ public class ClassGen extends AccessFlags implements Cloneable {
         }
     }
 
-    public void setMethodAt(final Method method, final int pos) {
+    public void setMethodAt(final MethodInfo method, final int pos) {
         methodList.set(pos, method);
     }
 

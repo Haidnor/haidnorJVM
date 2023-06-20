@@ -8,10 +8,6 @@ import java.util.List;
 
 /**
  * 将方法、属性的签名转为byte数组，然后进行解析
- * <p>
- * Created By ziya
- * QQ: 3039277701
- * 2021/3/31
  */
 public class DescriptorStream extends ResourceObj {
 

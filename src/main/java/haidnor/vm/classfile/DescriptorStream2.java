@@ -11,10 +11,6 @@ import java.util.List;
 
 /**
  * 将方法、属性的签名转为byte数组，然后进行解析
- * <p>
- * Created By ziya
- * QQ: 3039277701
- * 2021/3/31
  */
 @Data
 public class DescriptorStream2 extends ResourceObj {
@@ -46,9 +42,6 @@ public class DescriptorStream2 extends ResourceObj {
         returnElement = new DescriptorStream(returnStr).parse();
     }
 
-    /**
-     * @return
-     */
     public List<DescriptorInfo> parseMethodParams() {
         int paramStartIndex = descriptor.indexOf('(');
         int paramEndIndex = descriptor.indexOf(')');

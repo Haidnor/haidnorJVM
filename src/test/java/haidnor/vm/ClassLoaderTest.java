@@ -1,10 +1,10 @@
 package haidnor.vm;
 
-import haindor.vm.bytecode.ClassFile;
-import haindor.vm.classloader.ClassLoader;
+import haidnor.vm.bytecode.ClassFile;
+import haidnor.vm.classloader.ClassLoader;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.bcel.classfile.ClassParser;
-import org.apache.bcel.classfile.JavaClass;
+import haidnor.vm.bcel.classfile.ClassParser;
+import haidnor.vm.bcel.classfile.JavaClass;
 import org.junit.Test;
 
 @Slf4j

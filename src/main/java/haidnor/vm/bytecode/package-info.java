@@ -1,0 +1,4 @@
+/**
+ * 字节码文件对象封装
+ */
+package haidnor.vm.bytecode;

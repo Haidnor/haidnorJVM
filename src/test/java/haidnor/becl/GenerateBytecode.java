@@ -1,9 +1,8 @@
 package haidnor.becl;
 
-
-import haidnor.vm.bcel.Constants;
-import haidnor.vm.bcel.classfile.JavaClass;
-import haidnor.vm.bcel.generic.*;
+import org.apache.bcel.Constants;
+import org.apache.bcel.classfile.JavaClass;
+import org.apache.bcel.generic.*;
 
 public class GenerateBytecode {
 

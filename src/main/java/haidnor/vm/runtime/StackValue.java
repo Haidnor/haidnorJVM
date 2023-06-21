@@ -2,22 +2,23 @@ package haidnor.vm.runtime;
 
 import lombok.Data;
 
+/**
+ * 操作数栈中的值对象
+ */
 @Data
 public class StackValue {
-
+    /**
+     * 类型
+     */
     private int type;
-
-    private int val;
-
-    private Object object;
-
-    public StackValue(int type, int val) {
-        this.type = type;
-        this.val = val;
-    }
+    /**
+     * 值
+     */
+    private Object value;
 
     public StackValue(int type, Object val) {
         this.type = type;
-        this.object = val;
+        this.value = val;
     }
+
 }

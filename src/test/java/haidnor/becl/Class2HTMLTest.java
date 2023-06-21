@@ -1,8 +1,8 @@
 package haidnor.becl;
 
-import haidnor.vm.bcel.classfile.ClassParser;
-import haidnor.vm.bcel.classfile.JavaClass;
-import haidnor.vm.bcel.util.Class2HTML;
+import org.apache.bcel.classfile.ClassParser;
+import org.apache.bcel.classfile.JavaClass;
+import org.apache.bcel.util.Class2HTML;
 import org.junit.Test;
 
 public class Class2HTMLTest {

@@ -1,8 +1,8 @@
 package haidnor.becl;
 
 
-import haidnor.vm.bcel.classfile.*;
-import haidnor.vm.bcel.classfile.Deprecated;
+import org.apache.bcel.classfile.*;
+import org.apache.bcel.classfile.Deprecated;
 
 public class MyVisitor implements Visitor {
 
@@ -187,7 +187,7 @@ public class MyVisitor implements Visitor {
     }
 
     @Override
-    public void visitMethod(MethodInfo obj) {
+    public void visitMethod(Method obj) {
 
     }
 

@@ -1,7 +1,7 @@
 package haidnor.becl;
 
-import haidnor.vm.bcel.classfile.ClassParser;
-import haidnor.vm.bcel.classfile.JavaClass;
+import org.apache.bcel.classfile.ClassParser;
+import org.apache.bcel.classfile.JavaClass;
 import org.junit.Test;
 
 public class VisitorTest {

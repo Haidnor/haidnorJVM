@@ -27,9 +27,7 @@ public class BytecodeInterpreter extends StackObj {
         // 得到字节码指令
         Code code = method.getCode();
 
-        byte[] codes = code.getCode();
-        DataInputStream codeStream = InputStreamUtil.getDataInputStream(codes);
-
+        DataInputStream codeStream = InputStreamUtil.getDataInputStream(code.getCode());
         while (codeStream.available() > 0) {
             int codeB = codeStream.read();
             ConstantPool constantPool = method.getConstantPool();

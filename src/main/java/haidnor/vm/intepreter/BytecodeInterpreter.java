@@ -2,12 +2,12 @@ package haidnor.vm.intepreter;
 
 import haidnor.vm.bcel.Const;
 import haidnor.vm.bcel.classfile.*;
-import haidnor.vm.util.InputStreamUtil;
 import haidnor.vm.classfile.DescriptorStream2;
 import haidnor.vm.memory.StackObj;
 import haidnor.vm.runtime.JavaThread;
 import haidnor.vm.runtime.JavaVFrame;
 import haidnor.vm.runtime.StackValue;
+import haidnor.vm.util.InputStreamUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -59,6 +59,7 @@ public class BytecodeInterpreter extends StackObj {
                     break;
                 }
                 case Bytecodes.GETSTATIC: {
+                    // 获取字段符号引用指定的对象或者值(类的静态字段 static 修饰),并将其压入操作数栈
                     log.info("execute: GETSTATIC");
 
                     // 获取操作数 u2
@@ -72,14 +73,15 @@ public class BytecodeInterpreter extends StackObj {
                     // fieldName
                     ConstantNameAndType constantNameAndType = constantPool.getConstant(constantFieldref.getNameAndTypeIndex());
                     String fieldName = constantPool.getConstantString(constantNameAndType.getNameIndex(), Const.CONSTANT_Utf8);
-
                     Class<?> clazz = Class.forName(className.replace('/', '.'));
                     Field field = clazz.getField(fieldName);
-
-                    frame.getStack().push(new StackValue(Const.T_OBJECT, field.get(null)));
+                    Object obj = field.get(null);       // 获取静态字段上的值
+                    System.out.println();
+                    frame.getStack().push(new StackValue(Const.T_OBJECT, obj));
                     break;
                 }
                 case Bytecodes.INVOKEVIRTUAL: {
+                    // 调用所有虚方法
                     log.info("execute: INVOKEVIRTUAL");
 
                     int operand = codeStream.readUnsignedShort(); // u2

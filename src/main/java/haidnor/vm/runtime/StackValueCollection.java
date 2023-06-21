@@ -1,15 +1,13 @@
 package haidnor.vm.runtime;
 
 import lombok.Data;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Stack;
 
 @Data
+@Slf4j
 public class StackValueCollection {
-
-    private Logger logger = LoggerFactory.getLogger(StackValueCollection.class);
 
     /*************************************
      * 模拟操作数栈
@@ -32,6 +30,7 @@ public class StackValueCollection {
     }
 
     /****************************************
+     *
      *  模拟局部变量表
      */
     private int maxLocals;

@@ -19,7 +19,7 @@ public class ClassLoaderTest {
         log.info("{}", javaClass);
 
         MethodInfo mainMethod = javaClass.getMainMethod();
-        
+
         // 创建线程
         JavaThread thread = new JavaThread();
 

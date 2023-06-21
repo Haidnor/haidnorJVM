@@ -8,7 +8,7 @@ public class JavaVFrame extends VFrame {
 
     private StackValueCollection locals;
 
-    private StackValueCollection stack = new StackValueCollection();
+    private StackValueCollection stack = new StackValueCollection(); // 操作数栈
 
     private MethodInfo ownerMethod;
 

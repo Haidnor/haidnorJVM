@@ -21,7 +21,7 @@ public class InvokeVirtualInst extends AbstractInstruction {
 
     public InvokeVirtualInst(CodeStream codeStream) {
         super(codeStream);
-        this.operand = codeStream.readU2();
+        this.operand = codeStream.readU2Operand(this);
     }
 
     @Override
@@ -66,8 +66,4 @@ public class InvokeVirtualInst extends AbstractInstruction {
         }
     }
 
-    @Override
-    public int nextOffSet() {
-        return super.nextOffSet() + 2;
-    }
 }

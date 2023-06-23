@@ -17,7 +17,8 @@ import org.apache.bcel.Const;
 @Slf4j
 public abstract class InstructionFactory {
 
-    public static AbstractInstruction creatInstruction(int instructionCode, CodeStream codeStream) {
+    public static AbstractInstruction creatInstruction(CodeStream codeStream) {
+        int instructionCode = codeStream.readInstructionCode();
         switch (instructionCode) {
             case Const.ICONST_0 -> {
                 log.debug("{} ICONST_0", codeStream.index());

@@ -19,26 +19,18 @@ public class Interpreter {
         Map<Integer, AbstractInstruction> instructionMap = new LinkedHashMap<>();
 
         CodeStream codeStream = frame.getCodeStream();
-
-        // 最后一个指令
-        int lastInstructionIndex = -1;
         while (codeStream.available() > 0) {
-            int instructionCode = codeStream.readU1();
-            AbstractInstruction instruction = InstructionFactory.creatInstruction(instructionCode, codeStream);
+            AbstractInstruction instruction = InstructionFactory.creatInstruction(codeStream);
             instructionMap.put(instruction.index(), instruction);
-            if (instruction.index() > lastInstructionIndex) {
-                lastInstructionIndex = instruction.index();
-            }
         }
 
-        for (int i = 0; i <= lastInstructionIndex; ) {
-            AbstractInstruction abstractInstruction = instructionMap.get(i);
-            abstractInstruction.execute(frame);
-            if (abstractInstruction instanceof ReturnInst) {
+        for (int i = 0; i < frame.getCodeLength(); ) {
+            AbstractInstruction instruction = instructionMap.get(i);
+            instruction.execute(frame);
+            if (instruction instanceof ReturnInst) {
                 break;
             }
-            int offSet = abstractInstruction.nextOffSet();
-            i += offSet;
+            i += instruction.offSet();
         }
 
     }

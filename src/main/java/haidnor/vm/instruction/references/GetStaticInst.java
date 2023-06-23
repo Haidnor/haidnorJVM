@@ -20,7 +20,7 @@ public class GetStaticInst extends AbstractInstruction {
 
     public GetStaticInst(CodeStream codeStream) {
         super(codeStream);
-        this.operand = codeStream.readU2();
+        this.operand = codeStream.readU2Operand(this);
     }
     @Override
     @SneakyThrows
@@ -40,11 +40,6 @@ public class GetStaticInst extends AbstractInstruction {
         Object staticFiledValue = field.get(null);       // 获取静态字段上的值
 
         frame.push(new StackValue(Const.T_OBJECT, staticFiledValue));
-    }
-
-    @Override
-    public int nextOffSet() {
-        return super.nextOffSet() + 2;
     }
 
 }

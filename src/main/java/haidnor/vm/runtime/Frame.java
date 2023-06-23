@@ -52,12 +52,8 @@ public class Frame {
         return jvmThread;
     }
 
-    public Method getMethod() {
-        return method;
-    }
-
-    public Code getCode() {
-        return code;
+    public int getCodeLength() {
+        return this.code.getCode().length;
     }
 
     public CodeStream getCodeStream() {

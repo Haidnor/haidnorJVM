@@ -18,7 +18,7 @@ public class LdcInst extends AbstractInstruction {
 
     public LdcInst(CodeStream codeStream) {
         super(codeStream);
-        this.operand = codeStream.readU1();
+        this.operand = codeStream.readU1Operand(this);
     }
 
     @Override
@@ -38,11 +38,6 @@ public class LdcInst extends AbstractInstruction {
                 break;
             }
         }
-    }
-
-    @Override
-    public int nextOffSet() {
-        return super.nextOffSet() + 1;
     }
 
 }

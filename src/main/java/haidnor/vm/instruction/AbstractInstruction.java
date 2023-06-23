@@ -17,4 +17,8 @@ public abstract class AbstractInstruction {
         return index;
     }
 
+    public int nextOffSet() {
+        return 1;
+    }
+
 }

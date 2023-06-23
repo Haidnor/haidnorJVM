@@ -2,46 +2,45 @@ package haidnor.vm.core;
 
 import haidnor.vm.instruction.AbstractInstruction;
 import haidnor.vm.instruction.InstructionFactory;
+import haidnor.vm.instruction.control.ReturnInst;
 import haidnor.vm.runtime.Frame;
 import haidnor.vm.util.CodeStream;
-import haidnor.vm.util.CodeUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.bcel.classfile.Code;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @Slf4j
 public class Interpreter {
 
     @SneakyThrows
     public static void executeFrame(Frame frame) {
+        Map<Integer, AbstractInstruction> instructionMap = new LinkedHashMap<>();
+
         CodeStream codeStream = frame.getCodeStream();
 
-        Code code = frame.getCode();
-        Set<Integer> startPcSet = CodeUtil.getStartPcSet(code);
-
-        // K:startPC V:Instruction
-        Map<Integer, List<AbstractInstruction>> instructionMap = new LinkedHashMap<>();
-
-        List<AbstractInstruction> instructionList = null;
+        // 最后一个指令
+        int lastInstructionIndex = -1;
         while (codeStream.available() > 0) {
             int instructionCode = codeStream.readU1();
             AbstractInstruction instruction = InstructionFactory.creatInstruction(instructionCode, codeStream);
-
-            int index = instruction.index();
-            if (startPcSet.contains(instruction.index()) && instructionMap.get(instruction.index()) == null) {
-                instructionList = new ArrayList<>();
-                instructionMap.put(index, instructionList);
+            instructionMap.put(instruction.index(), instruction);
+            if (instruction.index() > lastInstructionIndex) {
+                lastInstructionIndex = instruction.index();
             }
-
-            assert instructionList != null;
-            instructionList.add(instruction);
         }
 
-        for (Integer startPc : instructionMap.keySet()) {
-            System.out.println(startPc);
+        for (int i = 0; i <= lastInstructionIndex; ) {
+            AbstractInstruction abstractInstruction = instructionMap.get(i);
+            abstractInstruction.execute(frame);
+            if (abstractInstruction instanceof ReturnInst) {
+                break;
+            }
+            int offSet = abstractInstruction.nextOffSet();
+            i += offSet;
         }
+
     }
 
 }

@@ -66,4 +66,8 @@ public class InvokeVirtualInst extends AbstractInstruction {
         }
     }
 
+    @Override
+    public int nextOffSet() {
+        return super.nextOffSet() + 2;
+    }
 }

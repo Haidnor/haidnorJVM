@@ -8,16 +8,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.bcel.Const;
 
 @Slf4j
-public class IConst0Inst extends AbstractInstruction {
+public class IConst2Inst extends AbstractInstruction {
 
-    public IConst0Inst(CodeStream codeStream) {
+    public IConst2Inst(CodeStream codeStream) {
         super(codeStream);
     }
 
     @Override
     public void execute(Frame frame) {
-        log.info("execute: IConst0");
-        frame.push(new StackValue(Const.T_INT, 0));
+        log.info("execute: IConst2");
+        frame.push(new StackValue(Const.T_INT, 2));
     }
 
 }

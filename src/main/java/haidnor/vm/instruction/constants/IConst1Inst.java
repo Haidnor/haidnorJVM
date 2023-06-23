@@ -2,8 +2,12 @@ package haidnor.vm.instruction.constants;
 
 import haidnor.vm.instruction.AbstractInstruction;
 import haidnor.vm.runtime.Frame;
+import haidnor.vm.runtime.StackValue;
 import haidnor.vm.util.CodeStream;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.bcel.Const;
 
+@Slf4j
 public class IConst1Inst extends AbstractInstruction {
 
     public IConst1Inst(CodeStream codeStream) {
@@ -12,6 +16,7 @@ public class IConst1Inst extends AbstractInstruction {
 
     @Override
     public void execute(Frame frame) {
-
+        log.info("execute: IConst1");
+        frame.push(new StackValue(Const.T_INT, 1));
     }
 }

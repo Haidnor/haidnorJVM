@@ -40,4 +40,9 @@ public class LdcInst extends AbstractInstruction {
         }
     }
 
+    @Override
+    public int nextOffSet() {
+        return super.nextOffSet() + 1;
+    }
+
 }

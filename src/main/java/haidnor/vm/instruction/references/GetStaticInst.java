@@ -26,8 +26,6 @@ public class GetStaticInst extends AbstractInstruction {
     @SneakyThrows
     public void execute(Frame frame) {
         log.info("execute: GETSTATIC");    // 获取字段符号引用指定的对象或者值(类的静态字段 static 修饰),并将其压入操作数栈
-        CodeStream codeStream = frame.getCodeStream();
-
         ConstantPool constantPool = frame.getConstantPool();
         ConstantPoolUtil constantPoolUtil = frame.getConstantPoolUtil();
 
@@ -42,6 +40,11 @@ public class GetStaticInst extends AbstractInstruction {
         Object staticFiledValue = field.get(null);       // 获取静态字段上的值
 
         frame.push(new StackValue(Const.T_OBJECT, staticFiledValue));
+    }
+
+    @Override
+    public int nextOffSet() {
+        return super.nextOffSet() + 2;
     }
 
 }

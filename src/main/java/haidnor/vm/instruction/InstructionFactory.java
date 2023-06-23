@@ -3,6 +3,7 @@ package haidnor.vm.instruction;
 import haidnor.vm.instruction.comparisons.IfICmpNeInst;
 import haidnor.vm.instruction.constants.IConst0Inst;
 import haidnor.vm.instruction.constants.IConst1Inst;
+import haidnor.vm.instruction.constants.IConst2Inst;
 import haidnor.vm.instruction.constants.LdcInst;
 import haidnor.vm.instruction.control.ReturnInst;
 import haidnor.vm.instruction.loads.ILoad1Inst;
@@ -25,6 +26,10 @@ public abstract class InstructionFactory {
             case Const.ICONST_1 -> {
                 log.info("{} ICONST_1", codeStream.index());
                 return new IConst1Inst(codeStream);
+            }
+            case Const.ICONST_2 -> {
+                log.info("{} ICONST_2", codeStream.index());
+                return new IConst2Inst(codeStream);
             }
             case Const.ISTORE_1 -> {
                 log.info("{} ISTORE_1", codeStream.index());

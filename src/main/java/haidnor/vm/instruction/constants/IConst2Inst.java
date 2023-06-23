@@ -16,7 +16,7 @@ public class IConst2Inst extends AbstractInstruction {
 
     @Override
     public void execute(Frame frame) {
-        log.info("execute: IConst2");
+        log.debug("execute: IConst2");
         frame.push(new StackValue(Const.T_INT, 2));
     }
 

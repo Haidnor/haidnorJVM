@@ -14,6 +14,6 @@ public class ILoad1Inst extends AbstractInstruction {
 
     @Override
     public void execute(Frame frame) {
-        log.info("execute: ILoad1");
+        log.debug("execute: ILoad1");
     }
 }

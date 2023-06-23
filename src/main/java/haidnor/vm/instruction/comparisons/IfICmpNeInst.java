@@ -19,7 +19,7 @@ public class IfICmpNeInst extends AbstractInstruction {
 
     @Override
     public void execute(Frame frame) {
-        log.info("execute: IfICmpNe");
+        log.debug("execute: IfICmpNe");
     }
 
     @Override

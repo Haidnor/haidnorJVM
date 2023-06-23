@@ -24,7 +24,7 @@ public class LdcInst extends AbstractInstruction {
     @Override
     @SneakyThrows
     public void execute(Frame frame) {
-        log.info("execute: LDC");   // 将值压入操作数栈
+        log.debug("execute: LDC");   // 将值压入操作数栈
         ConstantPool constantPool = frame.getConstantPool();
 
         // 从常量池中获取值

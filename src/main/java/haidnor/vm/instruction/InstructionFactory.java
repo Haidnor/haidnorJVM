@@ -20,43 +20,43 @@ public abstract class InstructionFactory {
     public static AbstractInstruction creatInstruction(int instructionCode, CodeStream codeStream) {
         switch (instructionCode) {
             case Const.ICONST_0 -> {
-                log.info("{} ICONST_0", codeStream.index());
+                log.debug("{} ICONST_0", codeStream.index());
                 return new IConst0Inst(codeStream);
             }
             case Const.ICONST_1 -> {
-                log.info("{} ICONST_1", codeStream.index());
+                log.debug("{} ICONST_1", codeStream.index());
                 return new IConst1Inst(codeStream);
             }
             case Const.ICONST_2 -> {
-                log.info("{} ICONST_2", codeStream.index());
+                log.debug("{} ICONST_2", codeStream.index());
                 return new IConst2Inst(codeStream);
             }
             case Const.ISTORE_1 -> {
-                log.info("{} ISTORE_1", codeStream.index());
+                log.debug("{} ISTORE_1", codeStream.index());
                 return new IStore1Inst(codeStream);
             }
             case Const.ILOAD_1 -> {
-                log.info("{} ILOAD_1", codeStream.index());
+                log.debug("{} ILOAD_1", codeStream.index());
                 return new ILoad1Inst(codeStream);
             }
             case Const.IF_ICMPNE -> {
-                log.info("{} IF_ICMPNE", codeStream.index());
+                log.debug("{} IF_ICMPNE", codeStream.index());
                 return new IfICmpNeInst(codeStream);
             }
             case Const.LDC -> {
-                log.info("{} LDC", codeStream.index());
+                log.debug("{} LDC", codeStream.index());
                 return new LdcInst(codeStream);
             }
             case Const.RETURN -> {
-                log.info("{} RETURN", codeStream.index());
+                log.debug("{} RETURN", codeStream.index());
                 return new ReturnInst(codeStream);
             }
             case Const.GETSTATIC -> {
-                log.info("{} GETSTATIC", codeStream.index());
+                log.debug("{} GETSTATIC", codeStream.index());
                 return new GetStaticInst(codeStream);
             }
             case Const.INVOKEVIRTUAL -> {
-                log.info("{} INVOKEVIRTUAL", codeStream.index());
+                log.debug("{} INVOKEVIRTUAL", codeStream.index());
                 return new InvokeVirtualInst(codeStream);
             }
             default -> throw new Error("无效指令");

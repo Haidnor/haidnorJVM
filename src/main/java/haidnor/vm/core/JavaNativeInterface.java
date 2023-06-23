@@ -21,7 +21,7 @@ public class JavaNativeInterface {
         Frame frame = new Frame(jvmThread, method);
         jvmThread.push(frame);
 
-        log.info("jvm thread stack size:" + jvmThread.stackSize());
+        log.debug("jvm thread stack size:" + jvmThread.stackSize());
 
         // 执行任务交给字节码解释器
         Interpreter.executeFrame(frame);

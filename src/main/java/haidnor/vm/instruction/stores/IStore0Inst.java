@@ -14,7 +14,7 @@ public class IStore0Inst extends AbstractInstruction {
 
     @Override
     public void execute(Frame frame) {
-        log.info("execute: IStore0");
+        log.debug("execute: IStore0");
     }
 
 }

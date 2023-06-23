@@ -17,8 +17,8 @@ public class JvmTest {
     public void test_jvm() throws Exception {
         ClassParser classParser = new ClassParser("D:\\java_project\\JavaClassTest\\out\\production\\JavaClassTest\\HelloWorld.class");
         JavaClass javaClass = classParser.parse();
-        log.info("{}", javaClass);
-        log.info("{}", javaClass.getConstantPool());
+        log.debug("{}", javaClass);
+        log.debug("{}", javaClass.getConstantPool());
 
         Method mainMethod = JavaClassUtil.getMainMethod(javaClass);
 

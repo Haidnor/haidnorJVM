@@ -27,7 +27,7 @@ public class InvokeVirtualInst extends AbstractInstruction {
     @Override
     @SneakyThrows
     public void execute(Frame frame) {
-        log.info("execute: INVOKEVIRTUAL"); // 调用所有虚方法
+        log.debug("execute: INVOKEVIRTUAL"); // 调用所有虚方法
         ConstantPool constantPool = frame.getConstantPool();
         ConstantPoolUtil constantPoolUtil = frame.getConstantPoolUtil();
 

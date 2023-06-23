@@ -1,7 +1,8 @@
 package haidnor.vm.instruction.references;
 
-import haidnor.vm.instruction.Instruction;
+import haidnor.vm.instruction.AbstractInstruction;
 import haidnor.vm.runtime.Frame;
+import haidnor.vm.util.CodeStream;
 import haidnor.vm.util.ConstantPoolUtil;
 import haidnor.vm.util.SignatureUtil;
 import lombok.SneakyThrows;
@@ -11,24 +12,26 @@ import org.apache.bcel.classfile.ConstantMethodref;
 import org.apache.bcel.classfile.ConstantPool;
 import org.apache.bcel.classfile.Utility;
 
-import java.io.DataInputStream;
 import java.util.Objects;
 
 @Slf4j
-public class InvokeVirtualInst implements Instruction {
+public class InvokeVirtualInst extends AbstractInstruction {
+
+    private final int operand;
+
+    public InvokeVirtualInst(CodeStream codeStream) {
+        super(codeStream);
+        this.operand = codeStream.readU2();
+    }
 
     @Override
     @SneakyThrows
     public void execute(Frame frame) {
-        DataInputStream codeStream = frame.getCodeStream();
-
         log.info("execute: INVOKEVIRTUAL"); // 调用所有虚方法
         ConstantPool constantPool = frame.getConstantPool();
         ConstantPoolUtil constantPoolUtil = frame.getConstantPoolUtil();
 
-        int methodrefIndex = codeStream.readUnsignedShort();
-
-        ConstantMethodref methodref = constantPool.getConstant(methodrefIndex);
+        ConstantMethodref methodref = constantPool.getConstant(operand);
 
         String className = constantPoolUtil.getBelongClassName(methodref);
         String methodName = constantPoolUtil.getMethodName(methodref);

@@ -1,8 +1,9 @@
 package haidnor.vm.instruction.constants;
 
-import haidnor.vm.instruction.Instruction;
+import haidnor.vm.instruction.AbstractInstruction;
 import haidnor.vm.runtime.Frame;
 import haidnor.vm.runtime.StackValue;
+import haidnor.vm.util.CodeStream;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.bcel.Const;
@@ -11,7 +12,14 @@ import org.apache.bcel.classfile.ConstantPool;
 import org.apache.bcel.classfile.ConstantString;
 
 @Slf4j
-public class LdcInst implements Instruction {
+public class LdcInst extends AbstractInstruction {
+
+    private final int operand;
+
+    public LdcInst(CodeStream codeStream) {
+        super(codeStream);
+        this.operand = codeStream.readU1();
+    }
 
     @Override
     @SneakyThrows
@@ -20,7 +28,6 @@ public class LdcInst implements Instruction {
         ConstantPool constantPool = frame.getConstantPool();
 
         // 从常量池中获取值
-        int operand = frame.getCodeStream().read();
         Constant constant = constantPool.getConstant(operand);
 
         switch (constant.getTag()) {

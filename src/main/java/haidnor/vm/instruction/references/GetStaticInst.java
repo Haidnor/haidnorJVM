@@ -1,8 +1,9 @@
 package haidnor.vm.instruction.references;
 
-import haidnor.vm.instruction.Instruction;
+import haidnor.vm.instruction.AbstractInstruction;
 import haidnor.vm.runtime.Frame;
 import haidnor.vm.runtime.StackValue;
+import haidnor.vm.util.CodeStream;
 import haidnor.vm.util.ConstantPoolUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -10,23 +11,26 @@ import org.apache.bcel.Const;
 import org.apache.bcel.classfile.ConstantFieldref;
 import org.apache.bcel.classfile.ConstantPool;
 
-import java.io.DataInputStream;
 import java.lang.reflect.Field;
 
 @Slf4j
-public class GetStaticInst implements Instruction {
+public class GetStaticInst extends AbstractInstruction {
 
+    private final int operand;
+
+    public GetStaticInst(CodeStream codeStream) {
+        super(codeStream);
+        this.operand = codeStream.readU2();
+    }
     @Override
     @SneakyThrows
     public void execute(Frame frame) {
         log.info("execute: GETSTATIC");    // 获取字段符号引用指定的对象或者值(类的静态字段 static 修饰),并将其压入操作数栈
-        DataInputStream codeStream = frame.getCodeStream();
+        CodeStream codeStream = frame.getCodeStream();
 
         ConstantPool constantPool = frame.getConstantPool();
         ConstantPoolUtil constantPoolUtil = frame.getConstantPoolUtil();
 
-        // 获取操作数 u2
-        int operand = codeStream.readUnsignedShort();
         ConstantFieldref constFieldref = constantPool.getConstant(operand);
 
         // 字段所属的 Java 类

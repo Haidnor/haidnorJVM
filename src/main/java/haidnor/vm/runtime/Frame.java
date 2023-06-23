@@ -1,24 +1,34 @@
 package haidnor.vm.runtime;
 
+import haidnor.vm.util.CodeStream;
 import haidnor.vm.util.ConstantPoolUtil;
-import haidnor.vm.util.IoUtil;
 import org.apache.bcel.Const;
+import org.apache.bcel.classfile.Code;
 import org.apache.bcel.classfile.ConstantPool;
 import org.apache.bcel.classfile.Method;
 
-import java.io.DataInputStream;
 import java.util.Stack;
 
 /**
  * JVM 线程栈帧
  */
 public class Frame {
-
+    /**
+     * 当前栈帧所处于的 JVM 线程
+     */
     private final JvmThread jvmThread;
 
+    /**
+     * 栈帧所属的方法
+     */
     private final Method method;
 
-    private final DataInputStream codeStream;
+    /**
+     * 栈帧所属的方法代码对象
+     */
+    private final Code code;
+
+    private final CodeStream codeStream;
 
     private final ConstantPool constantPool;
 
@@ -32,9 +42,10 @@ public class Frame {
     public Frame(JvmThread jvmThread, Method method) {
         this.jvmThread = jvmThread;
         this.method = method;
+        this.code = method.getCode();
         this.constantPool = method.getConstantPool();
         this.constantPoolUtil = new ConstantPoolUtil(constantPool);
-        this.codeStream = IoUtil.getDataInputStream(method.getCode().getCode());
+        this.codeStream = new CodeStream(method.getCode());
     }
 
     public JvmThread getJvmThread() {
@@ -45,7 +56,11 @@ public class Frame {
         return method;
     }
 
-    public DataInputStream getCodeStream() {
+    public Code getCode() {
+        return code;
+    }
+
+    public CodeStream getCodeStream() {
         return codeStream;
     }
 

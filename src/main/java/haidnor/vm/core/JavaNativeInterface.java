@@ -3,7 +3,7 @@ package haidnor.vm.core;
 
 import haidnor.vm.runtime.Frame;
 import haidnor.vm.runtime.JvmThread;
-import haidnor.vm.util.ThreadHolder;
+import haidnor.vm.util.JvmThreadHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.bcel.classfile.Method;
 
@@ -15,16 +15,16 @@ public class JavaNativeInterface {
             throw new Error("只能调用静态方法");
         }
 
-        JvmThread jThread = ThreadHolder.get();
+        JvmThread jvmThread = JvmThreadHolder.get();
 
         // 创建栈帧
-        Frame frame = new Frame();
-        jThread.push(frame);
+        Frame frame = new Frame(jvmThread, method);
+        jvmThread.push(frame);
 
-        log.info("jvm thread stack size:" + jThread.stackSize());
+        log.info("jvm thread stack size:" + jvmThread.stackSize());
 
         // 执行任务交给字节码解释器
-        Interpreter.run(method);
+        Interpreter.executeFrame(frame);
     }
 
 }

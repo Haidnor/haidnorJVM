@@ -2,7 +2,7 @@ package haidnor.vm;
 
 import haidnor.vm.core.JavaNativeInterface;
 import haidnor.vm.runtime.JvmThread;
-import haidnor.vm.util.ThreadHolder;
+import haidnor.vm.util.JvmThreadHolder;
 import haidnor.vm.util.JavaClassUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.bcel.classfile.ClassParser;
@@ -15,7 +15,7 @@ public class JvmTest {
 
     @Test
     public void test_jvm() throws Exception {
-        ClassParser classParser = new ClassParser("D:\\java_project\\JavaClassTest\\out\\production\\JavaClassTest\\Main.class");
+        ClassParser classParser = new ClassParser("D:\\java_project\\JavaClassTest\\out\\production\\JavaClassTest\\HelloWorld.class");
         JavaClass javaClass = classParser.parse();
         log.info("{}", javaClass);
         log.info("{}", javaClass.getConstantPool());
@@ -28,7 +28,7 @@ public class JvmTest {
 
         // JVM main thread
         JvmThread mainThread = new JvmThread();
-        ThreadHolder.set(mainThread);
+        JvmThreadHolder.set(mainThread);
 
         // 执行main方法
         JavaNativeInterface.callStaticMethod(mainMethod);

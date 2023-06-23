@@ -14,7 +14,15 @@ cd \java_project\haidnorVM
 ```cmd
 mvn clean package
 ```
-
 字节码规范文档
 https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html
 
+# 开发分支说明
+## main
+元循环虚拟机主要分支
+## dev
+开发分支
+## helloWorld
+实现JVM最简单的功能,仅能解析字节码文件然后打印 hello,world
+## bytecode
+编码解析字节码文件 demo

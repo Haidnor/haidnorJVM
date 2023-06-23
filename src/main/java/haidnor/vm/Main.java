@@ -3,7 +3,7 @@ package haidnor.vm;
 import haidnor.vm.core.JavaNativeInterface;
 import haidnor.vm.runtime.JvmThread;
 import haidnor.vm.util.JavaClassUtil;
-import haidnor.vm.util.ThreadHolder;
+import haidnor.vm.util.JvmThreadHolder;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.bcel.classfile.ClassParser;
@@ -44,7 +44,7 @@ public class Main {
             }
 
             JvmThread mainThread = new JvmThread();
-            ThreadHolder.set(mainThread);
+            JvmThreadHolder.set(mainThread);
 
             // 执行main方法
             JavaNativeInterface.callStaticMethod(mainMethod);

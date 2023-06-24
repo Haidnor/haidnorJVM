@@ -1,15 +1,18 @@
 package haidnor.vm.instruction;
 
-import haidnor.vm.instruction.comparisons.IfICmpNeInst;
-import haidnor.vm.instruction.constants.IConst0Inst;
-import haidnor.vm.instruction.constants.IConst1Inst;
-import haidnor.vm.instruction.constants.IConst2Inst;
-import haidnor.vm.instruction.constants.LdcInst;
-import haidnor.vm.instruction.control.ReturnInst;
-import haidnor.vm.instruction.loads.ILoad1Inst;
-import haidnor.vm.instruction.references.GetStaticInst;
-import haidnor.vm.instruction.references.InvokeVirtualInst;
-import haidnor.vm.instruction.stores.IStore1Inst;
+import haidnor.vm.instruction.comparisons.*;
+import haidnor.vm.instruction.constants.*;
+import haidnor.vm.instruction.control.Return;
+import haidnor.vm.instruction.loads.ILoad0;
+import haidnor.vm.instruction.loads.ILoad1;
+import haidnor.vm.instruction.loads.ILoad2;
+import haidnor.vm.instruction.loads.ILoad3;
+import haidnor.vm.instruction.references.GetStatic;
+import haidnor.vm.instruction.references.InvokeVirtual;
+import haidnor.vm.instruction.stores.IStore0;
+import haidnor.vm.instruction.stores.IStore1;
+import haidnor.vm.instruction.stores.IStore2;
+import haidnor.vm.instruction.stores.IStore3;
 import haidnor.vm.util.CodeStream;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.bcel.Const;
@@ -17,50 +20,85 @@ import org.apache.bcel.Const;
 @Slf4j
 public abstract class InstructionFactory {
 
-    public static AbstractInstruction creatInstruction(CodeStream codeStream) {
+    public static Instruction creatInstruction(CodeStream codeStream) {
         int instructionCode = codeStream.readInstructionCode();
         switch (instructionCode) {
+            case Const.ICONST_M1 -> {
+                return new IConstM1(codeStream);
+            }
             case Const.ICONST_0 -> {
-                log.debug("{} ICONST_0", codeStream.index());
-                return new IConst0Inst(codeStream);
+                return new IConst0(codeStream);
             }
             case Const.ICONST_1 -> {
-                log.debug("{} ICONST_1", codeStream.index());
-                return new IConst1Inst(codeStream);
+                return new IConst1(codeStream);
             }
             case Const.ICONST_2 -> {
-                log.debug("{} ICONST_2", codeStream.index());
-                return new IConst2Inst(codeStream);
+                return new IConst2(codeStream);
+            }
+            case Const.ICONST_3 -> {
+                return new IConst3(codeStream);
+            }
+            case Const.ICONST_4 -> {
+                return new IConst4(codeStream);
+            }
+            case Const.ICONST_5 -> {
+                return new IConst5(codeStream);
+            }
+            case Const.ISTORE_0 -> {
+                return new IStore0(codeStream);
             }
             case Const.ISTORE_1 -> {
-                log.debug("{} ISTORE_1", codeStream.index());
-                return new IStore1Inst(codeStream);
+                return new IStore1(codeStream);
+            }
+            case Const.ISTORE_2 -> {
+                return new IStore2(codeStream);
+            }
+            case Const.ISTORE_3 -> {
+                return new IStore3(codeStream);
+            }
+            case Const.ILOAD_0 -> {
+                return new ILoad0(codeStream);
             }
             case Const.ILOAD_1 -> {
-                log.debug("{} ILOAD_1", codeStream.index());
-                return new ILoad1Inst(codeStream);
+                return new ILoad1(codeStream);
+            }
+            case Const.ILOAD_2 -> {
+                return new ILoad2(codeStream);
+            }
+            case Const.ILOAD_3 -> {
+                return new ILoad3(codeStream);
+            }
+            case Const.IF_ICMPEQ -> {
+                return new IfICmpEq(codeStream);
+            }
+            case Const.IF_ICMPGE -> {
+                return new IfICmpGe(codeStream);
+            }
+            case Const.IF_ICMPGT -> {
+                return new IfICmpGt(codeStream);
+            }
+            case Const.IF_ICMPLE -> {
+                return new IfICmpLe(codeStream);
+            }
+            case Const.IF_ICMPLT -> {
+                return new IfICmpLt(codeStream);
             }
             case Const.IF_ICMPNE -> {
-                log.debug("{} IF_ICMPNE", codeStream.index());
-                return new IfICmpNeInst(codeStream);
+                return new IfICmpNe(codeStream);
             }
             case Const.LDC -> {
-                log.debug("{} LDC", codeStream.index());
-                return new LdcInst(codeStream);
+                return new Ldc(codeStream);
             }
             case Const.RETURN -> {
-                log.debug("{} RETURN", codeStream.index());
-                return new ReturnInst(codeStream);
+                return new Return(codeStream);
             }
             case Const.GETSTATIC -> {
-                log.debug("{} GETSTATIC", codeStream.index());
-                return new GetStaticInst(codeStream);
+                return new GetStatic(codeStream);
             }
             case Const.INVOKEVIRTUAL -> {
-                log.debug("{} INVOKEVIRTUAL", codeStream.index());
-                return new InvokeVirtualInst(codeStream);
+                return new InvokeVirtual(codeStream);
             }
-            default -> throw new Error("无效指令");
+            default -> throw new Error("Invalid Instruction Code " + instructionCode);
         }
     }
 

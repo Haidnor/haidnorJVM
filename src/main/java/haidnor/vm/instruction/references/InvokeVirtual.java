@@ -1,6 +1,6 @@
 package haidnor.vm.instruction.references;
 
-import haidnor.vm.instruction.AbstractInstruction;
+import haidnor.vm.instruction.Instruction;
 import haidnor.vm.runtime.Frame;
 import haidnor.vm.util.CodeStream;
 import haidnor.vm.util.ConstantPoolUtil;
@@ -15,11 +15,11 @@ import org.apache.bcel.classfile.Utility;
 import java.util.Objects;
 
 @Slf4j
-public class InvokeVirtualInst extends AbstractInstruction {
+public class InvokeVirtual extends Instruction {
 
     private final int operand;
 
-    public InvokeVirtualInst(CodeStream codeStream) {
+    public InvokeVirtual(CodeStream codeStream) {
         super(codeStream);
         this.operand = codeStream.readU2Operand(this);
     }
@@ -27,7 +27,6 @@ public class InvokeVirtualInst extends AbstractInstruction {
     @Override
     @SneakyThrows
     public void execute(Frame frame) {
-        log.debug("execute: INVOKEVIRTUAL"); // 调用所有虚方法
         ConstantPool constantPool = frame.getConstantPool();
         ConstantPoolUtil constantPoolUtil = frame.getConstantPoolUtil();
 

@@ -1,14 +1,14 @@
 package haidnor.vm.instruction.control;
 
-import haidnor.vm.instruction.AbstractInstruction;
+import haidnor.vm.instruction.Instruction;
 import haidnor.vm.runtime.Frame;
 import haidnor.vm.util.CodeStream;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class ReturnInst extends AbstractInstruction {
+public class Return extends Instruction {
 
-    public ReturnInst(CodeStream codeStream) {
+    public Return(CodeStream codeStream) {
         super(codeStream);
     }
 

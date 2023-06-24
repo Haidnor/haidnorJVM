@@ -1,6 +1,6 @@
 package haidnor.vm.util;
 
-import haidnor.vm.instruction.AbstractInstruction;
+import haidnor.vm.instruction.Instruction;
 import lombok.SneakyThrows;
 import org.apache.bcel.classfile.Code;
 
@@ -41,7 +41,7 @@ public class CodeStream {
      * 读取占用一个字节的操作数
      */
     @SneakyThrows
-    public int readU1Operand(AbstractInstruction instruction) {
+    public int readU1Operand(Instruction instruction) {
         instruction.setOffSet(instruction.offSet() + 1);
         this.index += 1;
         return this.codeStream.read();
@@ -51,7 +51,7 @@ public class CodeStream {
      * 读取占用两个字节的操作数
      */
     @SneakyThrows
-    public int readU2Operand(AbstractInstruction instruction) {
+    public int readU2Operand(Instruction instruction) {
         instruction.setOffSet(instruction.offSet() + 2);
         this.index += 2;
         return this.codeStream.readUnsignedShort();

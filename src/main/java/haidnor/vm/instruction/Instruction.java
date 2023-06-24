@@ -3,7 +3,7 @@ package haidnor.vm.instruction;
 import haidnor.vm.runtime.Frame;
 import haidnor.vm.util.CodeStream;
 
-public abstract class AbstractInstruction {
+public abstract class Instruction {
     /**
      * 指令坐在 code 数组中的索引下标
      */
@@ -14,7 +14,7 @@ public abstract class AbstractInstruction {
      */
     private int offSet = 1;
 
-    public AbstractInstruction(CodeStream codeStream) {
+    public Instruction(CodeStream codeStream) {
         this.index = codeStream.index();
     }
 
@@ -31,4 +31,10 @@ public abstract class AbstractInstruction {
     public void setOffSet(int offSet) {
         this.offSet = offSet;
     }
+
+    @Override
+    public String toString() {
+        return index + " " + this.getClass().getSimpleName();
+    }
+
 }

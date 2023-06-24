@@ -1,6 +1,6 @@
 package haidnor.vm.instruction.constants;
 
-import haidnor.vm.instruction.AbstractInstruction;
+import haidnor.vm.instruction.Instruction;
 import haidnor.vm.runtime.Frame;
 import haidnor.vm.runtime.StackValue;
 import haidnor.vm.util.CodeStream;
@@ -12,11 +12,11 @@ import org.apache.bcel.classfile.ConstantPool;
 import org.apache.bcel.classfile.ConstantString;
 
 @Slf4j
-public class LdcInst extends AbstractInstruction {
+public class Ldc extends Instruction {
 
     private final int operand;
 
-    public LdcInst(CodeStream codeStream) {
+    public Ldc(CodeStream codeStream) {
         super(codeStream);
         this.operand = codeStream.readU1Operand(this);
     }
@@ -24,7 +24,6 @@ public class LdcInst extends AbstractInstruction {
     @Override
     @SneakyThrows
     public void execute(Frame frame) {
-        log.debug("execute: LDC");   // 将值压入操作数栈
         ConstantPool constantPool = frame.getConstantPool();
 
         // 从常量池中获取值

@@ -45,6 +45,17 @@ public class INVOKEVIRTUAL extends Instruction {
             Class<?>[] parameterTypeArr = SignatureUtil.getParameterTypes(methodSignature);
             // 执行方法的参数值
             Object[] stacksValueArr = frame.popStacksValue(parameterTypeArr.length);
+
+            // 将特定的参数转换为基本类型
+            for (int i = 0; i < parameterTypeArr.length; i++) {
+                Class<?> aClass = parameterTypeArr[i];
+                // boolean 存储方式为 int 类型
+                if (aClass.getName().equals("boolean")) {
+                    int booleanFlag = (int) stacksValueArr[i];
+                    stacksValueArr[i] = booleanFlag == 1;
+                }
+            }
+
             // 执行方法的示例对象
             Object object = frame.pop().getValue();
 

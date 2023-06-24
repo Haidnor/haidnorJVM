@@ -105,7 +105,7 @@ public class Frame {
         for (int i = 0; i < num; i++) {
             StackValue stackValue = operandStack.pop();
             switch (stackValue.getType()) {
-                case Const.T_CHAR, Const.T_INT, Const.T_OBJECT, Const.T_LONG, Const.T_DOUBLE:
+                case Const.T_CHAR, Const.T_INT, Const.T_OBJECT, Const.T_LONG, Const.T_DOUBLE, Const.T_FLOAT:
                     break;
                 case Const.T_ARRAY:
                     throw new Error("数组类型，未作处理");

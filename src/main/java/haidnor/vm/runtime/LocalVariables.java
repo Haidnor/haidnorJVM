@@ -3,43 +3,43 @@ package haidnor.vm.runtime;
 /**
  * 局部变量表
  */
-public class LocalVars {
+public class LocalVariables {
 
-    private final Slot[] slots;
+    private final Slot[] slotArr;
 
-    public LocalVars(int size) {
-        this.slots = new Slot[size];
+    public LocalVariables(int size) {
+        this.slotArr = new Slot[size];
     }
 
-    public LocalVars(Slot[] slots) {
-        this.slots = slots;
+    public LocalVariables(Slot[] slots) {
+        this.slotArr = slots;
     }
 
     public Slot[] getSlots() {
-        return this.slots;
+        return this.slotArr;
     }
 
     public void setInt(int index, int val) {
-        slots[index] = new Slot(val);
+        slotArr[index] = new Slot(val);
     }
 
     public int getInt(int index) {
-        return slots[index].num;
+        return slotArr[index].num;
     }
 
     public void setFloat(int index, float val) {
         int tmp = Float.floatToIntBits(val);
-        slots[index] = new Slot(tmp);
+        slotArr[index] = new Slot(tmp);
     }
 
     public float getFloat(int index) {
-        int num = slots[index].num;
+        int num = slotArr[index].num;
         return Float.intBitsToFloat(num);
     }
 
     public long getLong(int index) {
-        int high = slots[index].num;
-        int low = slots[index + 1].num;
+        int high = slotArr[index].num;
+        int low = slotArr[index + 1].num;
 
         long l1 = (high & 0x000000ffffffffL) << 32;
         long l2 = low & 0x00000000ffffffffL;
@@ -50,8 +50,8 @@ public class LocalVars {
         int high = (int) (val >> 32); //高32位
         int low = (int) (val & 0x000000ffffffffL); //低32位
 
-        slots[index] = new Slot(high);
-        slots[index + 1] = new Slot(low);
+        slotArr[index] = new Slot(high);
+        slotArr[index + 1] = new Slot(low);
     }
 
     public void setDouble(int index, double val) {
@@ -60,8 +60,8 @@ public class LocalVars {
         int high = (int) (tmp >> 32); //高32位
         int low = (int) (tmp & 0x000000ffffffffL); //低32位
 
-        slots[index] = new Slot(high);
-        slots[index + 1] = new Slot(low);
+        slotArr[index] = new Slot(high);
+        slotArr[index + 1] = new Slot(low);
     }
 
     public double getDouble(int index) {
@@ -70,18 +70,18 @@ public class LocalVars {
     }
 
     public void setRef(int index, Instance ref) {
-        slots[index] = new Slot(ref);
+        slotArr[index] = new Slot(ref);
     }
 
     public Instance getRef(int index) {
-        return slots[index].ref;
+        return slotArr[index].ref;
     }
 
     public String debug(String space) {
         StringBuilder sb = new StringBuilder();
-        sb.append(space).append(String.format("LocalVars: %d", this.slots.length)).append("\n");
-        for (int i = 0; i < this.slots.length; i++) {
-            Slot slot = this.slots[i];
+        sb.append(space).append(String.format("LocalVars: %d", this.slotArr.length)).append("\n");
+        for (int i = 0; i < this.slotArr.length; i++) {
+            Slot slot = this.slotArr[i];
             if (slot == null) {
                 sb.append(space).append(String.format("%d | null | null", i)).append("\n");
                 continue;
@@ -96,6 +96,6 @@ public class LocalVars {
     }
 
     public void set(int i, Slot val) {
-        this.slots[i] = val;
+        this.slotArr[i] = val;
     }
 }

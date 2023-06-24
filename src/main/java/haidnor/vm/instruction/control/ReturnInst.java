@@ -14,11 +14,6 @@ public class ReturnInst extends AbstractInstruction {
 
     @Override
     public void execute(Frame frame) {
-        log.debug("execute: RETURN");    // pop 出栈帧
-
-        frame.getJvmThread().pop();
-
-        log.debug("jvm thread stack size:" + frame.getJvmThread().stackSize());
     }
 
 }

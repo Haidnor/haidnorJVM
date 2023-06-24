@@ -13,13 +13,13 @@ import lombok.extern.slf4j.Slf4j;
  * definitions in The Java Virtual Machine Specification</a>
  */
 @Slf4j
-public class IfICmpLt extends Instruction {
+public class IF_ICMPLE extends Instruction {
     /**
      * 下次再执行的偏移量
      */
     private final int operand;
 
-    public IfICmpLt(CodeStream codeStream) {
+    public IF_ICMPLE(CodeStream codeStream) {
         super(codeStream);
         this.operand = codeStream.readU2Operand(this);
     }
@@ -29,7 +29,7 @@ public class IfICmpLt extends Instruction {
         StackValue v1 = frame.pop();
         StackValue v2 = frame.pop();
 
-        if ((int) v1.getValue() < (int) v2.getValue()) {
+        if ((int) v1.getValue() <= (int) v2.getValue()) {
             super.setOffSet(operand);
         }
     }

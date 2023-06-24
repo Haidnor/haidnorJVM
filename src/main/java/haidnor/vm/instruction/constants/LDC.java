@@ -12,11 +12,11 @@ import org.apache.bcel.classfile.ConstantPool;
 import org.apache.bcel.classfile.ConstantString;
 
 @Slf4j
-public class Ldc extends Instruction {
+public class LDC extends Instruction {
 
     private final int operand;
 
-    public Ldc(CodeStream codeStream) {
+    public LDC(CodeStream codeStream) {
         super(codeStream);
         this.operand = codeStream.readU1Operand(this);
     }

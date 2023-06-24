@@ -13,13 +13,13 @@ import lombok.extern.slf4j.Slf4j;
  * definitions in The Java Virtual Machine Specification</a>
  */
 @Slf4j
-public class IfICmpEq extends Instruction {
+public class IF_ICMPEQ extends Instruction {
     /**
      * 下次再执行的偏移量
      */
     private final int operand;
 
-    public IfICmpEq(CodeStream codeStream) {
+    public IF_ICMPEQ(CodeStream codeStream) {
         super(codeStream);
         this.operand = codeStream.readU2Operand(this);
     }

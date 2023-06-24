@@ -11,15 +11,15 @@ import org.apache.bcel.Const;
  * https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-6.html#jvms-6.5.iload_n
  */
 @Slf4j
-public class ILoad1 extends Instruction {
+public class ILOAD_0 extends Instruction {
 
-    public ILoad1(CodeStream codeStream) {
+    public ILOAD_0(CodeStream codeStream) {
         super(codeStream);
     }
 
     @Override
     public void execute(Frame frame) {
-        int value = frame.slotGetInt(1);
+        int value = frame.slotGetInt(0);
         frame.push(new StackValue(Const.T_INT, value));
     }
 

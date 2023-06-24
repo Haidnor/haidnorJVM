@@ -11,15 +11,15 @@ import org.apache.bcel.Const;
  * https://docs.oracle.com/javase/specs/jvms/se19/html/jvms-6.html#jvms-6.5.iconst_i
  */
 @Slf4j
-public class IConst0 extends Instruction {
+public class ICONST_4 extends Instruction {
 
-    public IConst0(CodeStream codeStream) {
+    public ICONST_4(CodeStream codeStream) {
         super(codeStream);
     }
 
     @Override
     public void execute(Frame frame) {
-        frame.push(new StackValue(Const.T_INT, 0));
+        frame.push(new StackValue(Const.T_INT, 4));
     }
 
 }

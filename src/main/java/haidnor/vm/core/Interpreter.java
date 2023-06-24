@@ -2,7 +2,7 @@ package haidnor.vm.core;
 
 import haidnor.vm.instruction.Instruction;
 import haidnor.vm.instruction.InstructionFactory;
-import haidnor.vm.instruction.control.Return;
+import haidnor.vm.instruction.control.RETURN;
 import haidnor.vm.runtime.Frame;
 import haidnor.vm.util.CodeStream;
 import lombok.SneakyThrows;
@@ -32,7 +32,7 @@ public class Interpreter {
             Instruction instruction = instructionMap.get(i);
             log.debug("{}", instruction);
             instruction.execute(frame);
-            if (instruction instanceof Return) {
+            if (instruction instanceof RETURN) {
                 break;
             }
             i += instruction.offSet();

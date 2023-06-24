@@ -17,11 +17,11 @@ import java.lang.reflect.Field;
  * 获取字段符号引用指定的对象或者值(类的静态字段 static 修饰),并将其压入操作数栈
  */
 @Slf4j
-public class GetStatic extends Instruction {
+public class GETSTATIC extends Instruction {
 
     private final int operand;
 
-    public GetStatic(CodeStream codeStream) {
+    public GETSTATIC(CodeStream codeStream) {
         super(codeStream);
         this.operand = codeStream.readU2Operand(this);
     }

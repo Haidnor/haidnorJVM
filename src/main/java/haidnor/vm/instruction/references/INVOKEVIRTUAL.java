@@ -15,11 +15,11 @@ import org.apache.bcel.classfile.Utility;
 import java.util.Objects;
 
 @Slf4j
-public class InvokeVirtual extends Instruction {
+public class INVOKEVIRTUAL extends Instruction {
 
     private final int operand;
 
-    public InvokeVirtual(CodeStream codeStream) {
+    public INVOKEVIRTUAL(CodeStream codeStream) {
         super(codeStream);
         this.operand = codeStream.readU2Operand(this);
     }

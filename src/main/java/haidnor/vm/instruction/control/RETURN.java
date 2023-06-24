@@ -6,9 +6,9 @@ import haidnor.vm.util.CodeStream;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class Return extends Instruction {
+public class RETURN extends Instruction {
 
-    public Return(CodeStream codeStream) {
+    public RETURN(CodeStream codeStream) {
         super(codeStream);
     }
 

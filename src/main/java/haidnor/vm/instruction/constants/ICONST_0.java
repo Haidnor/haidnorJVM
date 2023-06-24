@@ -1,4 +1,4 @@
-package haidnor.vm.instruction.loads;
+package haidnor.vm.instruction.constants;
 
 import haidnor.vm.instruction.Instruction;
 import haidnor.vm.runtime.Frame;
@@ -8,19 +8,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.bcel.Const;
 
 /**
- * https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-6.html#jvms-6.5.iload_n
+ * https://docs.oracle.com/javase/specs/jvms/se19/html/jvms-6.html#jvms-6.5.iconst_i
  */
 @Slf4j
-public class ILoad0 extends Instruction {
+public class ICONST_0 extends Instruction {
 
-    public ILoad0(CodeStream codeStream) {
+    public ICONST_0(CodeStream codeStream) {
         super(codeStream);
     }
 
     @Override
     public void execute(Frame frame) {
-        int value = frame.slotGetInt(0);
-        frame.push(new StackValue(Const.T_INT, value));
+        frame.push(new StackValue(Const.T_INT, 0));
     }
 
 }

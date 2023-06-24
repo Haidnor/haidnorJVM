@@ -11,9 +11,9 @@ import org.apache.bcel.Const;
  * https://docs.oracle.com/javase/specs/jvms/se19/html/jvms-6.html#jvms-6.5.iconst_i
  */
 @Slf4j
-public class IConst3 extends Instruction {
+public class ICONST_3 extends Instruction {
 
-    public IConst3(CodeStream codeStream) {
+    public ICONST_3(CodeStream codeStream) {
         super(codeStream);
     }
 

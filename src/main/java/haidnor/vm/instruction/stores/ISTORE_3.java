@@ -7,16 +7,16 @@ import haidnor.vm.util.CodeStream;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class IStore1 extends Instruction {
+public class ISTORE_3 extends Instruction {
 
-    public IStore1(CodeStream codeStream) {
+    public ISTORE_3(CodeStream codeStream) {
         super(codeStream);
     }
 
     @Override
     public void execute(Frame frame) {
         StackValue value = frame.pop();
-        frame.slotSetInt(1, (Integer) value.getValue());
+        frame.slotSetInt(3, (Integer) value.getValue());
     }
-    
+
 }

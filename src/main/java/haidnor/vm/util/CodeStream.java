@@ -32,7 +32,7 @@ public class CodeStream {
      * 读取占用一个字节指定代码
      */
     @SneakyThrows
-    public int readInstructionCode() {
+    public int readJavaVmOpcode() {
         this.index += 1;
         return this.codeStream.read();
     }

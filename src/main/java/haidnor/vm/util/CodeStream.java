@@ -54,7 +54,17 @@ public class CodeStream {
     public int readU2Operand(Instruction instruction) {
         instruction.setOffSet(instruction.offSet() + 2);
         this.index += 2;
-        return this.codeStream.readUnsignedShort();
+        return this.codeStream.readShort();
+    }
+
+    /**
+     * 读取占用四个字节的操作数
+     */
+    @SneakyThrows
+    public int readU4Operand(Instruction instruction) {
+        instruction.setOffSet(instruction.offSet() + 4);
+        this.index += 4;
+        return this.codeStream.readInt();
     }
 
     public int index() {

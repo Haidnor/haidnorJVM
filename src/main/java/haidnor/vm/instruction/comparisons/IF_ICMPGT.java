@@ -24,8 +24,8 @@ public class IF_ICMPGT extends Instruction {
 
     @Override
     public void execute(Frame frame) {
-        StackValue v1 = frame.pop();
         StackValue v2 = frame.pop();
+        StackValue v1 = frame.pop();
 
         if ((int) v1.getValue() > (int) v2.getValue()) {
             super.setOffSet(offSet);

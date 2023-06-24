@@ -19,7 +19,7 @@ public class INVOKEVIRTUAL extends Instruction {
 
     public INVOKEVIRTUAL(CodeStream codeStream) {
         super(codeStream);
-        this.constantMethodrefIndex = codeStream.readU2Operand(this);
+        this.constantMethodrefIndex = codeStream.readShortOperand(this);
     }
 
     @Override

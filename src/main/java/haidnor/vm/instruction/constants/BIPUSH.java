@@ -18,7 +18,7 @@ public class BIPUSH extends Instruction {
 
     public BIPUSH(CodeStream codeStream) {
         super(codeStream);
-        this.value = codeStream.readU1Operand(this);
+        this.value = codeStream.readByteOperand(this);
     }
 
     @Override

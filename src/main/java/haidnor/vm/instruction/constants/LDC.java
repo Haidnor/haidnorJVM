@@ -23,7 +23,7 @@ public class LDC extends Instruction {
 
     public LDC(CodeStream codeStream) {
         super(codeStream);
-        this.constantIndex = codeStream.readU1Operand(this);
+        this.constantIndex = codeStream.readByteOperand(this);
     }
 
     @Override

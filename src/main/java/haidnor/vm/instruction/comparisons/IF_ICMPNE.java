@@ -19,7 +19,7 @@ public class IF_ICMPNE extends Instruction {
 
     public IF_ICMPNE(CodeStream codeStream) {
         super(codeStream);
-        this.offSet = codeStream.readU2Operand(this);
+        this.offSet = codeStream.readShortOperand(this);
     }
 
     @Override

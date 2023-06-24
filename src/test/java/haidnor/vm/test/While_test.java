@@ -12,14 +12,15 @@ public class While_test {
 
     public static void main(String[] args) {
         int a = 1;
-        while (5 != a) {
-            a++;
+        while (a < 10000) {
             System.out.println(a);
+            a++;
         }
     }
 
     @Test
     public void test_() throws Exception {
+        long l = System.currentTimeMillis();
         ClassParser classParser = new ClassParser(BaseTest.getJavaClassAbsolutePath(While_test.class));
         Method mainMethod = JavaClassUtil.getMainMethod(classParser.parse());
 
@@ -29,6 +30,8 @@ public class While_test {
 
         // 执行main方法
         JavaNativeInterface.callStaticMethod(mainMethod);
+        long l1 = System.currentTimeMillis();
+        System.out.println(l1 -l);
     }
 
 }

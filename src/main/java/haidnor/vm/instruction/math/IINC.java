@@ -24,8 +24,8 @@ public class IINC extends Instruction {
 
     public IINC(CodeStream codeStream) {
         super(codeStream);
-        this.index = codeStream.readU1Operand(this);
-        this.increment = codeStream.readU1Operand(this);
+        this.index = codeStream.readByteOperand(this);
+        this.increment = codeStream.readByteOperand(this);
     }
 
     @Override

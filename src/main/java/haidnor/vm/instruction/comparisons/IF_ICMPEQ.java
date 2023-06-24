@@ -19,7 +19,7 @@ public class IF_ICMPEQ extends Instruction {
 
     public IF_ICMPEQ(CodeStream codeStream) {
         super(codeStream);
-        this.offSet = codeStream.readU2Operand(this);
+        this.offSet = codeStream.readShortOperand(this);
     }
 
     @Override

@@ -18,7 +18,7 @@ public class GOTO extends Instruction {
 
     public GOTO(CodeStream codeStream) {
         super(codeStream);
-        this.offSet = codeStream.readU2Operand(this);
+        this.offSet = codeStream.readShortOperand(this);
     }
 
     @Override

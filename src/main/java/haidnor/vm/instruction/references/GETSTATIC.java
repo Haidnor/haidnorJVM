@@ -21,7 +21,7 @@ public class GETSTATIC extends Instruction {
 
     public GETSTATIC(CodeStream codeStream) {
         super(codeStream);
-        this.constantFieldrefIndex = codeStream.readU2Operand(this);
+        this.constantFieldrefIndex = codeStream.readShortOperand(this);
     }
     @Override
     @SneakyThrows

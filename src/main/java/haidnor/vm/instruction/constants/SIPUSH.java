@@ -18,7 +18,7 @@ public class SIPUSH extends Instruction {
 
     public SIPUSH(CodeStream codeStream) {
         super(codeStream);
-        this.value = codeStream.readU2Operand(this);
+        this.value = codeStream.readShortOperand(this);
     }
 
     @Override

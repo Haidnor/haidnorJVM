@@ -13,7 +13,7 @@ public class ILOAD extends Instruction {
 
     public ILOAD(CodeStream codeStream) {
         super(codeStream);
-        this.index = codeStream.readU1Operand(this);
+        this.index = codeStream.readByteOperand(this);
     }
 
     @Override

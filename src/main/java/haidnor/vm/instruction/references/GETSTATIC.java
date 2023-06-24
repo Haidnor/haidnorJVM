@@ -19,11 +19,11 @@ import java.lang.reflect.Field;
 @Slf4j
 public class GETSTATIC extends Instruction {
 
-    private final int operand;
+    private final int constantFieldrefIndex;
 
     public GETSTATIC(CodeStream codeStream) {
         super(codeStream);
-        this.operand = codeStream.readU2Operand(this);
+        this.constantFieldrefIndex = codeStream.readU2Operand(this);
     }
     @Override
     @SneakyThrows
@@ -31,7 +31,7 @@ public class GETSTATIC extends Instruction {
         ConstantPool constantPool = frame.getConstantPool();
         ConstantPoolUtil constantPoolUtil = frame.getConstantPoolUtil();
 
-        ConstantFieldref constFieldref = constantPool.getConstant(operand);
+        ConstantFieldref constFieldref = constantPool.getConstant(constantFieldrefIndex);
 
         // 字段所属的 Java 类
         String className = constantPoolUtil.getBelongClassName(constFieldref);

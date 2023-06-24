@@ -17,11 +17,11 @@ import java.util.Objects;
 @Slf4j
 public class INVOKEVIRTUAL extends Instruction {
 
-    private final int operand;
+    private final int constantMethodrefIndex;
 
     public INVOKEVIRTUAL(CodeStream codeStream) {
         super(codeStream);
-        this.operand = codeStream.readU2Operand(this);
+        this.constantMethodrefIndex = codeStream.readU2Operand(this);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class INVOKEVIRTUAL extends Instruction {
         ConstantPool constantPool = frame.getConstantPool();
         ConstantPoolUtil constantPoolUtil = frame.getConstantPoolUtil();
 
-        ConstantMethodref methodref = constantPool.getConstant(operand);
+        ConstantMethodref methodref = constantPool.getConstant(constantMethodrefIndex);
 
         String className = constantPoolUtil.getBelongClassName(methodref);
         String methodName = constantPoolUtil.getMethodName(methodref);

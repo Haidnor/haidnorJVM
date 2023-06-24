@@ -14,11 +14,11 @@ import org.apache.bcel.classfile.ConstantString;
 @Slf4j
 public class LDC extends Instruction {
 
-    private final int operand;
+    private final int constantIndex;
 
     public LDC(CodeStream codeStream) {
         super(codeStream);
-        this.operand = codeStream.readU1Operand(this);
+        this.constantIndex = codeStream.readU1Operand(this);
     }
 
     @Override
@@ -27,7 +27,7 @@ public class LDC extends Instruction {
         ConstantPool constantPool = frame.getConstantPool();
 
         // 从常量池中获取值
-        Constant constant = constantPool.getConstant(operand);
+        Constant constant = constantPool.getConstant(constantIndex);
 
         switch (constant.getTag()) {
             case Const.CONSTANT_String: {

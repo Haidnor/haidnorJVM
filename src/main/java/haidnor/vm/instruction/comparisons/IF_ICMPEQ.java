@@ -17,11 +17,11 @@ public class IF_ICMPEQ extends Instruction {
     /**
      * 下次再执行的偏移量
      */
-    private final int operand;
+    private final int offSet;
 
     public IF_ICMPEQ(CodeStream codeStream) {
         super(codeStream);
-        this.operand = codeStream.readU2Operand(this);
+        this.offSet = codeStream.readU2Operand(this);
     }
 
     @Override
@@ -30,12 +30,12 @@ public class IF_ICMPEQ extends Instruction {
         StackValue v2 = frame.pop();
 
         if ((int) v1.getValue() == (int) v2.getValue()) {
-            super.setOffSet(operand);
+            super.setOffSet(offSet);
         }
     }
 
     @Override
     public String toString() {
-        return super.index() + " " + this.getClass().getSimpleName() + " "  + operand;
+        return super.index() + " " + this.getClass().getSimpleName() + " "  + offSet;
     }
 }

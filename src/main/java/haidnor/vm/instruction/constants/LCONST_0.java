@@ -4,7 +4,6 @@ import haidnor.vm.instruction.Instruction;
 import haidnor.vm.runtime.Frame;
 import haidnor.vm.runtime.StackValue;
 import haidnor.vm.util.CodeStream;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.bcel.Const;
 
 /**
@@ -13,7 +12,6 @@ import org.apache.bcel.Const;
  * @see <a href="https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-6.html#jvms-6.5.lconst_l"> Opcode definitions
  *      in The Java Virtual Machine Specification</a>
  */
-@Slf4j
 public class LCONST_0 extends Instruction {
 
     public LCONST_0(CodeStream codeStream) {

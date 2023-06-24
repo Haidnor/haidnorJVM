@@ -6,7 +6,6 @@ import haidnor.vm.runtime.StackValue;
 import haidnor.vm.util.CodeStream;
 import haidnor.vm.util.ConstantPoolUtil;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.bcel.Const;
 import org.apache.bcel.classfile.ConstantFieldref;
 import org.apache.bcel.classfile.ConstantPool;
@@ -16,7 +15,6 @@ import java.lang.reflect.Field;
 /**
  * 获取字段符号引用指定的对象或者值(类的静态字段 static 修饰),并将其压入操作数栈
  */
-@Slf4j
 public class GETSTATIC extends Instruction {
 
     private final int constantFieldrefIndex;

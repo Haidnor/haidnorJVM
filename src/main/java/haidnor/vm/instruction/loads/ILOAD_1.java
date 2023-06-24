@@ -4,13 +4,11 @@ import haidnor.vm.instruction.Instruction;
 import haidnor.vm.runtime.Frame;
 import haidnor.vm.runtime.StackValue;
 import haidnor.vm.util.CodeStream;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.bcel.Const;
 
 /**
  * https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-6.html#jvms-6.5.iload_n
  */
-@Slf4j
 public class ILOAD_1 extends Instruction {
 
     public ILOAD_1(CodeStream codeStream) {

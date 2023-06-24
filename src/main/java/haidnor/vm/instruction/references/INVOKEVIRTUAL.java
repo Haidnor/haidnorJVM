@@ -6,7 +6,6 @@ import haidnor.vm.util.CodeStream;
 import haidnor.vm.util.ConstantPoolUtil;
 import haidnor.vm.util.SignatureUtil;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.bcel.Const;
 import org.apache.bcel.classfile.ConstantMethodref;
 import org.apache.bcel.classfile.ConstantPool;
@@ -14,7 +13,6 @@ import org.apache.bcel.classfile.Utility;
 
 import java.util.Objects;
 
-@Slf4j
 public class INVOKEVIRTUAL extends Instruction {
 
     private final int constantMethodrefIndex;

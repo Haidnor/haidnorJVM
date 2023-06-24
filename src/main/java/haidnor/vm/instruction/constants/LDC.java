@@ -5,13 +5,17 @@ import haidnor.vm.runtime.Frame;
 import haidnor.vm.runtime.StackValue;
 import haidnor.vm.util.CodeStream;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.bcel.Const;
 import org.apache.bcel.classfile.Constant;
 import org.apache.bcel.classfile.ConstantPool;
 import org.apache.bcel.classfile.ConstantString;
 
-@Slf4j
+/**
+ * Java VM opcode.
+ *
+ * @see <a href="https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-6.html#jvms-6.5.ldc"> Opcode definitions in The
+ *      Java Virtual Machine Specification</a>
+ */
 public class LDC extends Instruction {
 
     private final int constantIndex;
@@ -36,6 +40,8 @@ public class LDC extends Instruction {
                 frame.push(new StackValue(Const.T_OBJECT, value));
                 break;
             }
+            default:
+                throw new Error("not supported LDC type" + constant.getTag());
         }
     }
 

@@ -7,6 +7,7 @@ import haidnor.vm.util.CodeStream;
 import lombok.SneakyThrows;
 import org.apache.bcel.Const;
 import org.apache.bcel.classfile.Constant;
+import org.apache.bcel.classfile.ConstantInteger;
 import org.apache.bcel.classfile.ConstantPool;
 import org.apache.bcel.classfile.ConstantString;
 
@@ -34,6 +35,12 @@ public class LDC extends Instruction {
         Constant constant = constantPool.getConstant(constantIndex);
 
         switch (constant.getTag()) {
+            case Const.CONSTANT_Integer: {
+                ConstantInteger constantInteger = (ConstantInteger) constant;
+                Object value = constantInteger.getConstantValue(constantPool);
+                frame.push(new StackValue(Const.T_INT, value));
+                break;
+            }
             case Const.CONSTANT_String: {
                 ConstantString constString = (ConstantString) constant;
                 Object value = constString.getConstantValue(constantPool);

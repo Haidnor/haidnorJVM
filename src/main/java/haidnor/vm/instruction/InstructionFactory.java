@@ -4,16 +4,11 @@ import haidnor.vm.instruction.comparisons.*;
 import haidnor.vm.instruction.constants.*;
 import haidnor.vm.instruction.control.RETURN;
 import haidnor.vm.instruction.extended.GOTO;
-import haidnor.vm.instruction.loads.ILOAD_0;
-import haidnor.vm.instruction.loads.ILOAD_1;
-import haidnor.vm.instruction.loads.ILOAD_2;
-import haidnor.vm.instruction.loads.ILOAD_3;
+import haidnor.vm.instruction.loads.*;
+import haidnor.vm.instruction.math.IINC;
 import haidnor.vm.instruction.references.GETSTATIC;
 import haidnor.vm.instruction.references.INVOKEVIRTUAL;
-import haidnor.vm.instruction.stores.ISTORE_0;
-import haidnor.vm.instruction.stores.ISTORE_1;
-import haidnor.vm.instruction.stores.ISTORE_2;
-import haidnor.vm.instruction.stores.ISTORE_3;
+import haidnor.vm.instruction.stores.*;
 import haidnor.vm.util.CodeStream;
 import org.apache.bcel.Const;
 
@@ -68,23 +63,22 @@ public abstract class InstructionFactory {
                 return new DCONST_1(codeStream);
             }
             case Const.BIPUSH -> {
-                throw new Error("Not support JavaVM opcode BIPUSH");
+                return new BIPUSH(codeStream);
             }
             case Const.SIPUSH -> {
-                throw new Error("Not support JavaVM opcode SIPUSH");
+                return new SIPUSH(codeStream);
             }
             case Const.LDC -> {
                 return new LDC(codeStream);
             }
             case Const.LDC_W -> {
                 throw new Error("Not support JavaVM opcode LDC");
-
             }
             case Const.LDC2_W -> {
                 throw new Error("Not support JavaVM opcode LDC2_W");
             }
             case Const.ILOAD -> {
-                throw new Error("Not support JavaVM opcode ILOAD");
+                return new ILOAD(codeStream);
             }
             case Const.LLOAD -> {
                 throw new Error("Not support JavaVM opcode LLOAD");
@@ -183,7 +177,7 @@ public abstract class InstructionFactory {
                 throw new Error("Not support JavaVM opcode SALOAD");
             }
             case Const.ISTORE -> {
-                throw new Error("Not support JavaVM opcode ISTORE");
+                return new ISTORE(codeStream);
             }
             case Const.LSTORE -> {
                 throw new Error("Not support JavaVM opcode LSTORE");
@@ -417,7 +411,7 @@ public abstract class InstructionFactory {
                 throw new Error("Not support JavaVM opcode LXOR");
             }
             case Const.IINC -> {
-                throw new Error("Not support JavaVM opcode IINC");
+                return new IINC(codeStream);
             }
             case Const.I2L -> {
                 throw new Error("Not support JavaVM opcode I2L");

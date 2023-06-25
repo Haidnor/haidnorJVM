@@ -21,6 +21,9 @@ public class Frame {
 
     /**
      * 栈帧所属的方法
+     * <p>
+     * <<深入理解JAVA虚拟机>>:
+     * 每一个栈帧都包含一个指向运行时常量池中该栈帧所属的方法引用,持有这个引用的目的是为了支持方法调用过程中的动态链接(Dynamic Linking)
      */
     private final Method method;
 
@@ -71,6 +74,10 @@ public class Frame {
 
     public CodeStream getCodeStream() {
         return codeStream;
+    }
+
+    public Method getMethod() {
+        return method;
     }
 
     public ConstantPool getConstantPool() {

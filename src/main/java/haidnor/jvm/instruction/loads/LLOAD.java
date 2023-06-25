@@ -13,7 +13,7 @@ public class LLOAD extends Instruction {
 
     public LLOAD(CodeStream codeStream) {
         super(codeStream);
-        this.index = codeStream.readUnsignedByteOperand(this);
+        this.index = codeStream.readUnsignedByte(this);
     }
 
     @Override

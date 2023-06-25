@@ -5,16 +5,16 @@ import haidnor.jvm.runtime.Frame;
 import haidnor.jvm.runtime.StackValue;
 import haidnor.jvm.util.CodeStream;
 
-public class ISTORE_2 extends Instruction {
+public class FSTORE_3 extends Instruction {
 
-    public ISTORE_2(CodeStream codeStream) {
+    public FSTORE_3(CodeStream codeStream) {
         super(codeStream);
     }
 
     @Override
     public void execute(Frame frame) {
         StackValue value = frame.pop();
-        frame.slotSetInt(2, (int) value.getValue());
+        frame.slotSetFloat(3, (float) value.getValue());
     }
-    
+
 }

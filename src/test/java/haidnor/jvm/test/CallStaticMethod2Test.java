@@ -10,21 +10,21 @@ import org.apache.bcel.classfile.JavaClass;
 import org.apache.bcel.classfile.Method;
 import org.junit.Test;
 
-public class CallStaticMethodTest {
+public class CallStaticMethod2Test {
 
     public static void main(String[] args) {
-        staticMethod(true, false);
+        float i = staticMethod();
+        System.out.println(i);
     }
 
-    public static void staticMethod(boolean a, boolean b) {
-        System.out.println(a);
-        System.out.println(a);
+    public static float staticMethod() {
+        return 1321.321f;
     }
 
     @Test
     public void jvm_test() throws Exception {
         long t1 = System.currentTimeMillis();
-        ClassParser classParser = new ClassParser(BaseTest.getJavaClassAbsolutePath(CallStaticMethodTest.class));
+        ClassParser classParser = new ClassParser(BaseTest.getJavaClassAbsolutePath(CallStaticMethod2Test.class));
         JavaClass javaClass = classParser.parse();
         Metaspace.registerJavaClass(javaClass);
         Method mainMethod = JavaClassUtil.getMainMethod(javaClass);

@@ -13,7 +13,7 @@ public class FLOAD extends Instruction {
 
     public FLOAD(CodeStream codeStream) {
         super(codeStream);
-        this.index = codeStream.readUnsignedByteOperand(this);
+        this.index = codeStream.readUnsignedByte(this);
     }
 
     @Override

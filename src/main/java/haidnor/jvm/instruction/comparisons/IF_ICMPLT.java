@@ -19,7 +19,7 @@ public class IF_ICMPLT extends Instruction {
 
     public IF_ICMPLT(CodeStream codeStream) {
         super(codeStream);
-        this.offSet = codeStream.readShortOperand(this);
+        this.offSet = codeStream.readShort(this);
     }
 
     @Override

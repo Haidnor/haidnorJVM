@@ -19,7 +19,7 @@ public class IF_ICMPGE extends Instruction {
 
     public IF_ICMPGE(CodeStream codeStream) {
         super(codeStream);
-        this.offSet = codeStream.readShortOperand(this);
+        this.offSet = codeStream.readShort(this);
     }
 
     @Override

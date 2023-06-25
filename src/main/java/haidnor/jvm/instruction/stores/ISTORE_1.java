@@ -14,7 +14,7 @@ public class ISTORE_1 extends Instruction {
     @Override
     public void execute(Frame frame) {
         StackValue value = frame.pop();
-        frame.slotSetInt(1, (Integer) value.getValue());
+        frame.slotSetInt(1, (int) value.getValue());
     }
     
 }

@@ -11,13 +11,13 @@ public class ISTORE extends Instruction {
 
     public ISTORE(CodeStream codeStream) {
         super(codeStream);
-        this.index = codeStream.readByteOperand(this);
+        this.index = codeStream.readUnsignedByte(this);
     }
 
     @Override
     public void execute(Frame frame) {
         StackValue value = frame.pop();
-        frame.slotSetInt(index, (Integer) value.getValue());
+        frame.slotSetInt(index, (int) value.getValue());
     }
 
 }

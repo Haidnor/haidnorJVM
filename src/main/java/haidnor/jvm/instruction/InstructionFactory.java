@@ -2,7 +2,7 @@ package haidnor.jvm.instruction;
 
 import haidnor.jvm.instruction.comparisons.*;
 import haidnor.jvm.instruction.constants.*;
-import haidnor.jvm.instruction.control.RETURN;
+import haidnor.jvm.instruction.control.*;
 import haidnor.jvm.instruction.extended.GOTO;
 import haidnor.jvm.instruction.loads.*;
 import haidnor.jvm.instruction.math.IINC;
@@ -181,7 +181,7 @@ public abstract class InstructionFactory {
                 return new ISTORE(codeStream);
             }
             case Const.LSTORE -> {
-                throw new Error("Not support JavaVM opcode LSTORE");
+                return new LSTORE(codeStream);
             }
             case Const.FSTORE -> {
                 throw new Error("Not support JavaVM opcode FSTORE");
@@ -205,40 +205,40 @@ public abstract class InstructionFactory {
                 return new ISTORE_3(codeStream);
             }
             case Const.LSTORE_0 -> {
-                throw new Error("Not support JavaVM opcode LSTORE_0");
+                return new LSTORE_0(codeStream);
             }
             case Const.LSTORE_1 -> {
-                throw new Error("Not support JavaVM opcode LSTORE_1");
+                return new LSTORE_1(codeStream);
             }
             case Const.LSTORE_2 -> {
-                throw new Error("Not support JavaVM opcode LSTORE_2");
+                return new LSTORE_2(codeStream);
             }
             case Const.LSTORE_3 -> {
-                throw new Error("Not support JavaVM opcode LSTORE_3");
+                return new LSTORE_3(codeStream);
             }
             case Const.FSTORE_0 -> {
-                throw new Error("Not support JavaVM opcode FSTORE_0");
+                return new FSTORE_0(codeStream);
             }
             case Const.FSTORE_1 -> {
-                throw new Error("Not support JavaVM opcode FSTORE_1");
+                return new FSTORE_1(codeStream);
             }
             case Const.FSTORE_2 -> {
-                throw new Error("Not support JavaVM opcode FSTORE_2");
+                return new FSTORE_2(codeStream);
             }
             case Const.FSTORE_3 -> {
-                throw new Error("Not support JavaVM opcode FSTORE_3");
+                return new FSTORE_3(codeStream);
             }
             case Const.DSTORE_0 -> {
-                throw new Error("Not support JavaVM opcode DSTORE_0");
+                return new DSTORE_0(codeStream);
             }
             case Const.DSTORE_1 -> {
-                throw new Error("Not support JavaVM opcode DSTORE_1");
+                return new DSTORE_1(codeStream);
             }
             case Const.DSTORE_2 -> {
-                throw new Error("Not support JavaVM opcode DSTORE_2");
+                return new DSTORE_2(codeStream);
             }
             case Const.DSTORE_3 -> {
-                throw new Error("Not support JavaVM opcode DSTORE_3");
+                return new DSTORE_3(codeStream);
             }
             case Const.ASTORE_0 -> {
                 throw new Error("Not support JavaVM opcode ASTORE_0");
@@ -453,21 +453,15 @@ public abstract class InstructionFactory {
             case Const.I2B -> {
                 throw new Error("Not support JavaVM opcode I2B");
             }
-//            case Const.INT2BYTE -> {
-//                throw new Error("Not support JavaVM opcode ");
-//            }
+            // Const.INT2BYTE
             case Const.I2C -> {
                 throw new Error("Not support JavaVM opcode I2C");
             }
-//            case Const.INT2CHAR -> {
-//                throw new Error("Not support JavaVM opcode ");
-//            }
+            // Const.INT2CHAR
             case Const.I2S -> {
                 throw new Error("Not support JavaVM opcode I2S");
             }
-//            case Const.INT2SHORT -> {
-//                throw new Error("Not support JavaVM opcode ");
-//            }
+            // Const.INT2SHORT
             case Const.LCMP -> {
                 throw new Error("Not support JavaVM opcode LCMP");
             }
@@ -541,16 +535,16 @@ public abstract class InstructionFactory {
                 throw new Error("Not support JavaVM opcode LOOKUPSWITCH");
             }
             case Const.IRETURN -> {
-                throw new Error("Not support JavaVM opcode IRETURN");
+                return new IRETURN(codeStream);
             }
             case Const.LRETURN -> {
-                throw new Error("Not support JavaVM opcode LRETURN");
+                return new LRETURN(codeStream);
             }
             case Const.FRETURN -> {
-                throw new Error("Not support JavaVM opcode FRETURN");
+                return new FRETURN(codeStream);
             }
             case Const.DRETURN -> {
-                throw new Error("Not support JavaVM opcode DRETURN");
+                return new DRETURN(codeStream);
             }
             case Const.ARETURN -> {
                 throw new Error("Not support JavaVM opcode ARETURN");

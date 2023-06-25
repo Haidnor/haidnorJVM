@@ -41,7 +41,7 @@ public class CodeStream {
      * 读取占用一个字节的操作数
      */
     @SneakyThrows
-    public int readByteOperand(Instruction instruction) {
+    public int readByte(Instruction instruction) {
         instruction.setOffSet(instruction.offSet() + 1);
         this.index += 1;
         return this.codeStream.read();
@@ -52,7 +52,7 @@ public class CodeStream {
      * int 类型
      */
     @SneakyThrows
-    public int readUnsignedByteOperand(Instruction instruction) {
+    public int readUnsignedByte(Instruction instruction) {
         instruction.setOffSet(instruction.offSet() + 1);
         this.index += 1;
         return this.codeStream.readUnsignedByte();
@@ -62,7 +62,7 @@ public class CodeStream {
      * 读取占用两个字节的操作数
      */
     @SneakyThrows
-    public int readShortOperand(Instruction instruction) {
+    public int readShort(Instruction instruction) {
         instruction.setOffSet(instruction.offSet() + 2);
         this.index += 2;
         return this.codeStream.readShort();
@@ -83,7 +83,7 @@ public class CodeStream {
      * 读取占用四个字节的操作数
      */
     @SneakyThrows
-    public int readIntOperand(Instruction instruction) {
+    public int readInt(Instruction instruction) {
         instruction.setOffSet(instruction.offSet() + 4);
         this.index += 4;
         return this.codeStream.readInt();

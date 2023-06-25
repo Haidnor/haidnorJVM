@@ -6,20 +6,16 @@ import haidnor.jvm.runtime.StackValue;
 import haidnor.jvm.util.CodeStream;
 import org.apache.bcel.Const;
 
+public class LLOAD_0 extends Instruction {
 
-public class ILOAD extends Instruction {
-
-    private final int index;
-
-    public ILOAD(CodeStream codeStream) {
+    public LLOAD_0(CodeStream codeStream) {
         super(codeStream);
-        this.index = codeStream.readUnsignedByteOperand(this);
     }
 
     @Override
     public void execute(Frame frame) {
-        int value = frame.slotGetInt(index);
-        frame.push(new StackValue(Const.T_INT, value));
+        long value = frame.slotGetLong(0);
+        frame.push(new StackValue(Const.T_LONG, value));
     }
 
 }

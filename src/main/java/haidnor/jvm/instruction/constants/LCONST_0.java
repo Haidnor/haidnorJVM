@@ -20,7 +20,7 @@ public class LCONST_0 extends Instruction {
 
     @Override
     public void execute(Frame frame) {
-        frame.push(new StackValue(Const.T_LONG, 0));
+        frame.push(new StackValue(Const.T_LONG, 0L));
     }
 
 }

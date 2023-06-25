@@ -93,4 +93,8 @@ public class CodeStream {
         return this.index;
     }
 
+    public Code getCode() {
+        return code;
+    }
+
 }

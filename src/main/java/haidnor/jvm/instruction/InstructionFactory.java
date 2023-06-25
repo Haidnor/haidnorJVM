@@ -76,19 +76,19 @@ public abstract class InstructionFactory {
                 throw new Error("Not support JavaVM opcode LDC");
             }
             case Const.LDC2_W -> {
-                throw new Error("Not support JavaVM opcode LDC2_W");
+                return new LDC2W(codeStream);
             }
             case Const.ILOAD -> {
                 return new ILOAD(codeStream);
             }
             case Const.LLOAD -> {
-                throw new Error("Not support JavaVM opcode LLOAD");
+                return new LLOAD(codeStream);
             }
             case Const.FLOAD -> {
-                throw new Error("Not support JavaVM opcode FLOAD");
+                return new FLOAD(codeStream);
             }
             case Const.DLOAD -> {
-                throw new Error("Not support JavaVM opcode DLOAD");
+                return new DLOAD(codeStream);
             }
             case Const.ALOAD -> {
                 throw new Error("Not support JavaVM opcode ALOAD");
@@ -106,40 +106,40 @@ public abstract class InstructionFactory {
                 return new ILOAD_3(codeStream);
             }
             case Const.LLOAD_0 -> {
-                throw new Error("Not support JavaVM opcode LLOAD_0");
+                return new LLOAD_0(codeStream);
             }
             case Const.LLOAD_1 -> {
-                throw new Error("Not support JavaVM opcode LLOAD_1");
+                return new LLOAD_1(codeStream);
             }
             case Const.LLOAD_2 -> {
-                throw new Error("Not support JavaVM opcode LLOAD_2");
+                return new LLOAD_2(codeStream);
             }
             case Const.LLOAD_3 -> {
-                throw new Error("Not support JavaVM opcode LLOAD_3");
+                return new LLOAD_3(codeStream);
             }
             case Const.FLOAD_0 -> {
-                throw new Error("Not support JavaVM opcode FLOAD_0");
+                return new FLOAD_0(codeStream);
             }
             case Const.FLOAD_1 -> {
-                throw new Error("Not support JavaVM opcode FLOAD_1");
+                return new FLOAD_1(codeStream);
             }
             case Const.FLOAD_2 -> {
-                throw new Error("Not support JavaVM opcode FLOAD_2");
+                return new FLOAD_2(codeStream);
             }
             case Const.FLOAD_3 -> {
-                throw new Error("Not support JavaVM opcode FLOAD_3");
+                return new FLOAD_3(codeStream);
             }
             case Const.DLOAD_0 -> {
-                throw new Error("Not support JavaVM opcode DLOAD_0");
+                return new DLOAD_0(codeStream);
             }
             case Const.DLOAD_1 -> {
-                throw new Error("Not support JavaVM opcode DLOAD_1");
+                return new DLOAD_1(codeStream);
             }
             case Const.DLOAD_2 -> {
-                throw new Error("Not support JavaVM opcode DLOAD_2");
+                return new DLOAD_2(codeStream);
             }
             case Const.DLOAD_3 -> {
-                throw new Error("Not support JavaVM opcode DLOAD_3");
+                return new DLOAD_3(codeStream);
             }
             case Const.ALOAD_0 -> {
                 throw new Error("Not support JavaVM opcode ALOAD_0");

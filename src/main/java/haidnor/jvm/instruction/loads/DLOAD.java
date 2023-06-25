@@ -7,19 +7,19 @@ import haidnor.jvm.util.CodeStream;
 import org.apache.bcel.Const;
 
 
-public class ILOAD extends Instruction {
+public class DLOAD extends Instruction {
 
     private final int index;
 
-    public ILOAD(CodeStream codeStream) {
+    public DLOAD(CodeStream codeStream) {
         super(codeStream);
         this.index = codeStream.readUnsignedByteOperand(this);
     }
 
     @Override
     public void execute(Frame frame) {
-        int value = frame.slotGetInt(index);
-        frame.push(new StackValue(Const.T_INT, value));
+        double value = frame.slotGetDouble(index);
+        frame.push(new StackValue(Const.T_DOUBLE, value));
     }
 
 }

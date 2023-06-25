@@ -124,6 +124,13 @@ public class Frame {
         return objArr;
     }
 
+    /**
+     * 获取操作数栈中元素的数量
+     */
+    public int operandStackSize() {
+        return this.operandStack.size();
+    }
+
     /* 局部变量表操作 --------------------------------------------------------------------------------------------------- */
 
     public void slotSetInt(int index, int val) {
@@ -185,6 +192,31 @@ public class Frame {
 
     public Instance slotGetRef(int index) {
         return slots[index].ref;
+    }
+
+    public void slotSet(int index, StackValue stackValue) {
+        switch (stackValue.getType()) {
+            case Const.T_CHAR:
+                throw new Error("T_CHAR，未作处理");
+            case Const.T_INT:
+                slotSetInt(index, (int) stackValue.getValue());
+                break;
+            case Const.T_OBJECT:
+                throw new Error("T_OBJECT，未作处理");
+            case Const.T_LONG:
+                slotSetLong(index, (long) stackValue.getValue());
+                break;
+            case Const.T_DOUBLE:
+                slotSetDouble(index, (double) stackValue.getValue());
+                break;
+            case Const.T_FLOAT:
+                slotSetFloat(index, (float) stackValue.getValue());
+                break;
+            case Const.T_ARRAY:
+                throw new Error("T_ARRAY，未作处理");
+            default:
+                throw new Error("无法识别的参数类型");
+        }
     }
 
 }

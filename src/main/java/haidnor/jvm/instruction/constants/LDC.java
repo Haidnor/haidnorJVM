@@ -6,10 +6,7 @@ import haidnor.jvm.runtime.StackValue;
 import haidnor.jvm.util.CodeStream;
 import lombok.SneakyThrows;
 import org.apache.bcel.Const;
-import org.apache.bcel.classfile.Constant;
-import org.apache.bcel.classfile.ConstantInteger;
-import org.apache.bcel.classfile.ConstantPool;
-import org.apache.bcel.classfile.ConstantString;
+import org.apache.bcel.classfile.*;
 
 /**
  * Java VM opcode.
@@ -39,6 +36,12 @@ public class LDC extends Instruction {
                 ConstantInteger constantInteger = (ConstantInteger) constant;
                 Object value = constantInteger.getConstantValue(constantPool);
                 frame.push(new StackValue(Const.T_INT, value));
+                break;
+            }
+            case Const.CONSTANT_Float: {
+                ConstantFloat constantFloat = (ConstantFloat) constant;
+                Object value = constantFloat.getConstantValue(constantPool);
+                frame.push(new StackValue(Const.T_FLOAT, value));
                 break;
             }
             case Const.CONSTANT_String: {

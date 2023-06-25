@@ -19,7 +19,7 @@ public class INVOKESTATIC extends Instruction {
 
     public INVOKESTATIC(CodeStream codeStream) {
         super(codeStream);
-        this.constantMethodrefIndex = codeStream.readShort(this);
+        this.constantMethodrefIndex = codeStream.readUnsignedShort(this);
     }
 
     @Override

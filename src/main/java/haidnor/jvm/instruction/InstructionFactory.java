@@ -184,10 +184,10 @@ public abstract class InstructionFactory {
                 return new LSTORE(codeStream);
             }
             case Const.FSTORE -> {
-                throw new Error("Not support JavaVM opcode FSTORE");
+                return new FSTORE(codeStream);
             }
             case Const.DSTORE -> {
-                throw new Error("Not support JavaVM opcode DSTORE");
+                return new DSTORE(codeStream);
             }
             case Const.ASTORE -> {
                 throw new Error("Not support JavaVM opcode ASTORE");

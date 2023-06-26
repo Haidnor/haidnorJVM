@@ -40,26 +40,20 @@ public class Frame {
                 case Const.T_CHAR:
                     objArr[i] = stackValue.getValue();
                     break;
-
                 case Const.T_INT:
                     objArr[i] = stackValue.getValue();
                     break;
-
                 case Const.T_OBJECT:
                     objArr[i] = stackValue.getValue();
                     break;
-
                 case Const.T_LONG:
                     objArr[i] = stackValue.getValue();
                     break;
-
                 case Const.T_DOUBLE:
                     objArr[i] = stackValue.getValue();
                     break;
-
                 case Const.T_ARRAY:
                     throw new Error("数组类型，未作处理");
-
                 default:
                     throw new Error("无法识别的参数类型");
             }

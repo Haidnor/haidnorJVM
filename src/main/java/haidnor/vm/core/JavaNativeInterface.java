@@ -11,17 +11,11 @@ import org.apache.bcel.classfile.Method;
 public class JavaNativeInterface {
 
     public static void callStaticMethod(Method method) {
-        if (!method.isStatic()) {
-            throw new Error("只能调用静态方法");
-        }
-
         JvmThread jThread = ThreadHolder.get();
 
         // 创建栈帧
         Frame frame = new Frame();
         jThread.push(frame);
-
-        log.info("jvm thread stack size:" + jThread.stackSize());
 
         // 执行任务交给字节码解释器
         Interpreter.run(method);

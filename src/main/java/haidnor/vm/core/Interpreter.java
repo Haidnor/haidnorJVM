@@ -50,7 +50,6 @@ public class Interpreter {
                     log.info("execute: RETURN");    // pop 出栈帧
 
                     jThread.pop();
-                    log.info("jvm thread stack size:" + jThread.stackSize());
                 }
                 case Const.GETSTATIC -> {
                     log.info("execute: GETSTATIC");    // 获取字段符号引用指定的对象或者值(类的静态字段 static 修饰),并将其压入操作数栈

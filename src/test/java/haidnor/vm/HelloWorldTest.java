@@ -2,29 +2,29 @@ package haidnor.vm;
 
 import haidnor.vm.core.JavaNativeInterface;
 import haidnor.vm.runtime.JvmThread;
-import haidnor.vm.util.ThreadHolder;
 import haidnor.vm.util.JavaClassUtil;
+import haidnor.vm.util.ThreadHolder;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.bcel.classfile.ClassParser;
 import org.apache.bcel.classfile.JavaClass;
 import org.apache.bcel.classfile.Method;
-import org.junit.Test;
+
+import java.net.URL;
 
 @Slf4j
-public class JvmTest {
+public class HelloWorldTest {
 
-    @Test
-    public void test_jvm() throws Exception {
-        ClassParser classParser = new ClassParser("D:\\java_project\\JavaClassTest\\out\\production\\JavaClassTest\\Main.class");
+    @SneakyThrows
+    public static void main(String[] args) {
+        URL resource = HelloWorldTest.class.getResource("/HelloWorld.class");
+        ClassParser classParser = new ClassParser(resource.getPath());
         JavaClass javaClass = classParser.parse();
-        log.info("{}", javaClass);
-        log.info("{}", javaClass.getConstantPool());
+
+        log.debug("{}", javaClass);
+        log.debug("{}", javaClass.getConstantPool());
 
         Method mainMethod = JavaClassUtil.getMainMethod(javaClass);
-
-        if (mainMethod == null) {
-            throw new Error("无法找到 main 方法");
-        }
 
         // JVM main thread
         JvmThread mainThread = new JvmThread();

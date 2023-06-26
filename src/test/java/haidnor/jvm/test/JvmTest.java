@@ -1,4 +1,4 @@
-package haidnor.jvm;
+package haidnor.jvm.test;
 
 import haidnor.jvm.core.JavaNativeInterface;
 import haidnor.jvm.runtime.JvmThread;

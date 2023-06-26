@@ -5,7 +5,9 @@ import haidnor.jvm.instruction.constants.*;
 import haidnor.jvm.instruction.control.*;
 import haidnor.jvm.instruction.extended.GOTO;
 import haidnor.jvm.instruction.loads.*;
+import haidnor.jvm.instruction.math.IADD;
 import haidnor.jvm.instruction.math.IINC;
+import haidnor.jvm.instruction.math.LADD;
 import haidnor.jvm.instruction.references.GETSTATIC;
 import haidnor.jvm.instruction.references.INVOKESTATIC;
 import haidnor.jvm.instruction.references.INVOKEVIRTUAL;
@@ -304,10 +306,10 @@ public abstract class InstructionFactory {
                 throw new Error("Not support JavaVM opcode SWAP");
             }
             case Const.IADD -> {
-                throw new Error("Not support JavaVM opcode IADD");
+                return new IADD(codeStream);
             }
             case Const.LADD -> {
-                throw new Error("Not support JavaVM opcode LADD");
+                return new LADD(codeStream);
             }
             case Const.FADD -> {
                 throw new Error("Not support JavaVM opcode FADD");

@@ -11,7 +11,7 @@ public class LSTORE extends Instruction {
 
     public LSTORE(CodeStream codeStream) {
         super(codeStream);
-        this.index = codeStream.readUnsignedShort(this);
+        this.index = codeStream.readUnsignedByte(this);
     }
 
     @Override

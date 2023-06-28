@@ -1,5 +1,8 @@
 package haidnor.jvm.runtime;
 
+import haidnor.jvm.rtda.heap.Instance;
+import haidnor.jvm.rtda.heap.MetaClass;
+import haidnor.jvm.rtda.heap.MetaMethod;
 import haidnor.jvm.util.CodeStream;
 import haidnor.jvm.util.ConstantPoolUtil;
 import org.apache.bcel.Const;
@@ -27,6 +30,10 @@ public class Frame {
      */
     private final Method method;
 
+    private final MetaMethod metaMethod;
+
+    public final MetaClass metaClass;
+
     /**
      * 栈帧所属的方法代码对象
      */
@@ -53,9 +60,11 @@ public class Frame {
      */
     private final Slot[] slots;
 
-    public Frame(JvmThread jvmThread, Method method) {
+    public Frame(JvmThread jvmThread, MetaMethod metaMethod) {
         this.jvmThread = jvmThread;
-        this.method = method;
+        this.metaClass = metaMethod.metaClass;
+        this.metaMethod = metaMethod;
+        this.method = metaMethod.method;
         this.code = method.getCode();
         this.constantPool = method.getConstantPool();
         this.constantPoolUtil = new ConstantPoolUtil(constantPool);
@@ -86,6 +95,14 @@ public class Frame {
 
     public ConstantPoolUtil getConstantPoolUtil() {
         return constantPoolUtil;
+    }
+
+    public MetaMethod getMetaMethod() {
+        return metaMethod;
+    }
+
+    public MetaClass getMetaClass() {
+        return metaClass;
     }
 
     /* 操作数栈操作 --------------------------------------------------------------------------------------------------- */

@@ -2,6 +2,8 @@ package haidnor.jvm.instruction.references;
 
 import haidnor.jvm.core.JavaNativeInterface;
 import haidnor.jvm.instruction.Instruction;
+import haidnor.jvm.rtda.heap.MetaClass;
+import haidnor.jvm.rtda.heap.MetaMethod;
 import haidnor.jvm.rtda.metaspace.Metaspace;
 import haidnor.jvm.runtime.Frame;
 import haidnor.jvm.util.CodeStream;
@@ -61,11 +63,13 @@ public class INVOKESTATIC extends Instruction {
             return;
         }
 
-        JavaClass javaClass = Metaspace.getJavaClass(Utility.compactClassName(className));
-        if (javaClass != null) {
+        MetaClass meteClass = Metaspace.getJavaClass(className);
+        if (meteClass != null) {
+            JavaClass javaClass = meteClass.getJavaClass();
             for (Method method : javaClass.getMethods()) {
                 if (method.getSignature().equals(methodSignature) && method.getName().equals(methodName)) {
-                    JavaNativeInterface.callStaticMethod(frame, method);
+                    MetaMethod metaMethod = new MetaMethod(meteClass, method);
+                    JavaNativeInterface.callStaticMethod(frame, metaMethod);
                     break;
                 }
             }

@@ -1,23 +1,21 @@
 package haidnor.jvm.instruction.stores;
 
 import haidnor.jvm.instruction.Instruction;
+import haidnor.jvm.rtda.heap.Instance;
 import haidnor.jvm.runtime.Frame;
 import haidnor.jvm.runtime.StackValue;
 import haidnor.jvm.util.CodeStream;
 
-public class DSTORE extends Instruction {
+public class ASTORE_1 extends Instruction {
 
-    private final int index;
-
-    public DSTORE(CodeStream codeStream) {
+    public ASTORE_1(CodeStream codeStream) {
         super(codeStream);
-        this.index = codeStream.readUnsignedByte(this);
     }
 
     @Override
     public void execute(Frame frame) {
         StackValue value = frame.pop();
-        frame.slotSetDouble(index, (double) value.getValue());
+        frame.slotSetRef(1, (Instance) value.getValue());
     }
 
 }

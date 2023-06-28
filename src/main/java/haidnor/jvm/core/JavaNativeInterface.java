@@ -1,6 +1,7 @@
 package haidnor.jvm.core;
 
 
+import haidnor.jvm.rtda.heap.MetaMethod;
 import haidnor.jvm.runtime.Frame;
 import haidnor.jvm.runtime.JvmThread;
 import haidnor.jvm.runtime.StackValue;
@@ -13,16 +14,18 @@ import org.apache.bcel.classfile.Utility;
 @Slf4j
 public class JavaNativeInterface {
 
-    public static void callStaticMethod(Method method) {
+    public static void callStaticMethod(MetaMethod metaMethod) {
         JvmThread jvmThread = JvmThreadHolder.get();
-        Frame frame = new Frame(jvmThread, method);
+        Frame frame = new Frame(jvmThread, metaMethod);
         jvmThread.push(frame);
         Interpreter.executeFrame(frame);
     }
 
-    public static void callStaticMethod(Frame lastFrame, Method method) {
+    public static void callStaticMethod(Frame lastFrame, MetaMethod metaMethod) {
+        Method method = metaMethod.method;
+
         JvmThread jvmThread = JvmThreadHolder.get();
-        Frame newFrame = new Frame(jvmThread, method);
+        Frame newFrame = new Frame(jvmThread, metaMethod);
 
         String signature = method.getSignature();
         String[] argumentTypes = Utility.methodSignatureArgumentTypes(signature);

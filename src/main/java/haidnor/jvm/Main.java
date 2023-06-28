@@ -1,14 +1,7 @@
 package haidnor.jvm;
 
-import haidnor.jvm.core.JavaNativeInterface;
-import haidnor.jvm.runtime.JvmThread;
-import haidnor.jvm.util.JavaClassUtil;
-import haidnor.jvm.util.JvmThreadHolder;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.bcel.classfile.ClassParser;
-import org.apache.bcel.classfile.JavaClass;
-import org.apache.bcel.classfile.Method;
 import org.apache.commons.cli.*;
 
 @Slf4j
@@ -35,19 +28,19 @@ public class Main {
         if (cmd.hasOption("class")) {
             String path = cmd.getOptionValue("class");
 
-            ClassParser classParser = new ClassParser(path);
-            JavaClass javaClass = classParser.parse();
-
-            Method mainMethod = JavaClassUtil.getMainMethod(javaClass);
-            if (mainMethod == null) {
-                throw new Error("无法找到 main 方法");
-            }
-
-            JvmThread mainThread = new JvmThread();
-            JvmThreadHolder.set(mainThread);
-
-            // 执行main方法
-            JavaNativeInterface.callStaticMethod(mainMethod);
+//            ClassParser classParser = new ClassParser(path);
+//            JavaClass javaClass = classParser.parse();
+//
+//            Method mainMethod = JavaClassUtil.getMainMethod(javaClass);
+//            if (mainMethod == null) {
+//                throw new Error("无法找到 main 方法");
+//            }
+//
+//            JvmThread mainThread = new JvmThread();
+//            JvmThreadHolder.set(mainThread);
+//
+//             执行main方法
+//            JavaNativeInterface.callStaticMethod(mainMethod);
         }
     }
 

@@ -5,12 +5,9 @@ import haidnor.jvm.instruction.constants.*;
 import haidnor.jvm.instruction.control.*;
 import haidnor.jvm.instruction.extended.GOTO;
 import haidnor.jvm.instruction.loads.*;
-import haidnor.jvm.instruction.math.IADD;
-import haidnor.jvm.instruction.math.IINC;
-import haidnor.jvm.instruction.math.LADD;
-import haidnor.jvm.instruction.references.GETSTATIC;
-import haidnor.jvm.instruction.references.INVOKESTATIC;
-import haidnor.jvm.instruction.references.INVOKEVIRTUAL;
+import haidnor.jvm.instruction.math.*;
+import haidnor.jvm.instruction.references.*;
+import haidnor.jvm.instruction.stack.DUP;
 import haidnor.jvm.instruction.stores.*;
 import haidnor.jvm.util.CodeStream;
 import org.apache.bcel.Const;
@@ -246,7 +243,7 @@ public abstract class InstructionFactory {
                 throw new Error("Not support JavaVM opcode ASTORE_0");
             }
             case Const.ASTORE_1 -> {
-                throw new Error("Not support JavaVM opcode ASTORE_1");
+                return new ASTORE_1(codeStream);
             }
             case Const.ASTORE_2 -> {
                 throw new Error("Not support JavaVM opcode ASTORE_2");
@@ -285,7 +282,7 @@ public abstract class InstructionFactory {
                 throw new Error("Not support JavaVM opcode POP2");
             }
             case Const.DUP -> {
-                throw new Error("Not support JavaVM opcode DUP");
+                return new DUP(codeStream);
             }
             case Const.DUP_X1 -> {
                 throw new Error("Not support JavaVM opcode DUP_X1");
@@ -312,10 +309,10 @@ public abstract class InstructionFactory {
                 return new LADD(codeStream);
             }
             case Const.FADD -> {
-                throw new Error("Not support JavaVM opcode FADD");
+                return new FADD(codeStream);
             }
             case Const.DADD -> {
-                throw new Error("Not support JavaVM opcode DADD");
+                return new DADD(codeStream);
             }
             case Const.ISUB -> {
                 throw new Error("Not support JavaVM opcode ISUB");
@@ -570,7 +567,7 @@ public abstract class InstructionFactory {
                 return new INVOKEVIRTUAL(codeStream);
             }
             case Const.INVOKESPECIAL -> {
-                throw new Error("Not support JavaVM opcode INVOKESPECIAL");
+                return new INVOKESPECIAL(codeStream);
             }
             // Const.INVOKENONVIRTUAL   Old name in JDK 1.0
             case Const.INVOKESTATIC -> {
@@ -583,7 +580,7 @@ public abstract class InstructionFactory {
                 throw new Error("Not support JavaVM opcode INVOKEDYNAMIC");
             }
             case Const.NEW -> {
-                throw new Error("Not support JavaVM opcode NEW");
+                return new NEW(codeStream);
             }
             case Const.NEWARRAY -> {
                 throw new Error("Not support JavaVM opcode NEWARRAY");

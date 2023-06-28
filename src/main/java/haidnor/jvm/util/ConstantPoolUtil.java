@@ -14,6 +14,14 @@ public class ConstantPoolUtil {
     }
 
     /**
+     * 获取长类名, 例如 java/lang/String
+     */
+    public String getClassName(final ConstantClass constantClass) {
+        ConstantUtf8 constantUtf8 = cp.getConstant(constantClass.getNameIndex());
+        return constantUtf8.getBytes();
+    }
+
+    /**
      * 获取字段所处于Java类的类名
      */
     public String getBelongClassName(final ConstantFieldref constantFieldref) {

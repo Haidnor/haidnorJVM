@@ -18,10 +18,10 @@ public abstract class InstructionFactory {
         int opcode = codeStream.readJavaVmOpcode();
         switch (opcode) {
             case Const.NOP -> {
-                throw new Error("Not support JavaVM opcode NOP");
+                return new NOP(codeStream);
             }
             case Const.ACONST_NULL -> {
-                throw new Error("Not support JavaVM opcode ACONST_NULL");
+                return new ACONST_NULL(codeStream);
             }
             case Const.ICONST_M1 -> {
                 return new ICONST_M1(codeStream);
@@ -90,7 +90,7 @@ public abstract class InstructionFactory {
                 return new DLOAD(codeStream);
             }
             case Const.ALOAD -> {
-                throw new Error("Not support JavaVM opcode ALOAD");
+                return new ALOAD(codeStream);
             }
             case Const.ILOAD_0 -> {
                 return new ILOAD_0(codeStream);
@@ -141,16 +141,16 @@ public abstract class InstructionFactory {
                 return new DLOAD_3(codeStream);
             }
             case Const.ALOAD_0 -> {
-                throw new Error("Not support JavaVM opcode ALOAD_0");
+                return new ALOAD_0(codeStream);
             }
             case Const.ALOAD_1 -> {
-                throw new Error("Not support JavaVM opcode ALOAD_1");
+                return new ALOAD_1(codeStream);
             }
             case Const.ALOAD_2 -> {
-                throw new Error("Not support JavaVM opcode ALOAD_2");
+                return new ALOAD_2(codeStream);
             }
             case Const.ALOAD_3 -> {
-                throw new Error("Not support JavaVM opcode ALOAD_3");
+                return new ALOAD_3(codeStream);
             }
             case Const.IALOAD -> {
                 throw new Error("Not support JavaVM opcode IALOAD");
@@ -189,7 +189,7 @@ public abstract class InstructionFactory {
                 return new DSTORE(codeStream);
             }
             case Const.ASTORE -> {
-                throw new Error("Not support JavaVM opcode ASTORE");
+                return new ASTORE(codeStream);
             }
             case Const.ISTORE_0 -> {
                 return new ISTORE_0(codeStream);

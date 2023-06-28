@@ -22,7 +22,7 @@ public class haidnorJVM_TEST {
         Metaspace.registerJavaClass(mainMeteClass);
         JvmThreadHolder.set(new JvmThread());
 
-        JavaNativeInterface.callStaticMethod(mainMethod);
+        JavaNativeInterface.callMainStaticMethod(mainMethod);
     }
 
     @Test

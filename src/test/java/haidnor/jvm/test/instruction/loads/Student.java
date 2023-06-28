@@ -4,7 +4,7 @@ public class Student {
 
     private int intValue;
 
-    public Student() {
-        this.intValue = 1;
+    public Student(int i) {
+        this.intValue = i;
     }
 }

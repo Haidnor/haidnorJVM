@@ -219,7 +219,8 @@ public class Frame {
                 slotSetInt(index, (int) stackValue.getValue());
                 break;
             case Const.T_OBJECT:
-                throw new Error("T_OBJECT，未作处理");
+                slotSetRef(index, (Instance) stackValue.getValue());
+                break;
             case Const.T_LONG:
                 slotSetLong(index, (long) stackValue.getValue());
                 break;

@@ -93,6 +93,7 @@ public class ConstantPoolUtil {
 
     /**
      * 获取方法所处于Java类的类名
+     * 名称使用/分割,例如 haidnor/jvm/test/instruction/references/NEW
      */
     public String getBelongClassName(final ConstantMethodref methodref) {
         ConstantClass constClass = cp.getConstant(methodref.getClassIndex());

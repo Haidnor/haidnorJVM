@@ -6,6 +6,7 @@ public class NEW {
 
     public static void main(String[] args) {
         Student student = new Student(321421L);
+        System.out.println(student.value);
     }
 
 }

@@ -1,6 +1,7 @@
 package haidnor.jvm.classloader;
 
 import haidnor.jvm.rtda.heap.Klass;
+import haidnor.jvm.rtda.metaspace.Metaspace;
 import org.apache.bcel.classfile.ClassParser;
 import org.apache.bcel.classfile.JavaClass;
 
@@ -34,7 +35,9 @@ public class ClassLoader {
         }
 
         JavaClass javaClass = classParser.parse();
-        return new Klass(this, javaClass);
+        Klass klass = new Klass(this, javaClass);
+        Metaspace.registerJavaClass(klass);
+        return klass;
     }
 
     public static String getRtJarPath() {

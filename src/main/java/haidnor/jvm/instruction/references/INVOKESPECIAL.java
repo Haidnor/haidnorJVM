@@ -10,10 +10,7 @@ import haidnor.jvm.runtime.Frame;
 import haidnor.jvm.util.CodeStream;
 import haidnor.jvm.util.ConstantPoolUtil;
 import lombok.SneakyThrows;
-import org.apache.bcel.classfile.ConstantMethodref;
-import org.apache.bcel.classfile.ConstantPool;
-import org.apache.bcel.classfile.JavaClass;
-import org.apache.bcel.classfile.Method;
+import org.apache.bcel.classfile.*;
 
 public class INVOKESPECIAL extends Instruction {
 
@@ -35,20 +32,20 @@ public class INVOKESPECIAL extends Instruction {
         String methodName = constantPoolUtil.getMethodName(methodref);
         String methodSignature = constantPoolUtil.getMethodSignature(methodref);
 
-        Klass aKlass = Metaspace.getJavaClass(className);
+        Klass klass = Metaspace.getJavaClass(Utility.compactClassName(className));
         JavaClass javaClass;
-        if (aKlass != null) {
-            javaClass = aKlass.getJavaClass();
+        if (klass != null) {
+            javaClass = klass.getJavaClass();
         } else {
             ClassLoader classLoader = frame.getMetaClass().getClassLoader();
-            aKlass = classLoader.loadClass(className);
-            javaClass = aKlass.getJavaClass();
+            klass = classLoader.loadClass(className);
+            javaClass = klass.getJavaClass();
         }
 
         for (Method method : javaClass.getMethods()) {
             if (method.getSignature().equals(methodSignature) && method.getName().equals(methodName)) {
-                KlassMethod klassMethod = new KlassMethod(aKlass, method);
-                JavaNativeInterface.callStaticMethod(frame, klassMethod);
+                KlassMethod klassMethod = new KlassMethod(klass, method);
+                JavaNativeInterface.callMethod(frame, klassMethod);
                 break;
             }
         }

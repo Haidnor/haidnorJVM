@@ -22,7 +22,7 @@ public class JavaNativeInterface {
         Interpreter.executeFrame(frame);
     }
 
-    public static void callStaticMethod(Frame lastFrame, KlassMethod klassMethod) {
+    public static void callMethod(Frame lastFrame, KlassMethod klassMethod) {
         org.apache.bcel.classfile.Method method = klassMethod.javaMethod;
 
         JvmThread jvmThread = JvmThreadHolder.get();
@@ -38,16 +38,15 @@ public class JavaNativeInterface {
 
         // 静态方法调用传参
         // 将上一个栈帧操作数栈中数据弹出,存入下一个栈帧的局部变量表中
-        for (int i = argumentSlotSize - 1; i >= 0; i--) {
-            LocalVariableTable localVariableTable = method.getLocalVariableTable();
-            if (localVariableTable == null) {
-                break;
+        LocalVariableTable localVariableTable = method.getLocalVariableTable();
+        if (localVariableTable != null) {
+            for (int i = argumentSlotSize - 1; i >= 0; i--) {
+                LocalVariable[] localVariableArr = localVariableTable.getLocalVariableTable();
+                LocalVariable localVariable = localVariableArr[i];
+                int slotIndex = localVariable.getIndex();
+                StackValue stackValue = lastFrame.pop();
+                newFrame.slotSet(slotIndex, stackValue);
             }
-            LocalVariable[] localVariableArr = localVariableTable.getLocalVariableTable();
-            LocalVariable localVariable = localVariableArr[i];
-            int slotIndex = localVariable.getIndex();
-            StackValue stackValue = lastFrame.pop();
-            newFrame.slotSet(slotIndex, stackValue);
         }
         jvmThread.push(newFrame);
         Interpreter.executeFrame(newFrame);

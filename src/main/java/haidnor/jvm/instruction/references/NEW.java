@@ -12,6 +12,7 @@ import lombok.SneakyThrows;
 import org.apache.bcel.Const;
 import org.apache.bcel.classfile.ConstantClass;
 import org.apache.bcel.classfile.ConstantPool;
+import org.apache.bcel.classfile.Utility;
 
 public class NEW extends Instruction {
 
@@ -30,16 +31,16 @@ public class NEW extends Instruction {
         ConstantClass constantClass = constantPool.getConstant(constantClassIndex);
         String className = constantPoolUtil.getClassName(constantClass);
 
-        Klass aKlass = Metaspace.getJavaClass(className);
+        Klass klass = Metaspace.getJavaClass(Utility.compactClassName(className));
         Instance instance;
-        if (aKlass == null) {
+        if (klass == null) {
             // 如果在元空间中找不到已加载的类,则开始进行类加载流程
             Klass newKlass = frame.getMetaClass().getClassLoader().loadClass(className);
             instance = newKlass.newInstance();
         } else {
-            instance = aKlass.newInstance();
+            instance = klass.newInstance();
         }
-        frame.push(new StackValue(Const.T_REFERENCE, instance));
+        frame.push(new StackValue(Const.T_OBJECT, instance));
     }
 
 }

@@ -63,13 +63,13 @@ public class INVOKESTATIC extends Instruction {
             return;
         }
 
-        Klass meteKlass = Metaspace.getJavaClass(className);
+        Klass meteKlass = Metaspace.getJavaClass(Utility.compactClassName(className));
         if (meteKlass != null) {
             JavaClass javaClass = meteKlass.getJavaClass();
             for (org.apache.bcel.classfile.Method method : javaClass.getMethods()) {
                 if (method.getSignature().equals(methodSignature) && method.getName().equals(methodName)) {
                     KlassMethod klassMethod = new KlassMethod(meteKlass, method);
-                    JavaNativeInterface.callStaticMethod(frame, klassMethod);
+                    JavaNativeInterface.callMethod(frame, klassMethod);
                     break;
                 }
             }

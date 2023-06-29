@@ -1,6 +1,7 @@
 package haidnor.jvm.rtda.heap;
 
 import haidnor.jvm.classloader.ClassLoader;
+import lombok.SneakyThrows;
 import org.apache.bcel.classfile.Field;
 import org.apache.bcel.classfile.JavaClass;
 
@@ -27,10 +28,21 @@ public class Klass {
      */
     private final String className;
 
+    public final String superClassName;
+
+    private Klass superKlass;
+
+    @SneakyThrows
     public Klass(ClassLoader classLoader, JavaClass javaClass) {
         this.javaClass = javaClass;
         this.classLoader = classLoader;
         this.className = javaClass.getClassName();
+        this.superClassName = javaClass.getSuperclassName();
+
+        JavaClass superJavaClass = javaClass.getSuperClass();
+        if (superJavaClass != null) {
+            this.superKlass = new Klass(classLoader, superJavaClass);
+        }
     }
 
     public Instance newInstance() {
@@ -39,7 +51,11 @@ public class Klass {
             JavaField javaField = new JavaField(field);
             javaFieldList.add(javaField);
         }
-        return new Instance(javaFieldList, this);
+        Instance object = new Instance(javaFieldList, this);
+        if (this.superKlass != null) {
+            object.setSuperInstance(this.superKlass.newInstance());
+        }
+        return object;
     }
 
     public JavaClass getJavaClass() {

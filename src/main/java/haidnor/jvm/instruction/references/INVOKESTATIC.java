@@ -2,8 +2,8 @@ package haidnor.jvm.instruction.references;
 
 import haidnor.jvm.core.JavaNativeInterface;
 import haidnor.jvm.instruction.Instruction;
-import haidnor.jvm.rtda.heap.MetaClass;
-import haidnor.jvm.rtda.heap.MetaMethod;
+import haidnor.jvm.rtda.heap.Klass;
+import haidnor.jvm.rtda.heap.KlassMethod;
 import haidnor.jvm.rtda.metaspace.Metaspace;
 import haidnor.jvm.runtime.Frame;
 import haidnor.jvm.util.CodeStream;
@@ -40,11 +40,11 @@ public class INVOKESTATIC extends Instruction {
 
         //  系统类反射 自定义类另外处理
         if (className.startsWith("java")) {
-            Class<?>[] parameterTypeArr = SignatureUtil.getParameterTypes(methodSignature);
+            java.lang.Class<?>[] parameterTypeArr = SignatureUtil.getParameterTypes(methodSignature);
             Object[] stacksValueArr = frame.popStacksValue(parameterTypeArr.length);
 
             for (int i = 0; i < parameterTypeArr.length; i++) {
-                Class<?> aClass = parameterTypeArr[i];
+                java.lang.Class<?> aClass = parameterTypeArr[i];
                 if (aClass.getName().equals("boolean")) {
                     int booleanFlag = (int) stacksValueArr[i];
                     stacksValueArr[i] = booleanFlag == 1;
@@ -63,13 +63,13 @@ public class INVOKESTATIC extends Instruction {
             return;
         }
 
-        MetaClass meteClass = Metaspace.getJavaClass(className);
-        if (meteClass != null) {
-            JavaClass javaClass = meteClass.getJavaClass();
-            for (Method method : javaClass.getMethods()) {
+        Klass meteKlass = Metaspace.getJavaClass(className);
+        if (meteKlass != null) {
+            JavaClass javaClass = meteKlass.getJavaClass();
+            for (org.apache.bcel.classfile.Method method : javaClass.getMethods()) {
                 if (method.getSignature().equals(methodSignature) && method.getName().equals(methodName)) {
-                    MetaMethod metaMethod = new MetaMethod(meteClass, method);
-                    JavaNativeInterface.callStaticMethod(frame, metaMethod);
+                    KlassMethod klassMethod = new KlassMethod(meteKlass, method);
+                    JavaNativeInterface.callStaticMethod(frame, klassMethod);
                     break;
                 }
             }

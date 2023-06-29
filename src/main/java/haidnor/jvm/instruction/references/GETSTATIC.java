@@ -30,7 +30,7 @@ public class GETSTATIC extends Instruction {
         ConstantPoolUtil constantPoolUtil = frame.getConstantPoolUtil();
         ConstantFieldref constFieldref = constantPool.getConstant(constantFieldrefIndex);
         // 动态链接. 找到字段所属的 Java 类
-        String className = constantPoolUtil.getBelongClassName(constFieldref);
+        String className = constantPoolUtil.getFiledBelongClassName(constFieldref);
         // 动态链接. 找到字段的名字
         String fieldName = constantPoolUtil.getFieldName(constFieldref);
 

@@ -1,15 +1,14 @@
 package haidnor.jvm.runtime;
 
 import haidnor.jvm.rtda.heap.Instance;
-import haidnor.jvm.rtda.heap.MetaClass;
-import haidnor.jvm.rtda.heap.MetaMethod;
+import haidnor.jvm.rtda.heap.Klass;
+import haidnor.jvm.rtda.heap.KlassMethod;
 import haidnor.jvm.util.CodeStream;
 import haidnor.jvm.util.ConstantPoolUtil;
 import org.apache.bcel.Const;
 import org.apache.bcel.classfile.Code;
 import org.apache.bcel.classfile.ConstantPool;
 import org.apache.bcel.classfile.LocalVariableTable;
-import org.apache.bcel.classfile.Method;
 
 import java.util.Stack;
 
@@ -28,11 +27,11 @@ public class Frame {
      * <<深入理解JAVA虚拟机>>:
      * 每一个栈帧都包含一个指向运行时常量池中该栈帧所属的方法引用,持有这个引用的目的是为了支持方法调用过程中的动态链接(Dynamic Linking)
      */
-    private final Method method;
+    private final org.apache.bcel.classfile.Method method;
 
-    private final MetaMethod metaMethod;
+    private final KlassMethod klassMethod;
 
-    public final MetaClass metaClass;
+    public final Klass aKlass;
 
     /**
      * 栈帧所属的方法代码对象
@@ -60,11 +59,11 @@ public class Frame {
      */
     private final Slot[] slots;
 
-    public Frame(JvmThread jvmThread, MetaMethod metaMethod) {
+    public Frame(JvmThread jvmThread, KlassMethod klassMethod) {
         this.jvmThread = jvmThread;
-        this.metaClass = metaMethod.metaClass;
-        this.metaMethod = metaMethod;
-        this.method = metaMethod.method;
+        this.aKlass = klassMethod.aKlass;
+        this.klassMethod = klassMethod;
+        this.method = klassMethod.javaMethod;
         this.code = method.getCode();
         this.constantPool = method.getConstantPool();
         this.constantPoolUtil = new ConstantPoolUtil(constantPool);
@@ -85,7 +84,7 @@ public class Frame {
         return codeStream;
     }
 
-    public Method getMethod() {
+    public org.apache.bcel.classfile.Method getMethod() {
         return method;
     }
 
@@ -97,12 +96,12 @@ public class Frame {
         return constantPoolUtil;
     }
 
-    public MetaMethod getMetaMethod() {
-        return metaMethod;
+    public KlassMethod getMetaMethod() {
+        return klassMethod;
     }
 
-    public MetaClass getMetaClass() {
-        return metaClass;
+    public Klass getMetaClass() {
+        return aKlass;
     }
 
     /* 操作数栈操作 --------------------------------------------------------------------------------------------------- */
@@ -139,6 +138,52 @@ public class Frame {
             objArr[i] = stackValue.getValue();
         }
         return objArr;
+    }
+
+
+    public int popInt() {
+        StackValue stackValue = pop();
+        return (int) stackValue.getValue();
+    }
+
+    public void pushInt(int value) {
+        push(new StackValue(Const.T_INT, value));
+    }
+
+    public long popLong() {
+        StackValue stackValue = pop();
+        return (long) stackValue.getValue();
+    }
+
+    public void pushLong(long value) {
+        push(new StackValue(Const.T_LONG, value));
+    }
+
+    public float popFloat() {
+        StackValue stackValue = pop();
+        return (float) stackValue.getValue();
+    }
+
+    public void pushFloat(float value) {
+        push(new StackValue(Const.T_FLOAT, value));
+    }
+
+    public double popDouble() {
+        StackValue stackValue = pop();
+        return (double) stackValue.getValue();
+    }
+
+    public void pushDouble(double value) {
+        push(new StackValue(Const.T_DOUBLE, value));
+    }
+
+    public Instance popRef() {
+        StackValue stackValue = pop();
+        return (Instance) stackValue.getValue();
+    }
+
+    public void pushRef(Instance value) {
+        push(new StackValue(Const.T_OBJECT, value));
     }
 
     /**

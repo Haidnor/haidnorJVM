@@ -1,6 +1,6 @@
 package haidnor.jvm.rtda.metaspace;
 
-import haidnor.jvm.rtda.heap.MetaClass;
+import haidnor.jvm.rtda.heap.Klass;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -10,15 +10,15 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class Metaspace {
 
-    private static final Map<String, MetaClass> javaClassMapMap = new ConcurrentHashMap<>();
+    private static final Map<String, Klass> javaClassMapMap = new ConcurrentHashMap<>();
 
-    public static MetaClass getJavaClass(String className) {
+    public static Klass getJavaClass(String className) {
         return javaClassMapMap.get(className);
     }
 
-    public static void registerJavaClass(MetaClass javaClass) {
-        String className = javaClass.getClassName();
-        javaClassMapMap.put(className, javaClass);
+    public static void registerJavaClass(Klass javaKlass) {
+        String className = javaKlass.getClassName();
+        javaClassMapMap.put(className, javaKlass);
     }
 
 }

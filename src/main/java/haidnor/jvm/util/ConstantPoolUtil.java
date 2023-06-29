@@ -13,6 +13,24 @@ public class ConstantPoolUtil {
         this.cp = cp;
     }
 
+    public ConstantFieldref getConstantFieldref(int constantFieldrefIndex) {
+        return cp.getConstant(constantFieldrefIndex);
+    }
+
+    public ConstantMethodref getConstantMethodref(int constantMethodrefIndex) {
+        return cp.getConstant(constantMethodrefIndex);
+    }
+
+    public ConstantClass getConstantClass(int constantClassIndex) {
+        return cp.getConstant(constantClassIndex);
+    }
+
+    public ConstantNameAndType getConstantNameAndType(int constantNameAndTypeIndex) {
+        return cp.getConstant(constantNameAndTypeIndex);
+    }
+
+    // ConstantClass ---------------------------------------------------------------------------------------------------
+
     /**
      * 获取长类名, 例如 java/lang/String
      */
@@ -21,21 +39,57 @@ public class ConstantPoolUtil {
         return constantUtf8.getBytes();
     }
 
+    // ConstantFieldref ------------------------------------------------------------------------------------------------
+
     /**
-     * 获取字段所处于Java类的类名
+     * 获取字段所处于Java类的类名, 例如 java/lang/String
      */
-    public String getBelongClassName(final ConstantFieldref constantFieldref) {
+    public String getFiledBelongClassName(final ConstantFieldref constantFieldref) {
         ConstantClass constClass = cp.getConstant(constantFieldref.getClassIndex());
         return (String) constClass.getConstantValue(cp);
     }
 
     /**
-     * 获取方法所处于Java类的类名
+     * 获取字段所处于Java类的类名, 例如 java/lang/String
+     */
+    public String getFiledBelongClassName(int constantFieldrefIndex) {
+        ConstantFieldref constantFieldref = getConstantFieldref(constantFieldrefIndex);
+        return getFiledBelongClassName(constantFieldref);
+    }
+
+    /**
+     * 获取字段名称
      */
     public String getFieldName(final ConstantFieldref constantFieldref) {
         ConstantNameAndType constNameAndType = cp.getConstant(constantFieldref.getNameAndTypeIndex());
         return constNameAndType.getName(cp);
     }
+
+    /**
+     * 获取字段名称
+     */
+    public String getFieldName(int constantFieldrefIndex) {
+        ConstantFieldref constantFieldref = getConstantFieldref(constantFieldrefIndex);
+        return getFieldName(constantFieldref);
+    }
+
+    /**
+     * 获取字段类型签名
+     */
+    public String getFieldSignature(final ConstantFieldref constantFieldref) {
+        ConstantNameAndType constNameAndType = cp.getConstant(constantFieldref.getNameAndTypeIndex());
+        return constNameAndType.getSignature(cp);
+    }
+
+    /**
+     * 获取字段类型签名
+     */
+    public String getFieldSignature(int constantFieldrefIndex) {
+        ConstantFieldref constantFieldref = getConstantFieldref(constantFieldrefIndex);
+        return getFieldSignature(constantFieldref);
+    }
+
+    // ConstantMethodref -----------------------------------------------------------------------------------------------
 
     /**
      * 获取方法所处于Java类的类名

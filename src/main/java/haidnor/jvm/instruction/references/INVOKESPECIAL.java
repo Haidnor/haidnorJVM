@@ -3,8 +3,8 @@ package haidnor.jvm.instruction.references;
 import haidnor.jvm.classloader.ClassLoader;
 import haidnor.jvm.core.JavaNativeInterface;
 import haidnor.jvm.instruction.Instruction;
-import haidnor.jvm.rtda.heap.MetaClass;
-import haidnor.jvm.rtda.heap.MetaMethod;
+import haidnor.jvm.rtda.heap.Klass;
+import haidnor.jvm.rtda.heap.KlassMethod;
 import haidnor.jvm.rtda.metaspace.Metaspace;
 import haidnor.jvm.runtime.Frame;
 import haidnor.jvm.util.CodeStream;
@@ -35,20 +35,20 @@ public class INVOKESPECIAL extends Instruction {
         String methodName = constantPoolUtil.getMethodName(methodref);
         String methodSignature = constantPoolUtil.getMethodSignature(methodref);
 
-        MetaClass meteClass = Metaspace.getJavaClass(className);
+        Klass aKlass = Metaspace.getJavaClass(className);
         JavaClass javaClass;
-        if (meteClass != null) {
-            javaClass = meteClass.getJavaClass();
+        if (aKlass != null) {
+            javaClass = aKlass.getJavaClass();
         } else {
             ClassLoader classLoader = frame.getMetaClass().getClassLoader();
-            MetaClass metaClass = classLoader.loadClass(className);
-            javaClass = metaClass.getJavaClass();
+            aKlass = classLoader.loadClass(className);
+            javaClass = aKlass.getJavaClass();
         }
 
         for (Method method : javaClass.getMethods()) {
             if (method.getSignature().equals(methodSignature) && method.getName().equals(methodName)) {
-                MetaMethod metaMethod = new MetaMethod(meteClass, method);
-                JavaNativeInterface.callStaticMethod(frame, metaMethod);
+                KlassMethod klassMethod = new KlassMethod(aKlass, method);
+                JavaNativeInterface.callStaticMethod(frame, klassMethod);
                 break;
             }
         }

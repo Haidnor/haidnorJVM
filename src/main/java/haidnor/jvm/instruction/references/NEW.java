@@ -2,7 +2,7 @@ package haidnor.jvm.instruction.references;
 
 import haidnor.jvm.instruction.Instruction;
 import haidnor.jvm.rtda.heap.Instance;
-import haidnor.jvm.rtda.heap.MetaClass;
+import haidnor.jvm.rtda.heap.Klass;
 import haidnor.jvm.rtda.metaspace.Metaspace;
 import haidnor.jvm.runtime.Frame;
 import haidnor.jvm.runtime.StackValue;
@@ -30,14 +30,14 @@ public class NEW extends Instruction {
         ConstantClass constantClass = constantPool.getConstant(constantClassIndex);
         String className = constantPoolUtil.getClassName(constantClass);
 
-        MetaClass metaClass = Metaspace.getJavaClass(className);
+        Klass aKlass = Metaspace.getJavaClass(className);
         Instance instance;
-        if (metaClass == null) {
+        if (aKlass == null) {
             // 如果在元空间中找不到已加载的类,则开始进行类加载流程
-            MetaClass newMetaClass = frame.getMetaClass().getClassLoader().loadClass(className);
-             instance = newMetaClass.newInstance();
+            Klass newKlass = frame.getMetaClass().getClassLoader().loadClass(className);
+            instance = newKlass.newInstance();
         } else {
-             instance = metaClass.newInstance();
+            instance = aKlass.newInstance();
         }
         frame.push(new StackValue(Const.T_REFERENCE, instance));
     }

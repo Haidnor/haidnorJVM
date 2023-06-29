@@ -2,9 +2,10 @@ package haidnor.jvm.test.instruction.loads;
 
 public class Student {
 
-    private int intValue;
+    private long value;
 
-    public Student(int i) {
-        this.intValue = i;
+    public Student(long i) {
+        this.value = i;
     }
+
 }

@@ -561,7 +561,7 @@ public abstract class InstructionFactory {
                 throw new Error("Not support JavaVM opcode GETFIELD");
             }
             case Const.PUTFIELD -> {
-                throw new Error("Not support JavaVM opcode PUTFIELD");
+                return new PUTFIELD(codeStream);
             }
             case Const.INVOKEVIRTUAL -> {
                 return new INVOKEVIRTUAL(codeStream);

@@ -46,12 +46,12 @@ public class Klass {
     }
 
     public Instance newInstance() {
-        List<JavaField> javaFieldList = new ArrayList<>();
+        List<KlassField> klassFieldList = new ArrayList<>();
         for (Field field : javaClass.getFields()) {
-            JavaField javaField = new JavaField(field);
-            javaFieldList.add(javaField);
+            KlassField klassField = new KlassField(field);
+            klassFieldList.add(klassField);
         }
-        Instance object = new Instance(javaFieldList, this);
+        Instance object = new Instance(klassFieldList, this);
         if (this.superKlass != null) {
             object.setSuperInstance(this.superKlass.newInstance());
         }

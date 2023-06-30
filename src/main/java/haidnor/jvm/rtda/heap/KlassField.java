@@ -7,7 +7,7 @@ import org.apache.bcel.classfile.Field;
 /**
  * 类元信息字段
  */
-public class JavaField {
+public class KlassField {
 
     public final int accessFlags;
 
@@ -25,7 +25,7 @@ public class JavaField {
     private Object value;
 
 
-    public JavaField(Field field) {
+    public KlassField(Field field) {
         this.accessFlags = field.getAccessFlags();
         this.name = field.getName();
         this.descriptor = field.getSignature();

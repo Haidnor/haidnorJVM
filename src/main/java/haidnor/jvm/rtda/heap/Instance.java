@@ -12,7 +12,7 @@ public class Instance {
 
     public final Klass klass;
 
-    public final List<JavaField> fields;
+    public final List<KlassField> fields;
 
     private Instance superInstance;
 
@@ -21,7 +21,7 @@ public class Instance {
         this.fields = new ArrayList<>();
     }
 
-    public Instance(List<JavaField> fields, Klass klass) {
+    public Instance(List<KlassField> fields, Klass klass) {
         this.fields = fields;
         this.klass = klass;
     }
@@ -37,9 +37,9 @@ public class Instance {
      * @param name      字段名称
      * @param signature 字段签名
      */
-    public JavaField getField(String name, String signature) {
+    public KlassField getField(String name, String signature) {
         // this object
-        for (JavaField field : fields) {
+        for (KlassField field : fields) {
             if (Objects.equals(field.name, name) && Objects.equals(field.descriptor, signature)) {
                 return field;
             }

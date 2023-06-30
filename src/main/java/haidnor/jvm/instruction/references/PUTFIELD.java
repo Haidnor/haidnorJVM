@@ -2,7 +2,7 @@ package haidnor.jvm.instruction.references;
 
 import haidnor.jvm.instruction.Instruction;
 import haidnor.jvm.rtda.heap.Instance;
-import haidnor.jvm.rtda.heap.JavaField;
+import haidnor.jvm.rtda.heap.KlassField;
 import haidnor.jvm.runtime.Frame;
 import haidnor.jvm.runtime.StackValue;
 import haidnor.jvm.util.CodeStream;
@@ -28,7 +28,7 @@ public class PUTFIELD extends Instruction {
         StackValue stackValue = frame.pop();
 
         Instance instance = frame.popRef();
-        JavaField field = instance.getField(filedName, fieldSignature);
+        KlassField field = instance.getField(filedName, fieldSignature);
         field.setVal(stackValue);
     }
 

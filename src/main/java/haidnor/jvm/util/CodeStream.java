@@ -34,7 +34,7 @@ public class CodeStream {
     @SneakyThrows
     public int readJavaVmOpcode() {
         this.index += 1;
-        return this.codeStream.read();
+        return this.codeStream.readUnsignedByte();
     }
 
     /**
@@ -44,7 +44,7 @@ public class CodeStream {
     public int readByte(Instruction instruction) {
         instruction.setOffSet(instruction.offSet() + 1);
         this.index += 1;
-        return this.codeStream.read();
+        return this.codeStream.readByte();
     }
 
     /**

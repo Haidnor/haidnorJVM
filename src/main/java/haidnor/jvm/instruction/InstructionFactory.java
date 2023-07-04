@@ -5,12 +5,13 @@ import haidnor.jvm.instruction.constants.*;
 import haidnor.jvm.instruction.control.*;
 import haidnor.jvm.instruction.conversions.*;
 import haidnor.jvm.instruction.extended.GOTO;
+import haidnor.jvm.instruction.extended.GOTO_W;
+import haidnor.jvm.instruction.extended.IFNONNULL;
+import haidnor.jvm.instruction.extended.IFNULL;
 import haidnor.jvm.instruction.loads.*;
 import haidnor.jvm.instruction.math.*;
 import haidnor.jvm.instruction.references.*;
-import haidnor.jvm.instruction.stack.DUP;
-import haidnor.jvm.instruction.stack.POP;
-import haidnor.jvm.instruction.stack.POP2;
+import haidnor.jvm.instruction.stack.*;
 import haidnor.jvm.instruction.stores.*;
 import haidnor.jvm.util.CodeStream;
 import org.apache.bcel.Const;
@@ -288,13 +289,13 @@ public abstract class InstructionFactory {
                 return new DUP(codeStream);
             }
             case Const.DUP_X1 -> {
-                throw new Error("Not support JavaVM opcode DUP_X1");
+                return new DUP_X1(codeStream);
             }
             case Const.DUP_X2 -> {
-                throw new Error("Not support JavaVM opcode DUP_X2");
+                return new DUP_X2(codeStream);
             }
             case Const.DUP2 -> {
-                throw new Error("Not support JavaVM opcode DUP2");
+                return new DUP2(codeStream);
             }
             case Const.DUP2_X1 -> {
                 throw new Error("Not support JavaVM opcode DUP2_X1");
@@ -455,47 +456,44 @@ public abstract class InstructionFactory {
             case Const.I2B -> {
                 return new I2B(codeStream);
             }
-            // Const.INT2BYTE
             case Const.I2C -> {
                 return new I2C(codeStream);
             }
-            // Const.INT2CHAR
             case Const.I2S -> {
                 return new I2S(codeStream);
             }
-            // Const.INT2SHORT
             case Const.LCMP -> {
-                throw new Error("Not support JavaVM opcode LCMP");
+                return new LCMP(codeStream);
             }
             case Const.FCMPL -> {
-                throw new Error("Not support JavaVM opcode FCMPL");
+                return new FCMPL(codeStream);
             }
             case Const.FCMPG -> {
-                throw new Error("Not support JavaVM opcode FCMPG");
+                return new FCMPG(codeStream);
             }
             case Const.DCMPL -> {
-                throw new Error("Not support JavaVM opcode DCMPL");
+                return new DCMPL(codeStream);
             }
             case Const.DCMPG -> {
-                throw new Error("Not support JavaVM opcode DCMPG");
+                return new DCMPG(codeStream);
             }
             case Const.IFEQ -> {
-                throw new Error("Not support JavaVM opcode IFEQ");
+                return new IFEQ(codeStream);
             }
             case Const.IFNE -> {
-                throw new Error("Not support JavaVM opcode IFNE");
+                return new IFNE(codeStream);
             }
             case Const.IFLT -> {
-                throw new Error("Not support JavaVM opcode IFLT");
+                return new IFLT(codeStream);
             }
             case Const.IFGE -> {
-                throw new Error("Not support JavaVM opcode IFGE");
+                return new IFGE(codeStream);
             }
             case Const.IFGT -> {
-                throw new Error("Not support JavaVM opcode IFGT");
+                return new IFGT(codeStream);
             }
             case Const.IFLE -> {
-                throw new Error("Not support JavaVM opcode IFLE");
+                return new IFLE(codeStream);
             }
             case Const.IF_ICMPEQ -> {
                 return new IF_ICMPEQ(codeStream);
@@ -516,19 +514,20 @@ public abstract class InstructionFactory {
                 return new IF_ICMPLE(codeStream);
             }
             case Const.IF_ACMPEQ -> {
-                throw new Error("Not support JavaVM opcode IF_ACMPEQ");
+                return new IF_ACMPEQ(codeStream);
             }
             case Const.IF_ACMPNE -> {
-                throw new Error("Not support JavaVM opcode IF_ACMPNE");
+                return new IF_ACMPNE(codeStream);
             }
             case Const.GOTO -> {
                 return new GOTO(codeStream);
             }
             case Const.JSR -> {
-                throw new Error("Not support JavaVM opcode JSR");
+                return new JSR(codeStream);
             }
             case Const.RET -> {
-                throw new Error("Not support JavaVM opcode RET");
+                // RET, 1.6 以前使用, 忽略
+                throw new UnsupportedOperationException("RET");
             }
             case Const.TABLESWITCH -> {
                 throw new Error("Not support JavaVM opcode TABLESWITCH");
@@ -572,7 +571,6 @@ public abstract class InstructionFactory {
             case Const.INVOKESPECIAL -> {
                 return new INVOKESPECIAL(codeStream);
             }
-            // Const.INVOKENONVIRTUAL   Old name in JDK 1.0
             case Const.INVOKESTATIC -> {
                 return new INVOKESTATIC(codeStream);
             }
@@ -616,102 +614,18 @@ public abstract class InstructionFactory {
                 throw new Error("Not support JavaVM opcode MULTIANEWARRAY");
             }
             case Const.IFNULL -> {
-                throw new Error("Not support JavaVM opcode IFNULL");
+                return new IFNULL(codeStream);
             }
             case Const.IFNONNULL -> {
-                throw new Error("Not support JavaVM opcode IFNONNULL");
+                return new IFNONNULL(codeStream);
             }
             case Const.GOTO_W -> {
-                throw new Error("Not support JavaVM opcode GOTO_W");
+                return new GOTO_W(codeStream);
             }
             case Const.JSR_W -> {
-                throw new Error("Not support JavaVM opcode JSR_W");
+                return new JSR_W(codeStream);
             }
-            case Const.BREAKPOINT -> {
-                throw new Error("Not support JavaVM opcode BREAKPOINT");
-            }
-            case Const.LDC_QUICK -> {
-                throw new Error("Not support JavaVM opcode LDC_QUICK");
-            }
-            case Const.LDC_W_QUICK -> {
-                throw new Error("Not support JavaVM opcode LDC_W_QUICK");
-            }
-            case Const.LDC2_W_QUICK -> {
-                throw new Error("Not support JavaVM opcode LDC2_W_QUICK");
-            }
-            case Const.GETFIELD_QUICK -> {
-                throw new Error("Not support JavaVM opcode GETFIELD_QUICK");
-            }
-            case Const.PUTFIELD_QUICK -> {
-                throw new Error("Not support JavaVM opcode PUTFIELD_QUICK");
-            }
-            case Const.GETFIELD2_QUICK -> {
-                throw new Error("Not support JavaVM opcode GETFIELD2_QUICK");
-            }
-            case Const.PUTFIELD2_QUICK -> {
-                throw new Error("Not support JavaVM opcode PUTFIELD2_QUICK");
-            }
-            case Const.GETSTATIC_QUICK -> {
-                throw new Error("Not support JavaVM opcode GETSTATIC_QUICK");
-            }
-            case Const.PUTSTATIC_QUICK -> {
-                throw new Error("Not support JavaVM opcode PUTSTATIC_QUICK");
-            }
-            case Const.GETSTATIC2_QUICK -> {
-                throw new Error("Not support JavaVM opcode GETSTATIC2_QUICK");
-            }
-            case Const.PUTSTATIC2_QUICK -> {
-                throw new Error("Not support JavaVM opcode PUTSTATIC2_QUICK");
-            }
-            case Const.INVOKEVIRTUAL_QUICK -> {
-                throw new Error("Not support JavaVM opcode INVOKEVIRTUAL_QUICK");
-            }
-            case Const.INVOKENONVIRTUAL_QUICK -> {
-                throw new Error("Not support JavaVM opcode INVOKENONVIRTUAL_QUICK");
-            }
-            case Const.INVOKESUPER_QUICK -> {
-                throw new Error("Not support JavaVM opcode INVOKESUPER_QUICK");
-            }
-            case Const.INVOKESTATIC_QUICK -> {
-                throw new Error("Not support JavaVM opcode INVOKESTATIC_QUICK");
-            }
-            case Const.INVOKEINTERFACE_QUICK -> {
-                throw new Error("Not support JavaVM opcode INVOKEINTERFACE_QUICK");
-            }
-            case Const.INVOKEVIRTUALOBJECT_QUICK -> {
-                throw new Error("Not support JavaVM opcode INVOKEVIRTUALOBJECT_QUICK");
-            }
-            case Const.NEW_QUICK -> {
-                throw new Error("Not support JavaVM opcode NEW_QUICK");
-            }
-            case Const.ANEWARRAY_QUICK -> {
-                throw new Error("Not support JavaVM opcode ANEWARRAY_QUICK");
-            }
-            case Const.MULTIANEWARRAY_QUICK -> {
-                throw new Error("Not support JavaVM opcode MULTIANEWARRAY_QUICK");
-            }
-            case Const.CHECKCAST_QUICK -> {
-                throw new Error("Not support JavaVM opcode CHECKCAST_QUICK");
-            }
-            case Const.INSTANCEOF_QUICK -> {
-                throw new Error("Not support JavaVM opcode INSTANCEOF_QUICK");
-            }
-            case Const.INVOKEVIRTUAL_QUICK_W -> {
-                throw new Error("Not support JavaVM opcode INVOKEVIRTUAL_QUICK_W");
-            }
-            case Const.GETFIELD_QUICK_W -> {
-                throw new Error("Not support JavaVM opcode GETFIELD_QUICK_W");
-            }
-            case Const.PUTFIELD_QUICK_W -> {
-                throw new Error("Not support JavaVM opcode PUTFIELD_QUICK_W");
-            }
-            case Const.IMPDEP1 -> {
-                throw new Error("Not support JavaVM opcode IMPDEP1");
-            }
-            case Const.IMPDEP2 -> {
-                throw new Error("Not support JavaVM opcode IMPDEP2");
-            }
-            default -> throw new Error("Unknown JavaVM opcode ");
+            default -> throw new Error("Unknown JavaVM opcode " + opcode);
         }
     }
 

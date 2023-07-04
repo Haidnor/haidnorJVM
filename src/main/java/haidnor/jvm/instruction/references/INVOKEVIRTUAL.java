@@ -44,32 +44,28 @@ public class INVOKEVIRTUAL extends Instruction {
             // 执行方法的参数列表
             Class<?>[] parameterTypeArr = SignatureUtil.getParameterTypes(methodSignature);
             // 执行方法的参数值
-            Object[] stacksValueArr = frame.popStacksValue(parameterTypeArr.length);
+            Object[] args = frame.popStacksValue(parameterTypeArr.length);
 
             // 将特定的参数转换为基本类型
             for (int i = 0; i < parameterTypeArr.length; i++) {
-                Class<?> aClass = parameterTypeArr[i];
-                // boolean 存储方式为 int 类型
-                if (aClass.getName().equals("boolean")) {
-                    int booleanFlag = (int) stacksValueArr[i];
-                    stacksValueArr[i] = booleanFlag == 1;
+                Class<?> clazz = parameterTypeArr[i];
+                if (clazz.getName().equals("boolean")) { // boolean 存储方式为 int 类型
+                    int booleanFlag = (int) args[i];
+                    args[i] = booleanFlag == 1;
+                } else if (clazz.getName().equals("char")) { // char 存储方式为
+                    int charInt = (int) args[i];
+                    char c = (char) charInt;
+                    args[i] = c;
                 }
             }
 
             // 执行方法的示例对象
             StackValue stackValue = frame.pop();
-            Object object = stackValue.getValue();
-
-            // 如果 jvm 要执行一个方法, 1.把这个方法对象压入操作数栈 2.把这个方法的参数值压入操作出栈(一个参数占用一个操作数栈帧) 3.执行 INVOKEVIRTUAL
-            // 执行 INVOKEVIRTUAL 的流程
-            // 1.从操作栈中取出全部参数
-            // 2.从操作栈中取出执行方法的对象
-            // 3.使用对象执行方法
-
-            Method javaMethod = object.getClass().getMethod(methodName, parameterTypeArr);
+            Object obj = stackValue.getValue();
+            Method javaMethod = obj.getClass().getMethod(methodName, parameterTypeArr);
 
             if (Objects.equals(Const.getTypeName(Const.T_VOID), returnType)) {     // void 调用的方法无返回值
-                javaMethod.invoke(object, stacksValueArr);
+                javaMethod.invoke(obj, args);
             } else {
                 // TODO
                 // descriptorStream.pushField(javaMethod.invoke(obj, params), frame);

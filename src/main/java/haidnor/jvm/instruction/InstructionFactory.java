@@ -72,7 +72,7 @@ public abstract class InstructionFactory {
                 return new LDC(codeStream);
             }
             case Const.LDC_W -> {
-                throw new Error("Not support JavaVM opcode LDC");
+                return new LDC_W(codeStream);
             }
             case Const.LDC2_W -> {
                 return new LDC2W(codeStream);

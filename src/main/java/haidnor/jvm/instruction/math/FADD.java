@@ -14,8 +14,8 @@ public class FADD extends Instruction {
 
     @Override
     public void execute(Frame frame) {
-        StackValue value1 = frame.pop();
         StackValue value2 = frame.pop();
+        StackValue value1 = frame.pop();
         float result = (float) value1.getValue() + (float) value2.getValue();
         frame.push(new StackValue(Const.T_FLOAT, result));
     }

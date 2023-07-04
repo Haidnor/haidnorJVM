@@ -6,18 +6,18 @@ import haidnor.jvm.runtime.StackValue;
 import haidnor.jvm.util.CodeStream;
 import org.apache.bcel.Const;
 
-public class LADD extends Instruction {
+public class DNEG extends Instruction {
 
-    public LADD(CodeStream codeStream) {
+    public DNEG(CodeStream codeStream) {
         super(codeStream);
     }
 
     @Override
     public void execute(Frame frame) {
-        StackValue value2 = frame.pop();
-        StackValue value1 = frame.pop();
-        long result = (long) value1.getValue() + (long) value2.getValue();
-        frame.push(new StackValue(Const.T_LONG, result));
+        StackValue stackValue = frame.pop();
+        double value = (double) stackValue.getValue();
+        double tmp = -value;
+        frame.push(new StackValue(Const.T_DOUBLE, tmp));
     }
 
 }

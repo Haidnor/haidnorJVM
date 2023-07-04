@@ -6,9 +6,9 @@ import haidnor.jvm.runtime.StackValue;
 import haidnor.jvm.util.CodeStream;
 import org.apache.bcel.Const;
 
-public class LADD extends Instruction {
+public class IMUL extends Instruction {
 
-    public LADD(CodeStream codeStream) {
+    public IMUL(CodeStream codeStream) {
         super(codeStream);
     }
 
@@ -16,8 +16,8 @@ public class LADD extends Instruction {
     public void execute(Frame frame) {
         StackValue value2 = frame.pop();
         StackValue value1 = frame.pop();
-        long result = (long) value1.getValue() + (long) value2.getValue();
-        frame.push(new StackValue(Const.T_LONG, result));
+        int result = (int) value1.getValue() * (int) value2.getValue();
+        frame.push(new StackValue(Const.T_INT, result));
     }
 
 }

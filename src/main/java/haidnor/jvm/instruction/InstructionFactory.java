@@ -3,11 +3,14 @@ package haidnor.jvm.instruction;
 import haidnor.jvm.instruction.comparisons.*;
 import haidnor.jvm.instruction.constants.*;
 import haidnor.jvm.instruction.control.*;
+import haidnor.jvm.instruction.conversions.*;
 import haidnor.jvm.instruction.extended.GOTO;
 import haidnor.jvm.instruction.loads.*;
 import haidnor.jvm.instruction.math.*;
 import haidnor.jvm.instruction.references.*;
 import haidnor.jvm.instruction.stack.DUP;
+import haidnor.jvm.instruction.stack.POP;
+import haidnor.jvm.instruction.stack.POP2;
 import haidnor.jvm.instruction.stores.*;
 import haidnor.jvm.util.CodeStream;
 import org.apache.bcel.Const;
@@ -246,7 +249,7 @@ public abstract class InstructionFactory {
                 return new ASTORE_1(codeStream);
             }
             case Const.ASTORE_2 -> {
-                return new ASTORE_1(codeStream);
+                return new ASTORE_2(codeStream);
             }
             case Const.ASTORE_3 -> {
                 return new ASTORE_3(codeStream);
@@ -276,10 +279,10 @@ public abstract class InstructionFactory {
                 throw new Error("Not support JavaVM opcode SASTORE");
             }
             case Const.POP -> {
-                throw new Error("Not support JavaVM opcode POP");
+                return new POP(codeStream);
             }
             case Const.POP2 -> {
-                throw new Error("Not support JavaVM opcode POP2");
+                return new POP2(codeStream);
             }
             case Const.DUP -> {
                 return new DUP(codeStream);
@@ -315,150 +318,150 @@ public abstract class InstructionFactory {
                 return new DADD(codeStream);
             }
             case Const.ISUB -> {
-                throw new Error("Not support JavaVM opcode ISUB");
+                return new ISUB(codeStream);
             }
             case Const.LSUB -> {
-                throw new Error("Not support JavaVM opcode LSUB");
+                return new LSUB(codeStream);
             }
             case Const.FSUB -> {
-                throw new Error("Not support JavaVM opcode FSUB");
+                return new FSUB(codeStream);
             }
             case Const.DSUB -> {
-                throw new Error("Not support JavaVM opcode DSUB");
+                return new DSUB(codeStream);
             }
             case Const.IMUL -> {
-                throw new Error("Not support JavaVM opcode IMUL");
+                return new IMUL(codeStream);
             }
             case Const.LMUL -> {
-                throw new Error("Not support JavaVM opcode LMUL");
+                return new LMUL(codeStream);
             }
             case Const.FMUL -> {
-                throw new Error("Not support JavaVM opcode FMUL");
+                return new FMUL(codeStream);
             }
             case Const.DMUL -> {
-                throw new Error("Not support JavaVM opcode DMUL");
+                return new DMUL(codeStream);
             }
             case Const.IDIV -> {
-                throw new Error("Not support JavaVM opcode IDIV");
+                return new IDIV(codeStream);
             }
             case Const.LDIV -> {
-                throw new Error("Not support JavaVM opcode LDIV");
+                return new LDIV(codeStream);
             }
             case Const.FDIV -> {
-                throw new Error("Not support JavaVM opcode FDIV");
+                return new FDIV(codeStream);
             }
             case Const.DDIV -> {
-                throw new Error("Not support JavaVM opcode DDIV");
+                return new DDIV(codeStream);
             }
             case Const.IREM -> {
-                throw new Error("Not support JavaVM opcode IREM");
+                return new IREM(codeStream);
             }
             case Const.LREM -> {
-                throw new Error("Not support JavaVM opcode LREM");
+                return new LREM(codeStream);
             }
             case Const.FREM -> {
-                throw new Error("Not support JavaVM opcode FREM");
+                return new FREM(codeStream);
             }
             case Const.DREM -> {
-                throw new Error("Not support JavaVM opcode DREM");
+                return new DREM(codeStream);
             }
             case Const.INEG -> {
-                throw new Error("Not support JavaVM opcode INEG");
+                return new INEG(codeStream);
             }
             case Const.LNEG -> {
-                throw new Error("Not support JavaVM opcode LNEG");
+                return new LNEG(codeStream);
             }
             case Const.FNEG -> {
-                throw new Error("Not support JavaVM opcode FNEG");
+                return new FNEG(codeStream);
             }
             case Const.DNEG -> {
-                throw new Error("Not support JavaVM opcode DNEG");
+                return new DNEG(codeStream);
             }
             case Const.ISHL -> {
-                throw new Error("Not support JavaVM opcode ISHL");
+                return new ISHL(codeStream);
             }
             case Const.LSHL -> {
-                throw new Error("Not support JavaVM opcode LSHL");
+                return new LSHL(codeStream);
             }
             case Const.ISHR -> {
-                throw new Error("Not support JavaVM opcode ISHR");
+                return new ISHR(codeStream);
             }
             case Const.LSHR -> {
-                throw new Error("Not support JavaVM opcode LSHR");
+                return new LSHR(codeStream);
             }
             case Const.IUSHR -> {
-                throw new Error("Not support JavaVM opcode IUSHR");
+                return new IUSHR(codeStream);
             }
             case Const.LUSHR -> {
-                throw new Error("Not support JavaVM opcode LUSHR");
+                return new LUSHR(codeStream);
             }
             case Const.IAND -> {
-                throw new Error("Not support JavaVM opcode IAND");
+                return new IAND(codeStream);
             }
             case Const.LAND -> {
-                throw new Error("Not support JavaVM opcode LAND");
+                return new LAND(codeStream);
             }
             case Const.IOR -> {
-                throw new Error("Not support JavaVM opcode IOR");
+                return new IOR(codeStream);
             }
             case Const.LOR -> {
-                throw new Error("Not support JavaVM opcode LOR");
+                return new LOR(codeStream);
             }
             case Const.IXOR -> {
-                throw new Error("Not support JavaVM opcode IXOR");
+                return new IXOR(codeStream);
             }
             case Const.LXOR -> {
-                throw new Error("Not support JavaVM opcode LXOR");
+                return new LXOR(codeStream);
             }
             case Const.IINC -> {
                 return new IINC(codeStream);
             }
             case Const.I2L -> {
-                throw new Error("Not support JavaVM opcode I2L");
+                return new I2L(codeStream);
             }
             case Const.I2F -> {
-                throw new Error("Not support JavaVM opcode I2F");
+                return new I2F(codeStream);
             }
             case Const.I2D -> {
-                throw new Error("Not support JavaVM opcode I2D");
+                return new I2D(codeStream);
             }
             case Const.L2I -> {
-                throw new Error("Not support JavaVM opcode L2I");
+                return new L2I(codeStream);
             }
             case Const.L2F -> {
-                throw new Error("Not support JavaVM opcode L2F");
+                return new L2F(codeStream);
             }
             case Const.L2D -> {
-                throw new Error("Not support JavaVM opcode L2D");
+                return new L2D(codeStream);
             }
             case Const.F2I -> {
-                throw new Error("Not support JavaVM opcode F2I");
+                return new F2I(codeStream);
             }
             case Const.F2L -> {
-                throw new Error("Not support JavaVM opcode F2L");
+                return new F2L(codeStream);
             }
             case Const.F2D -> {
-                throw new Error("Not support JavaVM opcode F2D");
+                return new F2D(codeStream);
             }
             case Const.D2I -> {
-                throw new Error("Not support JavaVM opcode D2I");
+                return new D2I(codeStream);
             }
             case Const.D2L -> {
-                throw new Error("Not support JavaVM opcode D2L");
+                return new D2L(codeStream);
             }
             case Const.D2F -> {
-                throw new Error("Not support JavaVM opcode D2F");
+                return new D2F(codeStream);
             }
             case Const.I2B -> {
-                throw new Error("Not support JavaVM opcode I2B");
+                return new I2B(codeStream);
             }
             // Const.INT2BYTE
             case Const.I2C -> {
-                throw new Error("Not support JavaVM opcode I2C");
+                return new I2C(codeStream);
             }
             // Const.INT2CHAR
             case Const.I2S -> {
-                throw new Error("Not support JavaVM opcode I2S");
+                return new I2S(codeStream);
             }
             // Const.INT2SHORT
             case Const.LCMP -> {

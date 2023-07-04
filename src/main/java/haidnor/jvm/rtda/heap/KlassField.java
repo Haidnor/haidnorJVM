@@ -40,4 +40,11 @@ public class KlassField {
         this.value = stackValue.getValue();
     }
 
+    public int getType() {
+        return type;
+    }
+
+    public Object getValue() {
+        return value;
+    }
 }

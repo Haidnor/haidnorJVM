@@ -2,6 +2,7 @@ package haidnor.jvm.instruction.references;
 
 import haidnor.jvm.instruction.Instruction;
 import haidnor.jvm.runtime.Frame;
+import haidnor.jvm.runtime.StackValue;
 import haidnor.jvm.util.CodeStream;
 import haidnor.jvm.util.ConstantPoolUtil;
 import haidnor.jvm.util.SignatureUtil;
@@ -11,6 +12,7 @@ import org.apache.bcel.classfile.ConstantMethodref;
 import org.apache.bcel.classfile.ConstantPool;
 import org.apache.bcel.classfile.Utility;
 
+import java.lang.reflect.Method;
 import java.util.Objects;
 
 public class INVOKEVIRTUAL extends Instruction {
@@ -55,7 +57,8 @@ public class INVOKEVIRTUAL extends Instruction {
             }
 
             // 执行方法的示例对象
-            Object object = frame.pop().getValue();
+            StackValue stackValue = frame.pop();
+            Object object = stackValue.getValue();
 
             // 如果 jvm 要执行一个方法, 1.把这个方法对象压入操作数栈 2.把这个方法的参数值压入操作出栈(一个参数占用一个操作数栈帧) 3.执行 INVOKEVIRTUAL
             // 执行 INVOKEVIRTUAL 的流程
@@ -63,7 +66,7 @@ public class INVOKEVIRTUAL extends Instruction {
             // 2.从操作栈中取出执行方法的对象
             // 3.使用对象执行方法
 
-            java.lang.reflect.Method javaMethod = object.getClass().getMethod(methodName, parameterTypeArr);
+            Method javaMethod = object.getClass().getMethod(methodName, parameterTypeArr);
 
             if (Objects.equals(Const.getTypeName(Const.T_VOID), returnType)) {     // void 调用的方法无返回值
                 javaMethod.invoke(object, stacksValueArr);

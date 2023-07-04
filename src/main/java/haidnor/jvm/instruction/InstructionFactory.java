@@ -240,16 +240,16 @@ public abstract class InstructionFactory {
                 return new DSTORE_3(codeStream);
             }
             case Const.ASTORE_0 -> {
-                throw new Error("Not support JavaVM opcode ASTORE_0");
+                return new ASTORE_0(codeStream);
             }
             case Const.ASTORE_1 -> {
                 return new ASTORE_1(codeStream);
             }
             case Const.ASTORE_2 -> {
-                throw new Error("Not support JavaVM opcode ASTORE_2");
+                return new ASTORE_1(codeStream);
             }
             case Const.ASTORE_3 -> {
-                throw new Error("Not support JavaVM opcode ASTORE_3");
+                return new ASTORE_3(codeStream);
             }
             case Const.IASTORE -> {
                 throw new Error("Not support JavaVM opcode IASTORE");
@@ -558,7 +558,7 @@ public abstract class InstructionFactory {
                 throw new Error("Not support JavaVM opcode PUTSTATIC");
             }
             case Const.GETFIELD -> {
-                throw new Error("Not support JavaVM opcode GETFIELD");
+                return new GETFIELD(codeStream);
             }
             case Const.PUTFIELD -> {
                 return new PUTFIELD(codeStream);

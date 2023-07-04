@@ -6,6 +6,7 @@ import haidnor.jvm.rtda.heap.Klass;
 import haidnor.jvm.rtda.heap.KlassMethod;
 import haidnor.jvm.rtda.metaspace.Metaspace;
 import haidnor.jvm.runtime.JvmThread;
+import haidnor.jvm.test.instruction.InnerClass;
 import haidnor.jvm.test.instruction.math.ISUB;
 import haidnor.jvm.test.instruction.math.LSUB;
 import haidnor.jvm.test.instruction.references.NEW;
@@ -42,5 +43,9 @@ public class haidnorJVM_TEST {
         runMainClass(LSUB.class);
     }
 
+    @Test
+    public void test_1() throws Exception {
+        runMainClass(InnerClass.class);
+    }
 
 }

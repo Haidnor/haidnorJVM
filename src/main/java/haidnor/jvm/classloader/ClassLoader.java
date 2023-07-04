@@ -31,7 +31,8 @@ public class ClassLoader {
             classParser = new ClassParser(rtJarPath, classPath + ".class");
         } else {
             URL resource = this.getClass().getResource("/");
-            classParser = new ClassParser(resource.getPath() + classPath + ".class");
+            String fileName = resource.getPath() + classPath + ".class";
+            classParser = new ClassParser(fileName);
         }
 
         JavaClass javaClass = classParser.parse();

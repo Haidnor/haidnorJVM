@@ -21,6 +21,8 @@ public class IFNONNULL extends Instruction {
         StackValue v1 = frame.pop();
         if (v1.getValue() != null) {
             super.setOffSet(offSet);
+        } else {
+            super.setOffSet(3);
         }
     }
 

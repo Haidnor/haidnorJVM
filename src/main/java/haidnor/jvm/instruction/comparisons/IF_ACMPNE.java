@@ -21,6 +21,8 @@ public class IF_ACMPNE extends Instruction {
         Object val1 = frame.popRef();
         if (val1 != val2) {
             super.setOffSet(offSet);
+        } else {
+            super.setOffSet(3);
         }
     }
 

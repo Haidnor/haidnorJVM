@@ -48,4 +48,9 @@ public class haidnorJVM_TEST {
         runMainClass(InnerClass.class);
     }
 
+    @Test
+    public void test_DOWHILE() throws Exception {
+        runMainClass(DO_WHILE.class);
+    }
+
 }

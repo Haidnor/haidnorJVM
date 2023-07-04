@@ -29,6 +29,8 @@ public class IF_ICMPLE extends Instruction {
 
         if ((int) v1.getValue() <= (int) v2.getValue()) {
             super.setOffSet(offSet);
+        } else {
+            super.setOffSet(3);
         }
     }
 

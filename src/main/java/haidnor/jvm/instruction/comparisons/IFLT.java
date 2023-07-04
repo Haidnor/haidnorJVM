@@ -21,6 +21,8 @@ public class IFLT extends Instruction {
         StackValue v1 = frame.pop();
         if ((int) v1.getValue() < 0) {
             super.setOffSet(offSet);
+        } else {
+            super.setOffSet(3);
         }
     }
 

@@ -526,8 +526,7 @@ public abstract class InstructionFactory {
                 return new JSR(codeStream);
             }
             case Const.RET -> {
-                // RET, 1.6 以前使用, 忽略
-                throw new UnsupportedOperationException("RET");
+                return new RET(codeStream);
             }
             case Const.TABLESWITCH -> {
                 throw new Error("Not support JavaVM opcode TABLESWITCH");

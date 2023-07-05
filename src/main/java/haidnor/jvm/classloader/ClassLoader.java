@@ -41,9 +41,10 @@ public class ClassLoader {
         return klass;
     }
 
-    public static String getRtJarPath() {
+    private String getRtJarPath() {
         // String javaHome = System.getenv("JAVA_HOME");
         //  Path rtJarPath = Paths.get(javaHome, "jre", "lib", "rt.jar");
-        return  "D:/Program Files/Java/jdk1.8.0_361/jre/lib/rt.jar";
+        return "D:/Program Files/Java/jdk1.8.0_361/jre/lib/rt.jar";
     }
+
 }

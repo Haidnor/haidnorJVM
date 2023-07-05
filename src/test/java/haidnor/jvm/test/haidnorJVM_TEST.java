@@ -6,6 +6,8 @@ import haidnor.jvm.rtda.heap.Klass;
 import haidnor.jvm.rtda.heap.KlassMethod;
 import haidnor.jvm.rtda.metaspace.Metaspace;
 import haidnor.jvm.runtime.JvmThread;
+import haidnor.jvm.test.instruction.Array;
+import haidnor.jvm.test.instruction.DO_WHILE;
 import haidnor.jvm.test.instruction.InnerClass;
 import haidnor.jvm.test.instruction.math.ISUB;
 import haidnor.jvm.test.instruction.math.LSUB;
@@ -52,5 +54,8 @@ public class haidnorJVM_TEST {
     public void test_DOWHILE() throws Exception {
         runMainClass(DO_WHILE.class);
     }
-
+    @Test
+    public void test_Array() throws Exception {
+        runMainClass(Array.class);
+    }
 }

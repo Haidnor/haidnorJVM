@@ -1,4 +1,4 @@
-package haidnor.jvm.test;
+package haidnor.jvm.test.instruction;
 
 public class DO_WHILE {
     public static void main(String[] args) {

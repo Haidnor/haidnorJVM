@@ -24,6 +24,7 @@ public class JSR extends Instruction {
     @Override
     @SneakyThrows
     public void execute(Frame frame) {
+        throw new UnsupportedOperationException("JSR");
     }
 
 }

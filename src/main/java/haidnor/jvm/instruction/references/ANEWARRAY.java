@@ -2,6 +2,7 @@ package haidnor.jvm.instruction.references;
 
 import haidnor.jvm.instruction.Instruction;
 import haidnor.jvm.rtda.heap.Instance;
+import haidnor.jvm.rtda.heap.InstanceArray;
 import haidnor.jvm.rtda.heap.Klass;
 import haidnor.jvm.rtda.metaspace.Metaspace;
 import haidnor.jvm.runtime.Frame;
@@ -14,11 +15,11 @@ import org.apache.bcel.classfile.ConstantClass;
 import org.apache.bcel.classfile.ConstantPool;
 import org.apache.bcel.classfile.Utility;
 
-public class NEW extends Instruction {
+public class ANEWARRAY extends Instruction {
 
     private final int constantClassIndex;
 
-    public NEW(CodeStream codeStream) {
+    public ANEWARRAY(CodeStream codeStream) {
         super(codeStream);
         this.constantClassIndex = codeStream.readUnsignedShort(this);
     }
@@ -36,8 +37,11 @@ public class NEW extends Instruction {
             // 如果在元空间中找不到已加载的类,则开始进行类加载流程
             klass = frame.getMetaClass().getClassLoader().loadClass(className);
         }
-        Instance instance = klass.newInstance();
-        frame.push(new StackValue(Const.T_OBJECT, instance));
+        int size = frame.popInt();
+        Instance[] items = new Instance[size];
+        InstanceArray instanceArray = new InstanceArray(klass, items);
+
+        frame.push(new StackValue(Const.T_OBJECT, instanceArray));
     }
 
 }

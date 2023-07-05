@@ -12,6 +12,10 @@ public class Metaspace {
 
     private static final Map<String, Klass> javaClassMapMap = new ConcurrentHashMap<>();
 
+    static {
+
+    }
+
     /**
      * 名称用.符号分割
      * 例如: haidnor.jvm.test.instruction.references.NEW

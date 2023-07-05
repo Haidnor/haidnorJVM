@@ -157,28 +157,28 @@ public abstract class InstructionFactory {
                 return new ALOAD_3(codeStream);
             }
             case Const.IALOAD -> {
-                throw new Error("Not support JavaVM opcode IALOAD");
+                return new IALOAD(codeStream);
             }
             case Const.LALOAD -> {
-                throw new Error("Not support JavaVM opcode LALOAD");
+                return new LALOAD(codeStream);
             }
             case Const.FALOAD -> {
-                throw new Error("Not support JavaVM opcode FALOAD");
+                return new FALOAD(codeStream);
             }
             case Const.DALOAD -> {
-                throw new Error("Not support JavaVM opcode DALOAD");
+                return new DALOAD(codeStream);
             }
             case Const.AALOAD -> {
-                throw new Error("Not support JavaVM opcode AALOAD");
+                return new AALOAD(codeStream);
             }
             case Const.BALOAD -> {
-                throw new Error("Not support JavaVM opcode BALOAD");
+                return new BALOAD(codeStream);
             }
             case Const.CALOAD -> {
-                throw new Error("Not support JavaVM opcode CALOAD");
+                return new CALOAD(codeStream);
             }
             case Const.SALOAD -> {
-                throw new Error("Not support JavaVM opcode SALOAD");
+                return new SALOAD(codeStream);
             }
             case Const.ISTORE -> {
                 return new ISTORE(codeStream);
@@ -256,28 +256,28 @@ public abstract class InstructionFactory {
                 return new ASTORE_3(codeStream);
             }
             case Const.IASTORE -> {
-                throw new Error("Not support JavaVM opcode IASTORE");
+                return new IASTORE(codeStream);
             }
             case Const.LASTORE -> {
-                throw new Error("Not support JavaVM opcode LASTORE");
+                return new LASTORE(codeStream);
             }
             case Const.FASTORE -> {
-                throw new Error("Not support JavaVM opcode FASTORE");
+                return new FASTORE(codeStream);
             }
             case Const.DASTORE -> {
-                throw new Error("Not support JavaVM opcode DASTORE");
+                return new DASTORE(codeStream);
             }
             case Const.AASTORE -> {
-                throw new Error("Not support JavaVM opcode AASTORE");
+                return new AASTORE(codeStream);
             }
             case Const.BASTORE -> {
-                throw new Error("Not support JavaVM opcode BASTORE");
+                return new BASTORE(codeStream);
             }
             case Const.CASTORE -> {
-                throw new Error("Not support JavaVM opcode CASTORE");
+                return new CASTORE(codeStream);
             }
             case Const.SASTORE -> {
-                throw new Error("Not support JavaVM opcode SASTORE");
+                return new SASTORE(codeStream);
             }
             case Const.POP -> {
                 return new POP(codeStream);
@@ -304,7 +304,7 @@ public abstract class InstructionFactory {
                 throw new Error("Not support JavaVM opcode DUP2_X2");
             }
             case Const.SWAP -> {
-                throw new Error("Not support JavaVM opcode SWAP");
+                return new SWAP(codeStream);
             }
             case Const.IADD -> {
                 return new IADD(codeStream);
@@ -583,13 +583,13 @@ public abstract class InstructionFactory {
                 return new NEW(codeStream);
             }
             case Const.NEWARRAY -> {
-                throw new Error("Not support JavaVM opcode NEWARRAY");
+                return new NEWARRAY(codeStream);
             }
             case Const.ANEWARRAY -> {
-                throw new Error("Not support JavaVM opcode ANEWARRAY");
+                return new ANEWARRAY(codeStream);
             }
             case Const.ARRAYLENGTH -> {
-                throw new Error("Not support JavaVM opcode ARRAYLENGTH");
+                return new ARRAYLENGTH(codeStream);
             }
             case Const.ATHROW -> {
                 throw new Error("Not support JavaVM opcode ATHROW");

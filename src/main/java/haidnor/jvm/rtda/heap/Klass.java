@@ -46,16 +46,19 @@ public class Klass {
     }
 
     public Instance newInstance() {
+        // 创建对象存放字段的内存空间
         List<KlassField> klassFieldList = new ArrayList<>();
         for (Field field : javaClass.getFields()) {
             KlassField klassField = new KlassField(field);
             klassFieldList.add(klassField);
         }
-        Instance object = new Instance(klassFieldList, this);
+        // 创建 JVM 中的对象实例
+        Instance obj = new Instance(klassFieldList, this);
+        // 加载父类
         if (this.superKlass != null) {
-            object.setSuperInstance(this.superKlass.newInstance());
+            obj.setSuperInstance(this.superKlass.newInstance());
         }
-        return object;
+        return obj;
     }
 
     public JavaClass getJavaClass() {

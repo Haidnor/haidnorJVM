@@ -20,6 +20,7 @@ public class JSR_W extends Instruction {
     @Override
     @SneakyThrows
     public void execute(Frame frame) {
+        throw new UnsupportedOperationException("JSR");
     }
 
 }

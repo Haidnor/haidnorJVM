@@ -1,7 +1,7 @@
 package haidnor.jvm.test;
 
 import haidnor.jvm.classloader.ClassLoader;
-import haidnor.jvm.core.JavaNativeInterface;
+import haidnor.jvm.core.JavaExecutionEngine;
 import haidnor.jvm.rtda.heap.Klass;
 import haidnor.jvm.rtda.heap.KlassMethod;
 import haidnor.jvm.rtda.metaspace.Metaspace;
@@ -11,6 +11,7 @@ import haidnor.jvm.test.instruction.DO_WHILE;
 import haidnor.jvm.test.instruction.InnerClass;
 import haidnor.jvm.test.instruction.math.ISUB;
 import haidnor.jvm.test.instruction.math.LSUB;
+import haidnor.jvm.test.instruction.references.INVOKEINTERFACE;
 import haidnor.jvm.test.instruction.references.NEW;
 import haidnor.jvm.util.JavaClassUtil;
 import haidnor.jvm.util.JvmThreadHolder;
@@ -27,7 +28,7 @@ public class haidnorJVM_TEST {
         Metaspace.registerJavaClass(mainMeteKlass);
         JvmThreadHolder.set(new JvmThread());
 
-        JavaNativeInterface.callMainStaticMethod(mainKlassMethod);
+        JavaExecutionEngine.callMainStaticMethod(mainKlassMethod);
     }
 
     @Test
@@ -57,5 +58,9 @@ public class haidnorJVM_TEST {
     @Test
     public void test_Array() throws Exception {
         runMainClass(Array.class);
+    }
+    @Test
+    public void test_INVOKEINTERFACE() throws Exception {
+        runMainClass(INVOKEINTERFACE.class);
     }
 }

@@ -1,7 +1,7 @@
 package haidnor.jvm.instruction.references;
 
 import haidnor.jvm.classloader.ClassLoader;
-import haidnor.jvm.core.JavaNativeInterface;
+import haidnor.jvm.core.JavaExecutionEngine;
 import haidnor.jvm.instruction.Instruction;
 import haidnor.jvm.rtda.heap.Klass;
 import haidnor.jvm.rtda.heap.KlassMethod;
@@ -41,11 +41,14 @@ public class INVOKESPECIAL extends Instruction {
             klass = classLoader.loadClass(className);
             javaClass = klass.getJavaClass();
         }
+        if (className.startsWith("java/")) {
+            return;
+        }
 
         for (Method method : javaClass.getMethods()) {
             if (method.getSignature().equals(methodSignature) && method.getName().equals(methodName)) {
                 KlassMethod klassMethod = new KlassMethod(klass, method);
-                JavaNativeInterface.callMethod(frame, klassMethod);
+                JavaExecutionEngine.callMethod(frame, klassMethod);
                 break;
             }
         }

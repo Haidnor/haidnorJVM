@@ -1,18 +1,16 @@
 package haidnor.jvm.runtime;
 
 
-import haidnor.jvm.rtda.heap.Instance;
-
 public class Slot {
     public Integer num;
-    public Instance ref;
+    public Object ref;
 
     public Slot(int num) {
         this.num = num;
         this.ref = null;
     }
 
-    public Slot(Instance ref) {
+    public Slot(Object ref) {
         this.num = null;
         this.ref = ref;
     }

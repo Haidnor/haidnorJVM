@@ -1,10 +1,10 @@
 package haidnor.jvm.test.instruction;
 
-import haidnor.jvm.test.instruction.loads.Student;
+import haidnor.jvm.test.instruction.loads.Student1;
 
 public class Array {
     public static void main(String[] args) {
-        Student[] strArr = new Student[10];
-        int length = strArr.length;
+        Student1[] strArr = new Student1[10];
+        strArr[5] = new Student1();
     }
 }

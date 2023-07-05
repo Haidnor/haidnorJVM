@@ -2,9 +2,12 @@ package haidnor.jvm.test.instruction.loads;
 
 public class Student1 {
 
-    public int[] arr;
+    public int a() {
+        return b();
+    }
 
-    public Student1() {
+    public int b() {
+        return 233;
     }
 
 }

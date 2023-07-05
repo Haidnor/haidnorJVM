@@ -15,7 +15,7 @@ public class ALOAD_1 extends Instruction {
 
     @Override
     public void execute(Frame frame) {
-        Instance value = frame.slotGetRef(1);
+        Object value = frame.slotGetRef(1);
         frame.push(new StackValue(Const.T_OBJECT, value));
     }
 

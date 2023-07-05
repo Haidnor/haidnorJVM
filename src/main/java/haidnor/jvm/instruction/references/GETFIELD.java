@@ -44,7 +44,7 @@ public class GETFIELD extends Instruction {
                 frame.pushDouble((double) field.getValue());
                 break;
             default: // ref
-                frame.pushRef((Instance) field.getValue());
+                frame.pushRef(field.getValue());
                 break;
         }
     }

@@ -125,7 +125,7 @@ public class Frame {
      */
     public Object[] popStacksValue(int num) {
         Object[] objArr = new Object[num];
-        for (int i = 0; i < num; i++) {
+        for (int i = num - 1; i >= 0; i--) {
             StackValue stackValue = operandStack.pop();
             switch (stackValue.getType()) {
                 case Const.T_CHAR, Const.T_INT, Const.T_OBJECT, Const.T_LONG, Const.T_DOUBLE, Const.T_FLOAT:
@@ -182,7 +182,7 @@ public class Frame {
         return (Instance) stackValue.getValue();
     }
 
-    public void pushRef(Instance value) {
+    public void pushRef(Object value) {
         push(new StackValue(Const.T_OBJECT, value));
     }
 
@@ -248,11 +248,11 @@ public class Frame {
         return Double.longBitsToDouble(tmp);
     }
 
-    public void slotSetRef(int index, Instance ref) {
+    public void slotSetRef(int index, Object ref) {
         slots[index] = new Slot(ref);
     }
 
-    public Instance slotGetRef(int index) {
+    public Object slotGetRef(int index) {
         return slots[index].ref;
     }
 
@@ -264,7 +264,7 @@ public class Frame {
                 slotSetInt(index, (int) stackValue.getValue());
                 break;
             case Const.T_OBJECT:
-                slotSetRef(index, (Instance) stackValue.getValue());
+                slotSetRef(index, stackValue.getValue());
                 break;
             case Const.T_LONG:
                 slotSetLong(index, (long) stackValue.getValue());

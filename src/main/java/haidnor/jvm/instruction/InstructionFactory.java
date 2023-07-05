@@ -595,7 +595,7 @@ public abstract class InstructionFactory {
                 throw new Error("Not support JavaVM opcode ATHROW");
             }
             case Const.CHECKCAST -> {
-                throw new Error("Not support JavaVM opcode CHECKCAST");
+                return new CHECKCAST(codeStream);
             }
             case Const.INSTANCEOF -> {
                 throw new Error("Not support JavaVM opcode INSTANCEOF");

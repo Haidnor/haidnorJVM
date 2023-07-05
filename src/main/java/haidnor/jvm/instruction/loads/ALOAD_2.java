@@ -1,7 +1,6 @@
 package haidnor.jvm.instruction.loads;
 
 import haidnor.jvm.instruction.Instruction;
-import haidnor.jvm.rtda.heap.Instance;
 import haidnor.jvm.runtime.Frame;
 import haidnor.jvm.runtime.StackValue;
 import haidnor.jvm.util.CodeStream;
@@ -15,7 +14,7 @@ public class ALOAD_2 extends Instruction {
 
     @Override
     public void execute(Frame frame) {
-        Instance value = frame.slotGetRef(2);
+        Object value = frame.slotGetRef(2);
         frame.push(new StackValue(Const.T_OBJECT, value));
     }
 

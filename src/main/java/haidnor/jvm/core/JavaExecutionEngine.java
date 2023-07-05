@@ -10,10 +10,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.bcel.Const;
 import org.apache.bcel.classfile.LocalVariable;
 import org.apache.bcel.classfile.LocalVariableTable;
+import org.apache.bcel.classfile.Method;
 import org.apache.bcel.classfile.Utility;
 
 @Slf4j
-public class JavaNativeInterface {
+public class JavaExecutionEngine {
 
     public static void callMainStaticMethod(KlassMethod klassMethod) {
         JvmThread jvmThread = JvmThreadHolder.get();
@@ -23,7 +24,7 @@ public class JavaNativeInterface {
     }
 
     public static void callMethod(Frame lastFrame, KlassMethod klassMethod) {
-        org.apache.bcel.classfile.Method method = klassMethod.javaMethod;
+        Method method = klassMethod.javaMethod;
 
         JvmThread jvmThread = JvmThreadHolder.get();
         Frame newFrame = new Frame(jvmThread, klassMethod);

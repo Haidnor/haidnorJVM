@@ -31,6 +31,12 @@ public class NEW extends Instruction {
         ConstantClass constantClass = constantPool.getConstant(constantClassIndex);
         String className = constantPoolUtil.getClassName(constantClass);
 
+        if (className.startsWith("java/")) {
+            Object javaObj = Class.forName(Utility.compactClassName(className)).getDeclaredConstructor().newInstance();
+            frame.push(new StackValue(Const.T_OBJECT, javaObj));
+            return;
+        }
+
         Klass klass = Metaspace.getJavaClass(Utility.compactClassName(className));
         if (klass == null) {
             // 如果在元空间中找不到已加载的类,则开始进行类加载流程

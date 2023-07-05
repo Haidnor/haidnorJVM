@@ -77,7 +77,7 @@ public class UnionSlot {
     }
 
     // 取
-    public Instance getRef() {
+    public Object getRef() {
         return high.ref;
     }
 

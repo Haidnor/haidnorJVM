@@ -12,7 +12,6 @@
 
 # 实现功能与局限性
 * 支持基本数据类型数学运算
-* 支持运算符指令
 * 支持循环、条件结构代码
 * 支持创建对象，访问对象
 * 支持访问静态方法
@@ -33,7 +32,7 @@
 ### 配置 rt.jar
 修改 `haidnorJVM.properties` 文件中的内容。配置 rt.jar 的绝对路径，例如`rt.jar=D:/Program Files/Java/jdk1.8.0_361/jre/lib/rt.jar`
 
-## 3.运行单元测试用例
+## 运行单元测试用例
 打开 test 目录下的 `haidnor.jvm.test.TestJVM` 类文件。 这是 haidnorJVM 功能的主要测试类。 里面的测试方法可以解析并加载一些class字节码文件。
 ```java
 @Test

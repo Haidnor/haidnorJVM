@@ -41,28 +41,27 @@ public class INVOKEVIRTUAL extends Instruction {
         String methodName = constantPoolUtil.getMethodName(methodref);
         String methodSignature = constantPoolUtil.getMethodSignature(methodref);
 
-        // 解析方法签名得到方法的返回类型
-        String returnType = Utility.methodSignatureReturnType(methodSignature, false);
-
-        // 执行方法的参数列表
-        Class<?>[] parameterTypeArr = SignatureUtil.getParameterTypes(methodSignature);
-        // 执行方法的参数值
-        Object[] args = frame.popStacksValue(parameterTypeArr.length);
-
-        // 将特定的参数转换为基本类型
-        for (int i = 0; i < parameterTypeArr.length; i++) {
-            Class<?> clazz = parameterTypeArr[i];
-            if (clazz.getName().equals("boolean")) { // boolean 存储方式为 int 类型
-                int booleanFlag = (int) args[i];
-                args[i] = booleanFlag == 1;
-            } else if (clazz.getName().equals("char")) { // char 存储方式为
-                int charInt = (int) args[i];
-                char c = (char) charInt;
-                args[i] = c;
-            }
-        }
         //  系统类反射 自定义类另外处理
         if (className.startsWith("java/")) {
+            // 解析方法签名得到方法的返回类型
+            String returnType = Utility.methodSignatureReturnType(methodSignature, false);
+            // 执行方法的参数列表
+            Class<?>[] parameterTypeArr = SignatureUtil.getParameterTypes(methodSignature);
+            // 执行方法的参数值
+            Object[] args = frame.popStacksValue(parameterTypeArr.length);
+            // 将特定的参数转换为基本类型
+            for (int i = 0; i < parameterTypeArr.length; i++) {
+                Class<?> clazz = parameterTypeArr[i];
+                if (clazz.getName().equals("boolean")) { // boolean 存储方式为 int 类型
+                    int booleanFlag = (int) args[i];
+                    args[i] = booleanFlag == 1;
+                } else if (clazz.getName().equals("char")) { // char 存储方式为
+                    int charInt = (int) args[i];
+                    char c = (char) charInt;
+                    args[i] = c;
+                }
+            }
+
             StackValue stackValue = frame.pop();
             Object obj = stackValue.getValue();
             Method method = obj.getClass().getMethod(methodName, parameterTypeArr);

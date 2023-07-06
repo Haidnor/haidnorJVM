@@ -18,7 +18,7 @@ import haidnor.jvm.util.JvmThreadHolder;
 import lombok.SneakyThrows;
 import org.junit.Test;
 
-public class haidnorJVM_TEST {
+public class TestJVM {
 
     @SneakyThrows
     public static void runMainClass(java.lang.Class<?> mainClass) {

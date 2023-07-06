@@ -6,12 +6,35 @@ import org.apache.bcel.classfile.ClassParser;
 import org.apache.bcel.classfile.JavaClass;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Properties;
 
 public class ClassLoader {
 
     public final String name;
+
+    public final static String rtJarPath;
+
+    static {
+        URL resource = ClassLoader.class.getResource("/");
+        String path = resource.getPath();
+        FileInputStream fis;
+        try {
+            fis = new FileInputStream(path + "/haidnorJVM.properties");
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        Properties properties = new Properties();
+        try {
+            properties.load(fis);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        rtJarPath = properties.getProperty("rt.jar");
+    }
 
     public ClassLoader(String name) {
         this.name = name;
@@ -52,7 +75,8 @@ public class ClassLoader {
     private String getRtJarPath() {
         // String javaHome = System.getenv("JAVA_HOME");
         //  Path rtJarPath = Paths.get(javaHome, "jre", "lib", "rt.jar");
-        return "D:/Program Files/Java/jdk1.8.0_361/jre/lib/rt.jar";
+        return rtJarPath;
     }
+
 
 }

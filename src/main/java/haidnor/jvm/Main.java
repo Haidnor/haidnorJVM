@@ -1,5 +1,13 @@
 package haidnor.jvm;
 
+import haidnor.jvm.classloader.ClassLoader;
+import haidnor.jvm.core.JavaExecutionEngine;
+import haidnor.jvm.rtda.heap.Klass;
+import haidnor.jvm.rtda.heap.KlassMethod;
+import haidnor.jvm.rtda.metaspace.Metaspace;
+import haidnor.jvm.runtime.JvmThread;
+import haidnor.jvm.util.JavaClassUtil;
+import haidnor.jvm.util.JvmThreadHolder;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.*;
@@ -27,20 +35,13 @@ public class Main {
         }
         if (cmd.hasOption("class")) {
             String path = cmd.getOptionValue("class");
+            ClassLoader bootClassLoader = new ClassLoader("ApplicationClassLoader");
+            Klass mainMeteKlass = bootClassLoader.loadClassWithAbsolutePath(path);
+            KlassMethod mainKlassMethod = JavaClassUtil.getMainMethod(mainMeteKlass);
+            Metaspace.registerJavaClass(mainMeteKlass);
+            JvmThreadHolder.set(new JvmThread());
 
-//            ClassParser classParser = new ClassParser(path);
-//            JavaClass javaClass = classParser.parse();
-//
-//            Method mainMethod = JavaClassUtil.getMainMethod(javaClass);
-//            if (mainMethod == null) {
-//                throw new Error("无法找到 main 方法");
-//            }
-//
-//            JvmThread mainThread = new JvmThread();
-//            JvmThreadHolder.set(mainThread);
-//
-//             执行main方法
-//            JavaNativeInterface.callStaticMethod(mainMethod);
+            JavaExecutionEngine.callMainStaticMethod(mainKlassMethod);
         }
     }
 

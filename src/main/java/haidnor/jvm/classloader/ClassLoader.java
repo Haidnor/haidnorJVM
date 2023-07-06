@@ -41,6 +41,14 @@ public class ClassLoader {
         return klass;
     }
 
+    public Klass loadClassWithAbsolutePath(String absolutePath) throws IOException {
+        ClassParser classParser = new ClassParser(absolutePath);
+        JavaClass javaClass = classParser.parse();
+        Klass klass = new Klass(this, javaClass);
+        Metaspace.registerJavaClass(klass);
+        return klass;
+    }
+
     private String getRtJarPath() {
         // String javaHome = System.getenv("JAVA_HOME");
         //  Path rtJarPath = Paths.get(javaHome, "jre", "lib", "rt.jar");

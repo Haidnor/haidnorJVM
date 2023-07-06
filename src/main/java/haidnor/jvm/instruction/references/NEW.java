@@ -32,8 +32,7 @@ public class NEW extends Instruction {
         String className = constantPoolUtil.getClassName(constantClass);
 
         if (className.startsWith("java/")) {
-            Object javaObj = Class.forName(Utility.compactClassName(className)).getDeclaredConstructor().newInstance();
-            frame.push(new StackValue(Const.T_OBJECT, javaObj));
+            frame.push(new StackValue(Const.T_OBJECT, null));
             return;
         }
 

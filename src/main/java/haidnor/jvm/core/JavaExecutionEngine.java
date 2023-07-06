@@ -7,7 +7,6 @@ import haidnor.jvm.runtime.JvmThread;
 import haidnor.jvm.runtime.StackValue;
 import haidnor.jvm.util.JvmThreadHolder;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.bcel.Const;
 import org.apache.bcel.classfile.LocalVariable;
 import org.apache.bcel.classfile.LocalVariableTable;
 import org.apache.bcel.classfile.Method;
@@ -33,7 +32,7 @@ public class JavaExecutionEngine {
         String[] argumentTypes = Utility.methodSignatureArgumentTypes(signature);
 
         int argumentSlotSize = argumentTypes.length;
-        if (method.getAccessFlags() != Const.ACC_STATIC) {
+        if (!method.isStatic()) {
             argumentSlotSize++;
         }
 

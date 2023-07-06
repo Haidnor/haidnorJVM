@@ -121,6 +121,13 @@ public class Frame {
     }
 
     /**
+     * 弹出操作数栈顶元素
+     */
+    public StackValue peek() {
+        return this.operandStack.peek();
+    }
+
+    /**
      * 从操作数栈中弹出指定数量的元素的值
      */
     public Object[] popStacksValue(int num) {

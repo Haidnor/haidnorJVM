@@ -36,22 +36,20 @@ public class INVOKESTATIC extends Instruction {
         String methodName = constantPoolUtil.getMethodName(methodref);
         String methodSignature = constantPoolUtil.getMethodSignature(methodref);
 
-        // 解析方法签名得到方法的返回类型
-        String returnType = Utility.methodSignatureReturnType(methodSignature, false);
-
-        java.lang.Class<?>[] parameterTypeArr = SignatureUtil.getParameterTypes(methodSignature);
-        Object[] stacksValueArr = frame.popStacksValue(parameterTypeArr.length);
-
-        for (int i = 0; i < parameterTypeArr.length; i++) {
-            java.lang.Class<?> aClass = parameterTypeArr[i];
-            if (aClass.getName().equals("boolean")) {
-                int booleanFlag = (int) stacksValueArr[i];
-                stacksValueArr[i] = booleanFlag == 1;
-            }
-        }
-
         //  系统类反射 自定义类另外处理
         if (className.startsWith("java/")) {
+            // 解析方法签名得到方法的返回类型
+            String returnType = Utility.methodSignatureReturnType(methodSignature, false);
+            java.lang.Class<?>[] parameterTypeArr = SignatureUtil.getParameterTypes(methodSignature);
+            Object[] stacksValueArr = frame.popStacksValue(parameterTypeArr.length);
+            for (int i = 0; i < parameterTypeArr.length; i++) {
+                java.lang.Class<?> aClass = parameterTypeArr[i];
+                if (aClass.getName().equals("boolean")) {
+                    int booleanFlag = (int) stacksValueArr[i];
+                    stacksValueArr[i] = booleanFlag == 1;
+                }
+            }
+
             Class<?> javaClass = Class.forName(Utility.compactClassName(className,false));
             java.lang.reflect.Method method = javaClass.getMethod(methodName, parameterTypeArr);
             method.setAccessible(true);

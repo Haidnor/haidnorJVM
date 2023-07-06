@@ -7,9 +7,12 @@ import haidnor.jvm.rtda.heap.Klass;
 import haidnor.jvm.rtda.heap.KlassMethod;
 import haidnor.jvm.rtda.metaspace.Metaspace;
 import haidnor.jvm.runtime.Frame;
+import haidnor.jvm.runtime.StackValue;
 import haidnor.jvm.util.CodeStream;
 import haidnor.jvm.util.ConstantPoolUtil;
+import haidnor.jvm.util.SignatureUtil;
 import lombok.SneakyThrows;
+import org.apache.bcel.Const;
 import org.apache.bcel.classfile.*;
 
 public class INVOKESPECIAL extends Instruction {
@@ -41,8 +44,31 @@ public class INVOKESPECIAL extends Instruction {
             klass = classLoader.loadClass(className);
             javaClass = klass.getJavaClass();
         }
+
         if (className.startsWith("java/")) {
-            return;
+            // 执行 RT.jar 中 Java 对象构造方法的时候创建java对象
+            if (methodName.equals("<init>")) {
+                // 执行方法的参数列表
+                Class<?>[] parameterTypeArr = SignatureUtil.getParameterTypes(methodSignature);
+                // 执行方法的参数值
+                Object[] args = frame.popStacksValue(parameterTypeArr.length);
+                // 将特定的参数转换为基本类型
+                for (int i = 0; i < parameterTypeArr.length; i++) {
+                    Class<?> clazz = parameterTypeArr[i];
+                    if (clazz.getName().equals("boolean")) { // boolean 存储方式为 int 类型
+                        int booleanFlag = (int) args[i];
+                        args[i] = booleanFlag == 1;
+                    } else if (clazz.getName().equals("char")) { // char 存储方式为
+                        int charInt = (int) args[i];
+                        char c = (char) charInt;
+                        args[i] = c;
+                    }
+                }
+                Object javaObj = Class.forName(Utility.compactClassName(className)).getDeclaredConstructor(parameterTypeArr).newInstance(args);
+                frame.push(new StackValue(Const.T_OBJECT, javaObj));    // NEW
+                frame.push(new StackValue(Const.T_OBJECT, javaObj));    // DUP
+                return;
+            }
         }
 
         for (Method method : javaClass.getMethods()) {

@@ -12,7 +12,7 @@ public abstract class JavaClassUtil {
     public static KlassMethod getMainMethod(Klass aKlass) {
         JavaClass javaClass = aKlass.getJavaClass();
         for (org.apache.bcel.classfile.Method method : javaClass.getMethods()) {
-            if (method.toString().equals("public static void main(String[] args)")) {
+            if (method.toString().startsWith("public static void main(String[] args)")) {
                 return new KlassMethod(aKlass, method);
             }
         }

@@ -2,9 +2,9 @@ package haidnor.jvm.instruction.references;
 
 import haidnor.jvm.core.JavaExecutionEngine;
 import haidnor.jvm.instruction.Instruction;
+import haidnor.jvm.rtda.heap.Instance;
 import haidnor.jvm.rtda.heap.Klass;
 import haidnor.jvm.rtda.heap.KlassMethod;
-import haidnor.jvm.rtda.metaspace.Metaspace;
 import haidnor.jvm.runtime.Frame;
 import haidnor.jvm.runtime.StackValue;
 import haidnor.jvm.util.CodeStream;
@@ -20,6 +20,9 @@ import org.apache.bcel.classfile.Utility;
 import java.lang.reflect.Method;
 import java.util.Objects;
 
+/**
+ * 调用对象实例方法,根据对象的实际类型进行分派(虚方法分派),支持多态,
+ */
 public class INVOKEVIRTUAL extends Instruction {
 
     private final int constantMethodrefIndex;
@@ -73,15 +76,16 @@ public class INVOKEVIRTUAL extends Instruction {
         }
         // 调用自定义类的方法
         else {
-            Klass meteKlass = Metaspace.getJavaClass(Utility.compactClassName(className));
-            if (meteKlass != null) {
-                JavaClass javaClass = meteKlass.getJavaClass();
-                for (org.apache.bcel.classfile.Method method : javaClass.getMethods()) {
-                    if (method.getSignature().equals(methodSignature) && method.getName().equals(methodName)) {
-                        KlassMethod klassMethod = new KlassMethod(meteKlass, method);
-                        JavaExecutionEngine.callMethod(frame, klassMethod);
-                        break;
-                    }
+            // 获得栈顶对象实例,进行方法动态分派
+            StackValue stackValue = frame.peek();
+            Instance instance = (Instance) stackValue.getValue();
+            Klass meteKlass = instance.klass;
+            JavaClass javaClass = meteKlass.getJavaClass();
+            for (org.apache.bcel.classfile.Method method : javaClass.getMethods()) {
+                if (method.getSignature().equals(methodSignature) && method.getName().equals(methodName)) {
+                    KlassMethod klassMethod = new KlassMethod(meteKlass, method);
+                    JavaExecutionEngine.callMethod(frame, klassMethod);
+                    break;
                 }
             }
         }

@@ -64,7 +64,7 @@ public class INVOKESPECIAL extends Instruction {
                         args[i] = c;
                     }
                 }
-                Object javaObj = Class.forName(Utility.compactClassName(className)).getDeclaredConstructor(parameterTypeArr).newInstance(args);
+                Object javaObj = Class.forName(Utility.compactClassName(className,false)).getDeclaredConstructor(parameterTypeArr).newInstance(args);
                 frame.push(new StackValue(Const.T_OBJECT, javaObj));    // NEW
                 frame.push(new StackValue(Const.T_OBJECT, javaObj));    // DUP
                 return;

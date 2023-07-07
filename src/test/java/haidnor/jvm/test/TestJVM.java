@@ -6,9 +6,11 @@ import haidnor.jvm.rtda.heap.Klass;
 import haidnor.jvm.rtda.heap.KlassMethod;
 import haidnor.jvm.rtda.metaspace.Metaspace;
 import haidnor.jvm.runtime.JvmThread;
+import haidnor.jvm.test.demo.Demo1;
+import haidnor.jvm.test.demo.Demo2;
+import haidnor.jvm.test.demo.Demo3;
 import haidnor.jvm.test.instruction.Array;
 import haidnor.jvm.test.instruction.DO_WHILE;
-import haidnor.jvm.test.instruction.InnerClass;
 import haidnor.jvm.test.instruction.math.ISUB;
 import haidnor.jvm.test.instruction.math.LSUB;
 import haidnor.jvm.test.instruction.references.INVOKEINTERFACE;
@@ -31,6 +33,24 @@ public class TestJVM {
         JavaExecutionEngine.callMainStaticMethod(mainKlassMethod);
     }
 
+    /**
+     * hello,world
+     */
+    @Test
+    public void test_1() throws Exception {
+        runMainClass(Demo1.class);
+    }
+
+    @Test
+    public void test_2() throws Exception {
+        runMainClass(Demo2.class);
+    }
+
+    @Test
+    public void test_3() throws Exception {
+        runMainClass(Demo3.class);
+    }
+
     @Test
     public void test_NEW() throws Exception {
         runMainClass(NEW.class);
@@ -46,19 +66,17 @@ public class TestJVM {
         runMainClass(LSUB.class);
     }
 
-    @Test
-    public void test_1() throws Exception {
-        runMainClass(InnerClass.class);
-    }
 
     @Test
     public void test_DOWHILE() throws Exception {
         runMainClass(DO_WHILE.class);
     }
+
     @Test
     public void test_Array() throws Exception {
         runMainClass(Array.class);
     }
+
     @Test
     public void test_INVOKEINTERFACE() throws Exception {
         runMainClass(INVOKEINTERFACE.class);
